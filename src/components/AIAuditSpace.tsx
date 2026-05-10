@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 
 // Composant pour l'espace d'audit avec IA
