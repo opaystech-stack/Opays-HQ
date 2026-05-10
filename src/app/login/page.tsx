@@ -17,21 +17,21 @@ export default function LoginPage() {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        router.push('/dashboard');
+        window.location.href = '/dashboard';
       }
     };
 
     checkUser();
 
-    // Écouter les changements d'état (quand on clique sur le mail)
+    // Écouter les changements d'état (quand on clique sur le mail ou après mot de passe)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
-        router.push('/dashboard');
+        window.location.href = '/dashboard';
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [router]);
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
