@@ -13,10 +13,9 @@ import {
   Settings,
   Wallet,
   Target,
-  ShieldCheck,
   CheckCircle2,
   Lightbulb,
-  LogOut
+  ChevronRight
 } from 'lucide-react';
 
 interface NavItemProps {
@@ -44,6 +43,7 @@ export default function Sidebar({ profile }: { profile: any }) {
   const pathname = usePathname();
   const isAssociate = profile?.type === 'ASSOCIATE';
   const canSeeTreasury = ['CEO', 'COO', 'ADMIN'].includes(profile?.role);
+  const isManager = ['CEO', 'COO', 'CTO', 'ADMIN'].includes(profile?.role) || profile?.is_admin;
 
   const commonLinks = [
     { href: '/dashboard', label: 'Accueil', icon: <LayoutDashboard size={18} /> },
@@ -53,10 +53,6 @@ export default function Sidebar({ profile }: { profile: any }) {
     { href: '/dashboard/tasks', label: 'Mes Tâches', icon: <CheckCircle2 size={18} /> },
     { href: '/dashboard/ideas', label: 'Boîte à Idées', icon: <Lightbulb size={18} /> },
   ];
-
-  const adminLinks = (profile?.role === 'CEO' || profile?.is_admin) ? [
-    { href: '/dashboard/admin', label: 'Administration', icon: <ShieldCheck size={18} /> },
-  ] : [];
 
   const associateLinks = [
     { href: '/dashboard/leads', label: 'Mes Prospects', icon: <Users size={18} /> },
@@ -74,7 +70,7 @@ export default function Sidebar({ profile }: { profile: any }) {
         <img src="/icon-logo.png" alt="Opays Logo" className="w-9 h-9 rounded-xl shadow-sm" />
         <div>
           <h2 className="text-lg font-bold tracking-tight text-gray-900">OPAYS <span className="text-gray-400">HQ</span></h2>
-          <p className="text-[9px] text-gray-400 uppercase tracking-widest font-semibold">Operating System</p>
+          <p className="text-[9px] text-gray-400 uppercase tracking-widest font-semibold">Espace de travail</p>
         </div>
       </div>
 
@@ -101,38 +97,43 @@ export default function Sidebar({ profile }: { profile: any }) {
           ))}
         </div>
 
-        {adminLinks.length > 0 && (
+        {/* Paramètres = Centre de pilotage (visible pour managers/CEO) */}
+        {isManager && (
           <div className="pt-5">
-            <p className="text-[10px] text-red-500 font-bold uppercase tracking-widest px-4 mb-2">Gouvernance</p>
-            {adminLinks.map((link) => (
-              <NavItem 
-                key={link.href} 
-                {...link} 
-                active={pathname === link.href} 
-              />
-            ))}
+            <p className="text-[10px] text-blue-500 font-bold uppercase tracking-widest px-4 mb-2">Pilotage</p>
+            <NavItem 
+              href="/dashboard/settings" 
+              label="Paramètres" 
+              icon={<Settings size={18} />} 
+              active={pathname === '/dashboard/settings'} 
+            />
           </div>
         )}
       </nav>
 
-      <div className="pt-4 border-t border-gray-100 space-y-2">
-        <NavItem 
-          href="/dashboard/settings" 
-          label="Paramètres" 
-          icon={<Settings size={18} />} 
-          active={pathname === '/dashboard/settings'} 
-        />
-        
-        <div className="mt-3 p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-sm">
-            {profile?.full_name?.charAt(0)}
+      {/* Carte utilisateur cliquable → Mon Compte */}
+      <div className="pt-4 border-t border-gray-100">
+        <Link 
+          href="/dashboard/profile"
+          className={`block p-3 rounded-xl border transition-all ${
+            pathname === '/dashboard/profile'
+              ? 'bg-blue-50 border-blue-200'
+              : 'bg-gray-50 border-gray-100 hover:bg-gray-100 hover:border-gray-200'
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-sm">
+              {profile?.full_name?.charAt(0)}
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <p className="text-xs font-semibold text-gray-900 truncate">{profile?.full_name || 'Utilisateur'}</p>
+              <p className="text-[10px] text-gray-400 truncate">{profile?.role || 'Rôle'}</p>
+            </div>
+            <ChevronRight size={14} className="text-gray-300" />
           </div>
-          <div className="flex-1 overflow-hidden">
-            <p className="text-xs font-semibold text-gray-900 truncate">{profile?.full_name || 'Utilisateur'}</p>
-            <p className="text-[10px] text-gray-400 truncate">{profile?.role || 'Rôle'}</p>
-          </div>
-        </div>
+        </Link>
       </div>
     </aside>
   );
 }
+
