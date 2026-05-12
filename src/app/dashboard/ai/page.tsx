@@ -75,7 +75,7 @@ export default function AICommandCenter() {
   };
 
   return (
-    <div className="relative flex min-h-full overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(34,211,238,0.14),_transparent_22%),radial-gradient(circle_at_top_right,_rgba(168,85,247,0.12),_transparent_20%),linear-gradient(180deg,_#050816_0%,_#090d19_100%)] text-slate-100">
+    <div className="relative flex min-h-full min-w-0 overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(34,211,238,0.14),_transparent_22%),radial-gradient(circle_at_top_right,_rgba(168,85,247,0.12),_transparent_20%),linear-gradient(180deg,_#050816_0%,_#090d19_100%)] text-slate-100">
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:48px_48px] opacity-20" />
 
       <aside className="relative z-10 w-[21rem] shrink-0 border-r border-white/10 bg-slate-950/70 p-6 backdrop-blur-2xl">
@@ -164,23 +164,23 @@ export default function AICommandCenter() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-hidden p-6">
-          <div className="grid h-full min-h-[calc(100vh-10rem)] grid-cols-1 gap-6 xl:grid-cols-[1.25fr_0.75fr]">
-            <section className="rounded-[2rem] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl shadow-black/20">
-              <div ref={scrollRef} className="h-[calc(100vh-20rem)] overflow-y-auto px-6 py-8">
+        <div className="flex-1 min-w-0 overflow-hidden p-4 md:p-6">
+          <div className="grid h-full min-h-[calc(100vh-10rem)] grid-cols-1 gap-6 2xl:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.65fr)]">
+            <section className="flex min-w-0 flex-col rounded-[2rem] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl shadow-black/20">
+              <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-6 md:px-6 md:py-8">
                 <AnimatePresence initial={false}>
                   {messages.map((m) => (
                     <motion.div
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       key={m.id}
-                      className={`mb-6 flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                      className={`mb-6 flex min-w-0 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
-                      <div className={`flex max-w-[820px] gap-4 ${m.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                      <div className={`flex min-w-0 max-w-[820px] gap-4 ${m.role === 'user' ? 'flex-row-reverse' : ''}`}>
                         <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl shadow-lg ${m.role === 'user' ? 'bg-white/10 text-slate-300' : 'bg-gradient-to-br from-cyan-400 to-blue-600 text-white'}`}>
                           {m.role === 'user' ? <User size={18} /> : <Sparkles size={18} />}
                         </div>
-                        <div className={`rounded-[1.75rem] px-5 py-4 text-sm leading-7 shadow-lg ${m.role === 'user' ? 'rounded-tr-sm bg-cyan-500 text-white' : 'rounded-tl-sm border border-white/10 bg-slate-950/75 text-slate-200'}`}>
+                        <div className={`min-w-0 rounded-[1.75rem] px-5 py-4 text-sm leading-7 shadow-lg ${m.role === 'user' ? 'rounded-tr-sm bg-cyan-500 text-white' : 'rounded-tl-sm border border-white/10 bg-slate-950/75 text-slate-200'}`}>
                           {m.content}
                         </div>
                       </div>
@@ -204,7 +204,7 @@ export default function AICommandCenter() {
                 )}
               </div>
 
-              <div className="border-t border-white/10 p-4">
+              <div className="border-t border-white/10 p-3 md:p-4">
                 <form onSubmit={handleSubmit} className="flex items-center gap-3 rounded-[1.5rem] border border-white/10 bg-slate-950/70 px-4 py-3 shadow-xl shadow-black/20 focus-within:border-cyan-400/30 focus-within:ring-4 focus-within:ring-cyan-400/10">
                   <Wand2 size={18} className="text-slate-500" />
                   <input
@@ -224,7 +224,7 @@ export default function AICommandCenter() {
               </div>
             </section>
 
-            <aside className="space-y-6">
+            <aside className="space-y-6 2xl:sticky 2xl:top-6 2xl:max-h-[calc(100vh-8rem)] 2xl:overflow-y-auto 2xl:pr-1">
               <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-xl shadow-2xl shadow-black/20">
                 <div className="mb-4 flex items-center gap-3">
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-3 text-cyan-200">
