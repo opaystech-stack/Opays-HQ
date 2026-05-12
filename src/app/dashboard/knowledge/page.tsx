@@ -35,151 +35,325 @@ const CategoryLabel: Record<string, string> = {
 const featuredGuides = [
   {
     id: 'featured-ai-native',
-    title: 'Pourquoi Opays doit être AI-Native',
+    title: 'Pourquoi Opays est une entreprise AI-Native',
     category: 'VISION',
     target_role: 'ALL',
     created_at: new Date().toISOString(),
     content: `# Q: Qu'est-ce qu'une entreprise AI-Native ?
 ### R:
-- Une entreprise AI-Native ne colle pas l'IA à la fin du processus.
-- Elle conçoit l'opérationnel, le produit, le support et la vente autour d'agents IA dès le départ.
+- Une entreprise AI-Native utilise l'IA comme un réflexe de travail, pas comme un gadget.
+- On s'en sert pour gagner du temps, mieux servir les clients et réduire les erreurs.
 
 ## Q: Pourquoi cela change tout ?
 ### R:
 - Les décisions deviennent plus rapides.
-- Les tâches répétitives sortent du chemin humain.
-- L'équipe se concentre sur le jugement, la relation client et la création de valeur.
+- Les tâches répétitives prennent moins de place.
+- L'équipe peut se concentrer sur le client, la qualité et la valeur réelle.
 
 ## Q: Qu'est-ce qu'on reprend de ce modèle ?
 ### R:
-- La vitesse d'itération.
-- L'usage de l'IA comme couche d'exécution.
-- La documentation comme actif stratégique.
+- La vitesse d'apprentissage.
+- L'habitude de travailler avec des assistants IA.
+- La documentation simple et utile.
 
 ## Q: Qu'est-ce qu'on refuse de copier ?
 ### R:
-- Le bruit marketing sans impact opérationnel.
-- Les promesses floues du type "IA pour tout".
-- Les workflows qui sacrifient la souveraineté des données.`,
+- Les promesses floues du type "l'IA fait tout".
+- Les méthodes compliquées qui fatiguent l'équipe.
+- Les outils qui mettent nos données en danger.`,
   },
   {
-    id: 'featured-automation',
-    title: 'Automatiser 80% des tâches répétitives avec des agents',
+    id: 'featured-ai-helpers',
+    title: 'Comment utiliser l’IA sans être technique',
     category: 'METHOD',
     target_role: 'ALL',
     created_at: new Date().toISOString(),
-    content: `# Q: Qu'est-ce qu'on automatise en premier ?
+    content: `# Q: Est-ce qu'il faut savoir coder pour utiliser l'IA chez Opays ?
 ### R:
-- Tout ce qui est répétitif, prévisible et mesurable: tri, relances, synthèses, reporting, affectation, classement.
+- Non. Il faut surtout savoir expliquer un besoin simplement.
+- L'IA est là pour aider l'équipe, pas pour la remplacer.
 
-## Q: Pourquoi commencer par les répétitions ?
+## Q: À quoi peut m'aider l'IA au quotidien ?
 ### R:
-- Parce que ce sont les tâches où l'IA apporte le plus de temps gagné pour le moins de risque.
-- Parce qu'elles produisent vite un retour visible pour l'équipe.
+- Résumer un texte.
+- Rédiger un premier brouillon.
+- Préparer une réponse client.
+- Organiser des idées.
+- Faire un tri rapide dans l'information.
 
-## Q: Quel est le bon ordre ?
+## Q: Quelle est la bonne manière de demander ?
 ### R:
-1. Identifier la tâche.
-2. Décrire la règle.
-3. Ajouter une validation humaine.
-4. Connecter l'agent aux données.
-5. Mesurer l'avant et l'après.
+- Dire ce qu'on veut obtenir, pour qui, et dans quel format.
+- Donner un exemple simple si possible.
 
-## Q: Quel est le piège à éviter ?
+## Q: Qu'est-ce qu'il faut éviter ?
 ### R:
-- Automatiser un chaos mal défini.
-- Supprimer le contrôle humain sur les étapes sensibles.
-- Ajouter dix outils au lieu de simplifier le flux.`,
+- Les demandes vagues.
+- Les instructions contradictoires.
+- Laisser l'IA décider seule sur des sujets sensibles.
+
+## Q: Comment savoir si le résultat est bon ?
+### R:
+- Le message est clair.
+- Le ton correspond à l'entreprise.
+- Le résultat peut être relu et corrigé facilement.`,
   },
   {
-    id: 'featured-commando',
-    title: 'Le Cycle Commando pour nos sprints hebdomadaires',
+    id: 'featured-operations',
+    title: 'Notre rythme de travail hebdomadaire',
     category: 'GUIDE',
     target_role: 'ALL',
     created_at: new Date().toISOString(),
-    content: `# Q: C'est quoi le Cycle Commando ?
+    content: `# Q: Pourquoi avons-nous besoin d'un rythme commun ?
 ### R:
-- Une cadence courte, agressive et lisible.
-- L'objectif n'est pas de faire "beaucoup", mais de livrer quelque chose de net chaque semaine.
+- Parce qu'une petite équipe doit savoir qui fait quoi, quand, et pour quel objectif.
+- Le rythme commun évite la confusion et les doublons.
 
-## Q: Comment on l'applique ?
+## Q: Comment organiser une semaine simple ?
 ### R:
-1. Lundi: définir une seule victoire critique.
-2. Mardi-Mercredi: exécution profonde.
-3. Jeudi: validation, QA, itérations.
-4. Vendredi: livraison, documentation, rétro.
+1. Définir une priorité claire en début de semaine.
+2. Avancer sans se disperser.
+3. Vérifier ce qui bloque.
+4. Partager les résultats.
+5. Corriger avant de passer à la suite.
 
-## Q: Pourquoi ça marche avec une petite équipe ?
+## Q: Pourquoi ce rythme est utile ?
 ### R:
-- Parce qu'une équipe de cinq personnes ne peut pas se permettre la dispersion.
-- Les rôles deviennent complémentaires et les dépendances restent visibles.
-
-## Q: Quelle discipline garder ?
-### R:
-- Une mission prioritaire par personne.
-- Un dashboard lisible.
-- Un point de blocage unique par jour.`,
+- Chacun connaît le cap.
+- Les efforts se voient.
+- Les retards se détectent tôt.
+- On garde de la place pour aider un collègue ou un client.`,
   },
   {
-    id: 'featured-sovereignty',
-    title: 'Souveraineté des données avec des modèles mondiaux',
+    id: 'featured-client-trust',
+    title: 'Comment servir le client avec confiance',
+    category: 'GUIDE',
+    target_role: 'ALL',
+    created_at: new Date().toISOString(),
+    content: `# Q: Qu'est-ce qui compte le plus dans notre relation client ?
+### R:
+- La clarté.
+- La fiabilité.
+- La rapidité de réponse.
+- Le respect de ce qu'on promet.
+
+## Q: Que doit faire chaque membre de l'équipe ?
+### R:
+- Répondre proprement.
+- Prévenir quand il y a un blocage.
+- Dire la vérité plutôt que promettre trop vite.
+- Garder le client informé.
+
+## Q: Pourquoi c'est important ?
+### R:
+- Parce que la confiance se construit sur les petits gestes répétés.
+- Parce qu'un bon service vaut souvent plus qu'un long discours.`,
+  },
+  {
+    id: 'featured-data-safety',
+    title: 'Protéger les informations de l’entreprise',
     category: 'TECH',
     target_role: 'ALL',
     created_at: new Date().toISOString(),
-    content: `# Q: Peut-on utiliser des modèles mondiaux sans perdre notre souveraineté ?
+    content: `# Q: Pourquoi la confidentialité est-elle importante ?
 ### R:
-- Oui, si nous gardons le contrôle des données, des permissions et des flux.
+- Parce que nos informations internes ont de la valeur.
+- Parce qu'un bon niveau de discrétion protège l'équipe, le client et l'entreprise.
 
-## Q: Quelle est la règle d'or ?
+## Q: Qu'est-ce qu'on ne partage pas n'importe comment ?
 ### R:
-- Les modèles peuvent être mondiaux.
-- Les données, la logique métier et les accès doivent rester sous notre contrôle.
+- Les données clients.
+- Les informations financières.
+- Les accès techniques.
+- Les documents internes sensibles.
 
-## Q: Qu'est-ce qu'on doit protéger en priorité ?
+## Q: Quel est le bon réflexe ?
 ### R:
-- Les profils, les tâches, la trésorerie, les contrats et les savoir-faire internes.
-
-## Q: Comment on réduit le risque ?
-### R:
-- RBAC strict.
-- Journalisation des actions.
-- Séparation claire entre lecture, écriture et validation humaine.
-
-## Q: Quel est le bon état d'esprit ?
-### R:
-- Utiliser l'IA comme moteur.
-- Garder l'entreprise comme pilote.`,
+- Si on n'est pas sûr, on demande.
+- Si un accès semble inutile, on le signale.
+- Si un document est sensible, on le partage seulement avec les bonnes personnes.`,
   },
   {
-    id: 'featured-copy-adapt',
-    title: "Ce qu'on copie de la vidéo et ce qu'on adapte",
+    id: 'featured-roles',
+    title: 'Bien travailler ensemble dans une petite équipe',
+    category: 'METHOD',
+    target_role: 'ALL',
+    created_at: new Date().toISOString(),
+    content: `# Q: Pourquoi les rôles doivent être clairs ?
+### R:
+- Parce que quand tout le monde sait ce qu'il doit faire, l'équipe avance plus vite.
+
+## Q: Qu'est-ce que chacun doit comprendre ?
+### R:
+- Son rôle.
+- Son niveau de responsabilité.
+- À qui demander de l'aide.
+- Quand prévenir le reste de l'équipe.
+
+## Q: Quelle attitude aide vraiment ?
+### R:
+- Être fiable.
+- Être simple.
+- Être réactif.
+- Respecter le travail des autres.`,
+  },
+  {
+    id: 'featured-adaptation',
+    title: 'Ce qu’on apprend des autres sans se perdre',
     category: 'VISION',
     target_role: 'ALL',
     created_at: new Date().toISOString(),
-    content: `# Q: Qu'est-ce qu'on peut reprendre sans conflit avec notre vision ?
+    content: `# Q: Peut-on s'inspirer d'autres entreprises ?
 ### R:
-- La vitesse d'exécution.
-- La discipline de test.
-- La culture du prototype utile.
-- La mise en avant du résultat, pas du buzz.
+- Oui, bien sûr.
+- Mais on copie une méthode, pas une identité.
 
-## Q: Qu'est-ce qu'on doit adapter ?
+## Q: Qu'est-ce qu'on retient d'une inspiration extérieure ?
 ### R:
-- Le langage.
-- Le rythme.
-- Les priorités métier.
-- Le niveau de souveraineté requis pour nos clients et notre contexte.
+- La discipline.
+- La vitesse.
+- L'habitude de tester.
+- La façon de rendre le travail plus clair.
 
-## Q: Qu'est-ce qu'on ne doit pas importer ?
+## Q: Qu'est-ce qu'on adapte à Opays ?
 ### R:
-- Le culte du "move fast and break things" quand il casse la confiance.
-- Les produits sans profondeur métier.
-- Les processus qui dépendent d'une équipe trop large ou trop coûteuse.
+- Notre culture.
+- Notre contexte.
+- Nos clients.
+- Notre niveau d'exigence sur la confiance et la qualité.
 
-## Q: Quelle est la vraie leçon ?
+## Q: Quelle est la règle finale ?
 ### R:
-- On ne copie pas une esthétique.
-- On copie une méthode d'exécution, puis on la rend locale, robuste et rentable.`,
+- On garde ce qui nous rend meilleurs.
+- On laisse ce qui ne nous ressemble pas.`,
+  },
+  {
+    id: 'featured-pitch',
+    title: "Le pitch simple pour expliquer notre valeur",
+    category: 'VISION',
+    target_role: 'SALES',
+    created_at: new Date().toISOString(),
+    content: `# Q: Comment présenter Opays en une phrase ?
+### R:
+- Nous aidons les entreprises à enlever les lourdeurs qui leur font perdre du temps, de l'énergie et de l'argent.
+
+## Q: Comment expliquer le bénéfice sans parler technique ?
+### R:
+- Nous simplifions le travail.
+- Nous réduisons les erreurs.
+- Nous accélérons les réponses.
+- Nous remettons l'équipe sur ce qui compte vraiment.
+
+## Q: Quelle image peut aider ?
+### R:
+- Imagine une entreprise qui porte trop de poids inutile.
+- Notre rôle est d'enlever ce qui ralentit, pour qu'elle avance plus vite et plus facilement.
+
+## Q: Que faut-il éviter ?
+### R:
+- Dire que l'IA est magique.
+- Parler trop de technologie.
+- Oublier le résultat concret pour le client.`,
+  },
+  {
+    id: 'featured-audit-benefits',
+    title: "Les bénéfices d'un audit IA",
+    category: 'METHOD',
+    target_role: 'SALES',
+    created_at: new Date().toISOString(),
+    content: `# Q: À quoi sert un audit IA ?
+### R:
+- À voir où le temps se perd.
+- À repérer les erreurs répétées.
+- À comprendre ce qui coûte trop d'effort.
+
+## Q: Quels bénéfices met-on en avant ?
+### R:
+1. **Temps gagné** - moins d'heures perdues sur des tâches répétitives.
+2. **Moins d'erreurs** - moins de corrections et de retours en arrière.
+3. **Moins de friction** - le travail devient plus simple pour l'équipe.
+4. **Moins de blocages** - l'information circule mieux.
+5. **Meilleures priorités** - l'équipe se concentre sur ce qui crée de la valeur.
+
+## Q: Comment le dire simplement ?
+### R:
+- L'audit montre ce qui ralentit votre entreprise.
+- Ensuite, on propose une manière plus simple de travailler.`,
+  },
+  {
+    id: 'featured-objections',
+    title: 'Répondre aux objections sur la sécurité',
+    category: 'GUIDE',
+    target_role: 'SALES',
+    created_at: new Date().toISOString(),
+    content: `# Q: Que répondre si un client a peur pour ses données ?
+### R:
+- C'est une bonne question, et elle est normale.
+- Nous travaillons justement pour protéger les informations et contrôler les accès.
+
+## Q: Comment rassurer sans promettre trop ?
+### R:
+- Nous limitons ce qui est partagé.
+- Nous définissons qui peut voir quoi.
+- Nous gardons une trace des actions importantes.
+- Nous ne mélangeons pas les données sensibles avec des usages inutiles.
+
+## Q: Quelle phrase simple peut être utilisée ?
+### R:
+- L'IA nous aide à travailler plus vite, mais vos données restent sous contrôle.
+
+## Q: Que faut-il éviter ?
+### R:
+- Minimiser la peur du client.
+- Donner une réponse trop technique.
+- Faire comme si la sécurité n'était pas importante.`,
+  },
+  {
+    id: 'featured-value-proposal',
+    title: 'Template de proposition de valeur',
+    category: 'METHOD',
+    target_role: 'SALES',
+    created_at: new Date().toISOString(),
+    content: `# Q: Quelle est l'idée d'une bonne proposition de valeur ?
+### R:
+- Montrer d'abord le problème, puis la solution, puis le résultat attendu.
+
+## Q: Quelle structure utiliser ?
+### R:
+1. **Situation actuelle** - comment l'équipe travaille aujourd'hui.
+2. **Point de blocage** - où se perd le temps ou l'énergie.
+3. **Impact concret** - ce que cela coûte en pratique.
+4. **Approche Opays** - comment nous simplifions le travail.
+5. **Résultat attendu** - ce que le client gagne.
+
+## Q: Pourquoi cette structure marche ?
+### R:
+- Parce qu'elle parle du vrai problème du client.
+- Parce qu'elle reste simple à comprendre.
+- Parce qu'elle montre la valeur avant la discussion finale.`,
+  },
+  {
+    id: 'featured-discovery',
+    title: 'Les bonnes questions avant de proposer',
+    category: 'GUIDE',
+    target_role: 'SALES',
+    created_at: new Date().toISOString(),
+    content: `# Q: Pourquoi poser de bonnes questions ?
+### R:
+- Parce qu'on ne peut pas proposer une vraie aide sans comprendre la situation.
+
+## Q: Quelles questions utiliser ?
+### R:
+- Qu'est-ce qui vous prend le plus de temps aujourd'hui ?
+- Où est-ce que l'équipe perd le plus d'énergie ?
+- Qu'est-ce qui crée des erreurs ou des retards ?
+- Si ce point disparaissait, qu'est-ce qui changerait ?
+
+## Q: Que fait une bonne question ?
+### R:
+- Elle ouvre la discussion.
+- Elle révèle le vrai besoin.
+- Elle évite de vendre trop tôt.`,
   },
 ];
 
@@ -328,12 +502,12 @@ export default function KnowledgePage() {
         <header className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-200 backdrop-blur">
-              <Sparkles size={12} /> Knowledge Base
+              <Sparkles size={12} /> Guides d'alignement
             </div>
             <div>
-              <h1 className="text-3xl font-semibold tracking-tight text-white">Guide & Savoir-faire</h1>
+              <h1 className="text-3xl font-semibold tracking-tight text-white">Guides & savoir-faire</h1>
               <p className="mt-2 max-w-2xl text-sm text-slate-400">
-                Le manuel pratique d'OPAYS TECH, pensé pour la lecture rapide, la montée en compétence et l'exécution autonome.
+                Des repères simples pour que toute l'équipe travaille dans la même direction, avec clarté et confiance.
               </p>
             </div>
           </div>
@@ -351,7 +525,7 @@ export default function KnowledgePage() {
           <div className="rounded-[2rem] border border-white/10 bg-white/5 p-5 shadow-2xl shadow-black/20 backdrop-blur-xl">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-slate-500">Base de savoir</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-slate-500">Repères d'équipe</p>
                 <h2 className="mt-1 text-lg font-semibold text-white">{filteredArticles.length} articles</h2>
               </div>
               <div className="relative w-full md:w-80">
@@ -359,7 +533,7 @@ export default function KnowledgePage() {
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Rechercher une méthode, un guide..."
+                  placeholder="Rechercher un guide, une méthode..."
                   className="w-full rounded-2xl border border-white/10 bg-white/5 py-3 pl-10 pr-4 text-sm text-white outline-none placeholder:text-slate-500 focus:border-cyan-500/40"
                 />
               </div>
@@ -470,8 +644,8 @@ export default function KnowledgePage() {
                 <h3 className="text-xs font-bold uppercase tracking-[0.28em] text-slate-300">Usage recommandé</h3>
               </div>
               <p className="mt-3 text-sm leading-relaxed text-slate-400">
-                Ces guides sont pensés comme des blocs de savoir immédiatement exploitables par l'équipe. On y conserve la stratégie,
-                mais on l'adapte à notre culture: souveraineté, vitesse d'exécution et discipline opérationnelle.
+                Ces guides aident chacun à comprendre la vision, à adopter les bons réflexes et à garder une manière de travailler cohérente.
+                Le but n'est pas de parler technique, mais de rendre le projet clair pour tous.
               </p>
             </div>
           </aside>

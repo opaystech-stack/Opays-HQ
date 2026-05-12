@@ -1,187 +1,289 @@
 -- SEED DATA FOR KNOWLEDGE BASE
 
 INSERT INTO knowledge_articles (title, content, target_role, category) VALUES
-('La Philosophie OPAYS : Vendre de la Valeur', 
-'# Vendre de la Valeur, pas de la Technologie
-L''erreur fondamentale est de vouloir vendre des "agents IA" ou des "chatbots".
-Une entreprise n''achète pas une technologie ; elle achète la suppression d''une ligne de coût.
+('La Philosophie OPAYS : Aider avant tout', 
+'# Vendre une amélioration concrète, pas un mot à la mode
+Une entreprise n''achète pas une technologie pour faire joli.
+Elle cherche surtout à gagner du temps, réduire les erreurs et mieux servir ses clients.
 
 ### Points clés :
-- **Ligne de coût :** Dépense récurrente (salaire, pénalités, temps perdu).
-- **Objectif :** Remplacer une dépense élevée par une solution IA moins chère.
-- **Marge :** Notre but est d''augmenter la marge du client pour permettre sa croissance.',
+- **Problème réel :** Ce qui coûte du temps, de l''argent ou de l''énergie.
+- **Solution utile :** Ce qui enlève de la charge sans compliquer le travail.
+- **Impact :** Ce que l''équipe et le client ressentent vraiment au quotidien.',
 'ALL', 'METHOD'),
 
 ('Identifier les Fuites Opérationnelles', 
-'# Comment identifier les fuites d''argent
-Cherchez les "robinets qui fuient" via trois critères :
-1. **Tâches répétitives :** Quotidiennes ou hebdomadaires.
-2. **Tâches chères :** Temps salarié/dirigeant gaspillé.
-3. **Coût d''opportunité :** Ce que la tâche empêche de faire.
+'# Comment repérer ce qui ralentit l''équipe
+Cherchez les activités qui reviennent souvent, prennent trop de temps ou créent de la confusion.
 
-### Les 3 Questions Magiques :
-1. « Qu’est-ce qui te bouffe ton temps en ce moment ? »
-2. « À cause de quoi ça fuit ? »
-3. « Si tu avais 10 heures de plus par semaine, qu’est-ce que tu ferais à la place ? »',
+### Les 3 questions simples :
+1. Qu''est-ce qui te prend le plus de temps en ce moment ?
+2. Qu''est-ce qui te bloque ou te fait perdre de l''énergie ?
+3. Si on supprimait cette tâche, qu''est-ce qui changerait vraiment ?',
 'SALES', 'METHOD'),
 
 ('Les 7 Véhicules IA', 
-'# Choisir la bonne solution
-1. **Micro-SaaS :** Outil à fonctionnalité unique.
-2. **Agent IA :** Collaborateur virtuel autonome.
-3. **Infrastructure IA :** Multi-agents pour PME/ETI.
-4. **Système RAG :** Interrogation de base documentaire.
-5. **Audit :** Diagnostic et feuille de route.
-6. **Formation :** Montée en compétence.
-7. **Automatisation IA :** Tâches linéaires à gros volume.',
+'# Choisir la bonne solution pour le bon besoin
+1. **Petit outil dédié :** Une seule fonction, simple et claire.
+2. **Assistant IA :** Aide pour écrire, résumer ou organiser.
+3. **Organisation assistée :** Plusieurs assistants qui travaillent ensemble.
+4. **Base de savoir :** Réponses à partir de nos documents.
+5. **Audit :** Comprendre ce qui bloque et quoi corriger.
+6. **Formation :** Aider les équipes à mieux faire leur travail.
+7. **Automatisation :** Faire gagner du temps sur les tâches répétitives.',
 'CTO', 'TECH'),
 
 ('Le Cycle de Déploiement en 6 Semaines', 
-'# Notre Méthode de Livraison
-- **S1 :** Audit et chiffrage précis de la fuite.
-- **S2 :** Présentation de la proposition ROI.
-- **S3 :** Cadrage technique.
-- **S4 :** Développement (Claude Code / Low-code).
-- **S5 :** Itérations client.
-- **S6 :** Mise en production.',
+'# Notre méthode de livraison
+- **S1 :** Comprendre le besoin et le problème réel.
+- **S2 :** Expliquer la solution et le gain attendu.
+- **S3 :** Cadrer ce qu''on va faire exactement.
+- **S4 :** Construire la première version.
+- **S5 :** Corriger avec les retours.
+- **S6 :** Mettre en service et documenter.',
 'ALL', 'GUIDE');
 
 INSERT INTO knowledge_articles (title, content, target_role, category) VALUES
 (
-  'Pourquoi Opays doit être AI-Native',
+  'Pourquoi Opays est une entreprise AI-Native',
   '# Q: Qu''est-ce qu''une entreprise AI-Native ?
 ### R:
-- Une entreprise AI-Native ne colle pas l''IA à la fin du processus.
-- Elle conçoit l''opérationnel, le produit, le support et la vente autour d''agents IA dès le départ.
+- C''est une entreprise qui utilise l''IA dans son travail quotidien, pas seulement dans son discours.
+- L''IA sert à faire gagner du temps, mieux organiser le travail et réduire les erreurs.
 
 ## Q: Pourquoi cela change tout ?
 ### R:
-- Les décisions deviennent plus rapides.
-- Les tâches répétitives sortent du chemin humain.
-- L''équipe se concentre sur le jugement, la relation client et la création de valeur.
+- Les tâches répétitives prennent moins de place.
+- Les décisions peuvent être prises plus vite.
+- L''équipe garde plus de temps pour le client et la qualité.
 
 ## Q: Qu''est-ce qu''on reprend de ce modèle ?
 ### R:
-- La vitesse d''itération.
-- L''usage de l''IA comme couche d''exécution.
-- La documentation comme actif stratégique.
+- L''habitude de travailler simplement avec l''IA.
+- La rapidité de test.
+- Les documents clairs qui servent vraiment au travail.
 
 ## Q: Qu''est-ce qu''on refuse de copier ?
 ### R:
-- Le bruit marketing sans impact opérationnel.
-- Les promesses floues du type "IA pour tout".
-- Les workflows qui sacrifient la souveraineté des données.',
+- Le jargon vide.
+- Les outils compliqués pour rien.
+- Les systèmes qui mettent nos données en danger.',
   'ALL',
   'VISION'
 ),
 (
-  'Automatiser 80% des tâches répétitives avec des agents',
-  '# Q: Qu''est-ce qu''on automatise en premier ?
+  'Comment utiliser l''IA sans être technique',
+  '# Q: Faut-il savoir coder pour utiliser l''IA chez Opays ?
 ### R:
-- Tout ce qui est répétitif, prévisible et mesurable: tri, relances, synthèses, reporting, affectation, classement.
+- Non. Il faut surtout savoir expliquer clairement ce qu''on veut obtenir.
+- L''IA aide à écrire, résumer, classer, préparer ou reformuler.
 
-## Q: Pourquoi commencer par les répétitions ?
+## Q: À quoi peut-elle m''aider au quotidien ?
 ### R:
-- Parce que ce sont les tâches où l''IA apporte le plus de temps gagné pour le moins de risque.
-- Parce qu''elles produisent vite un retour visible pour l''équipe.
+- Préparer un message.
+- Résumer une réunion.
+- Organiser une idée.
+- Faire un premier brouillon.
+- Trouver une formulation plus claire.
 
-## Q: Quel est le bon ordre ?
+## Q: Quelle est la bonne manière de demander ?
 ### R:
-1. Identifier la tâche.
-2. Décrire la règle.
-3. Ajouter une validation humaine.
-4. Connecter l''agent aux données.
-5. Mesurer l''avant et l''après.
+- Dire le but.
+- Dire à qui c''est destiné.
+- Dire le format attendu.
+- Donner un exemple si on en a un.
 
-## Q: Quel est le piège à éviter ?
+## Q: Qu''est-ce qu''il faut éviter ?
 ### R:
-- Automatiser un chaos mal défini.
-- Supprimer le contrôle humain sur les étapes sensibles.
-- Ajouter dix outils au lieu de simplifier le flux.',
+- Les demandes floues.
+- Les consignes contradictoires.
+- Laisser l''IA décider seule sur des sujets sensibles.',
   'ALL',
   'METHOD'
 ),
 (
-  'Le Cycle Commando pour nos sprints hebdomadaires',
-  '# Q: C''est quoi le Cycle Commando ?
+  'Notre rythme de travail hebdomadaire',
+  '# Q: Pourquoi avons-nous besoin d''un rythme commun ?
 ### R:
-- Une cadence courte, agressive et lisible.
-- L''objectif n''est pas de faire "beaucoup", mais de livrer quelque chose de net chaque semaine.
+- Parce que tout le monde gagne du temps quand les priorités sont claires.
+- Parce qu''une petite équipe doit éviter la dispersion.
 
-## Q: Comment on l''applique ?
+## Q: Comment organiser une semaine simple ?
 ### R:
-1. Lundi: définir une seule victoire critique.
-2. Mardi-Mercredi: exécution profonde.
-3. Jeudi: validation, QA, itérations.
-4. Vendredi: livraison, documentation, rétro.
+1. Choisir une priorité importante.
+2. Avancer dessus avec régularité.
+3. Vérifier les blocages.
+4. Partager l''avancement.
+5. Corriger avant de repartir.
 
-## Q: Pourquoi ça marche avec une petite équipe ?
+## Q: Pourquoi ce rythme est utile ?
 ### R:
-- Parce qu''une équipe de cinq personnes ne peut pas se permettre la dispersion.
-- Les rôles deviennent complémentaires et les dépendances restent visibles.
-
-## Q: Quelle discipline garder ?
-### R:
-- Une mission prioritaire par personne.
-- Un dashboard lisible.
-- Un point de blocage unique par jour.',
+- On sait ce qu''on attend de chacun.
+- On voit vite ce qui avance et ce qui bloque.
+- On garde une bonne coordination entre les rôles.',
   'ALL',
   'GUIDE'
 ),
 (
-  'Souveraineté des données avec des modèles mondiaux',
-  '# Q: Peut-on utiliser des modèles mondiaux sans perdre notre souveraineté ?
+  'Protéger les informations de l''entreprise',
+  '# Q: Pourquoi faut-il faire attention aux informations internes ?
 ### R:
-- Oui, si nous gardons le contrôle des données, des permissions et des flux.
+- Parce qu''elles ont de la valeur.
+- Parce qu''une fuite d''information peut créer de la confusion ou du risque.
 
-## Q: Quelle est la règle d''or ?
+## Q: Qu''est-ce qu''on ne partage pas n''importe comment ?
 ### R:
-- Les modèles peuvent être mondiaux.
-- Les données, la logique métier et les accès doivent rester sous notre contrôle.
+- Les données clients.
+- Les informations financières.
+- Les documents sensibles.
+- Les accès techniques.
 
-## Q: Qu''est-ce qu''on doit protéger en priorité ?
+## Q: Quel est le bon réflexe ?
 ### R:
-- Les profils, les tâches, la trésorerie, les contrats et les savoir-faire internes.
-
-## Q: Comment on réduit le risque ?
-### R:
-- RBAC strict.
-- Journalisation des actions.
-- Séparation claire entre lecture, écriture et validation humaine.
-
-## Q: Quel est le bon état d''esprit ?
-### R:
-- Utiliser l''IA comme moteur.
-- Garder l''entreprise comme pilote.',
+- Si on n''est pas sûr, on demande.
+- Si un accès semble inutile, on le signale.
+- Si un document est sensible, on le partage seulement aux bonnes personnes.',
   'ALL',
   'TECH'
 ),
 (
-  'Ce qu''on copie de la vidéo et ce qu''on adapte',
-  '# Q: Qu''est-ce qu''on peut reprendre sans conflit avec notre vision ?
+  'Travailler ensemble dans une petite équipe',
+  '# Q: Pourquoi les rôles doivent être clairs ?
 ### R:
-- La vitesse d''exécution.
-- La discipline de test.
-- La culture du prototype utile.
-- La mise en avant du résultat, pas du buzz.
+- Parce que quand chacun sait ce qu''il doit faire, tout le monde avance plus vite.
+- Les erreurs viennent souvent des zones floues.
 
-## Q: Qu''est-ce qu''on doit adapter ?
+## Q: Qu''est-ce que chacun doit comprendre ?
 ### R:
-- Le langage.
-- Le rythme.
-- Les priorités métier.
-- Le niveau de souveraineté requis pour nos clients et notre contexte.
+- Son rôle.
+- Ce qu''il doit livrer.
+- À qui demander de l''aide.
+- Quand prévenir les autres.
 
-## Q: Qu''est-ce qu''on ne doit pas importer ?
+## Q: Quelle attitude aide vraiment ?
 ### R:
-- Le culte du "move fast and break things" quand il casse la confiance.
-- Les produits sans profondeur métier.
-- Les processus qui dépendent d''une équipe trop large ou trop coûteuse.
-
-## Q: Quelle est la vraie leçon ?
-### R:
-- On ne copie pas une esthétique.
-- On copie une méthode d''exécution, puis on la rend locale, robuste et rentable.',
+- Être simple.
+- Être fiable.
+- Être réactif.
+- Respecter le travail des autres.',
   'ALL',
   'VISION'
+),
+(
+  'Le pitch simple pour expliquer notre valeur',
+  '# Q: Comment présenter Opays en une phrase ?
+### R:
+- Nous aidons les entreprises à enlever les lourdeurs qui leur font perdre du temps, de l''énergie et de l''argent.
+
+## Q: Comment expliquer le bénéfice sans parler technique ?
+### R:
+- Nous simplifions le travail.
+- Nous réduisons les erreurs.
+- Nous accélérons les réponses.
+- Nous remettons l''équipe sur ce qui compte vraiment.
+
+## Q: Quelle image peut aider ?
+### R:
+- Imagine une entreprise qui porte trop de poids inutile.
+- Notre rôle est d''enlever ce qui ralentit, pour qu''elle avance plus vite et plus facilement.
+
+## Q: Que faut-il éviter ?
+### R:
+- Dire que l''IA est magique.
+- Parler trop de technologie.
+- Oublier le résultat concret pour le client.',
+  'SALES',
+  'VISION'
+),
+(
+  'Les bénéfices d''un audit IA',
+  '# Q: À quoi sert un audit IA ?
+### R:
+- À voir où le temps se perd.
+- À repérer les erreurs répétées.
+- À comprendre ce qui coûte trop d''effort.
+
+## Q: Quels bénéfices met-on en avant ?
+### R:
+1. **Temps gagné** - moins d''heures perdues sur des tâches répétitives.
+2. **Moins d''erreurs** - moins de corrections et de retours en arrière.
+3. **Moins de friction** - le travail devient plus simple pour l''équipe.
+4. **Moins de blocages** - l''information circule mieux.
+5. **Meilleures priorités** - l''équipe se concentre sur ce qui crée de la valeur.
+
+## Q: Comment le dire simplement ?
+### R:
+- L''audit montre ce qui ralentit votre entreprise.
+- Ensuite, on propose une manière plus simple de travailler.',
+  'SALES',
+  'METHOD'
+),
+(
+  'Répondre aux objections sur la sécurité',
+  '# Q: Que répondre si un client a peur pour ses données ?
+### R:
+- C''est une bonne question, et elle est normale.
+- Nous travaillons justement pour protéger les informations et contrôler les accès.
+
+## Q: Comment rassurer sans promettre trop ?
+### R:
+- Nous limitons ce qui est partagé.
+- Nous définissons qui peut voir quoi.
+- Nous gardons une trace des actions importantes.
+- Nous ne mélangeons pas les données sensibles avec des usages inutiles.
+
+## Q: Quelle phrase simple peut être utilisée ?
+### R:
+- L''IA nous aide à travailler plus vite, mais vos données restent sous contrôle.
+
+## Q: Que faut-il éviter ?
+### R:
+- Minimiser la peur du client.
+- Donner une réponse trop technique.
+- Faire comme si la sécurité n''était pas importante.',
+  'SALES',
+  'GUIDE'
+),
+(
+  'Template de proposition de valeur',
+  '# Q: Quelle est l''idée d''une bonne proposition de valeur ?
+### R:
+- Montrer d''abord le problème, puis la solution, puis le résultat attendu.
+
+## Q: Quelle structure utiliser ?
+### R:
+1. **Situation actuelle** - comment l''équipe travaille aujourd''hui.
+2. **Point de blocage** - où se perd le temps ou l''énergie.
+3. **Impact concret** - ce que cela coûte en pratique.
+4. **Approche Opays** - comment nous simplifions le travail.
+5. **Résultat attendu** - ce que le client gagne.
+
+## Q: Pourquoi cette structure marche ?
+### R:
+- Parce qu''elle parle du vrai problème du client.
+- Parce qu''elle reste simple à comprendre.
+- Parce qu''elle montre la valeur avant la discussion finale.',
+  'SALES',
+  'METHOD'
+),
+(
+  'Les bonnes questions avant de proposer',
+  '# Q: Pourquoi poser de bonnes questions ?
+### R:
+- Parce qu''on ne peut pas proposer une vraie aide sans comprendre la situation.
+
+## Q: Quelles questions utiliser ?
+### R:
+- Qu''est-ce qui vous prend le plus de temps aujourd''hui ?
+- Où est-ce que l''équipe perd le plus d''énergie ?
+- Qu''est-ce qui crée des erreurs ou des retards ?
+- Si ce point disparaissait, qu''est-ce qui changerait ?
+
+## Q: Que fait une bonne question ?
+### R:
+- Elle ouvre la discussion.
+- Elle révèle le vrai besoin.
+- Elle évite de vendre trop tôt.',
+  'SALES',
+  'GUIDE'
 );
