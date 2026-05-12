@@ -25,7 +25,8 @@ import {
   Palette,
   LogOut,
   Bell,
-  Loader2
+  Loader2,
+  Sparkles
 } from 'lucide-react';
 
 interface NavItemProps {
@@ -81,6 +82,7 @@ export default function Sidebar() {
 
   const commonLinks = [
     { href: '/dashboard', label: 'Accueil', icon: <LayoutDashboard size={18} />, show: true },
+    { href: '/dashboard/ai', label: 'Command Center', sublabel: 'Intelligence Artificielle', icon: <Sparkles size={18} />, show: true },
     { href: '/dashboard/projects', label: 'Nos Projets', sublabel: 'Livraison Client', icon: <Briefcase size={18} />, show: true },
     { href: '/dashboard/workspace', label: 'Workspace', sublabel: 'Ingénierie & Prod', icon: <Monitor size={18} />, show: checkAccess('workspace') },
     { href: '/dashboard/calendar', label: 'Calendrier', icon: <Calendar size={18} />, show: true },
