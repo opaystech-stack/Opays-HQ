@@ -88,6 +88,7 @@ export default function Sidebar() {
     { href: '/dashboard/calendar', label: 'Calendrier', icon: <Calendar size={18} />, show: true },
     { href: '/dashboard/contracts', label: 'Contrats', icon: <FileText size={18} />, show: checkAccess('contracts') },
     { href: '/dashboard/documents', label: 'Modèles Doc.', sublabel: 'Factures & contrats', icon: <FileText size={18} />, show: isManager },
+    { href: '/dashboard/job-descriptions', label: 'Fiches de poste', sublabel: 'Associés & rôles', icon: <BookOpen size={18} />, show: true },
     { href: '/dashboard/knowledge', label: 'Guide & Savoir-faire', icon: <BookOpen size={18} />, show: true },
     { href: '/dashboard/labs', label: 'Labs (R&D)', sublabel: 'Stratégie & Futur', icon: <FlaskConical size={18} />, show: checkAccess('labs') },
     { href: '/dashboard/tasks', label: 'Mes Tâches', icon: <CheckCircle2 size={18} />, show: true, badge: undefined },
