@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { X, DollarSign, Calendar, Landmark } from 'lucide-react';
+import { X, DollarSign, Calendar, Landmark, Sparkles } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
 
 export default function NewInvoiceModal({ isOpen, onClose, onSuccess }: { isOpen: boolean, onClose: () => void, onSuccess: () => void }) {
@@ -12,7 +12,7 @@ export default function NewInvoiceModal({ isOpen, onClose, onSuccess }: { isOpen
     amount_total: '',
     amount_paid: '0',
     due_date: '',
-    status: 'PENDING'
+    status: 'PENDING',
   });
 
   const supabase = createClient();
@@ -32,76 +32,91 @@ export default function NewInvoiceModal({ isOpen, onClose, onSuccess }: { isOpen
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.from('project_billing').insert([{
-      ...formData,
-      amount_total: parseFloat(formData.amount_total),
-      amount_paid: parseFloat(formData.amount_paid)
-    }]);
+    const { error } = await supabase.from('project_billing').insert([
+      {
+        ...formData,
+        amount_total: parseFloat(formData.amount_total),
+        amount_paid: parseFloat(formData.amount_paid),
+      },
+    ]);
     setLoading(false);
-    if (!error) { onSuccess(); onClose(); }
-    else { alert("Erreur lors de la création de la facture"); }
+    if (!error) {
+      onSuccess();
+      onClose();
+    } else {
+      alert("Erreur lors de la création de la facture");
+    }
   };
 
-  const inputClass = "w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 pl-10 pr-4 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-all text-sm";
+  const inputClass = "w-full rounded-2xl border border-white/10 bg-white/5 py-3 pl-10 pr-4 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-500/40";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm">
-      <div className="bg-white border border-gray-200 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl">
-        <div className="p-5 border-b border-gray-100 flex justify-between items-center">
-          <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-            <DollarSign size={18} className="text-green-600" /> Nouvelle Facture
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-xl">
+      <div className="w-full max-w-md overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b1020]/95 shadow-2xl shadow-black/50">
+        <div className="flex items-center justify-between border-b border-white/10 p-5">
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-white">
+            <DollarSign size={18} className="text-emerald-300" /> Nouvelle facture
           </h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full text-gray-400 transition-colors">
+          <button onClick={onClose} className="rounded-full p-2 text-slate-400 transition hover:bg-white/5 hover:text-white">
             <X size={18} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-5 space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 p-5">
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Projet</label>
+            <label className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">Projet</label>
             <div className="relative">
-              <Landmark className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-              <select 
-                required 
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 pl-10 pr-4 text-gray-900 focus:border-blue-500 outline-none transition-all text-sm appearance-none"
+              <Landmark className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+              <select
+                required
+                className="w-full appearance-none rounded-2xl border border-white/10 bg-white/5 py-3 pl-10 pr-4 text-sm text-white outline-none transition focus:border-cyan-500/40"
                 value={formData.project_id}
-                onChange={(e) => setFormData({...formData, project_id: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, project_id: e.target.value })}
               >
                 <option value="">Sélectionner un projet</option>
-                {projects.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
+                {projects.map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}
               </select>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Montant Total ($)</label>
+              <label className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">Montant total</label>
               <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                <input required type="number" className={inputClass} placeholder="0" value={formData.amount_total} onChange={(e) => setFormData({...formData, amount_total: e.target.value})} />
+                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+                <input required type="number" className={inputClass} placeholder="0" value={formData.amount_total} onChange={(e) => setFormData({ ...formData, amount_total: e.target.value })} />
               </div>
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Déjà Payé ($)</label>
+              <label className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">Déjà payé</label>
               <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-green-400" size={16} />
-                <input type="number" className={inputClass} placeholder="0" value={formData.amount_paid} onChange={(e) => setFormData({...formData, amount_paid: e.target.value})} />
+                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-emerald-300" size={16} />
+                <input type="number" className={inputClass} placeholder="0" value={formData.amount_paid} onChange={(e) => setFormData({ ...formData, amount_paid: e.target.value })} />
               </div>
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Échéance</label>
+            <label className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">Échéance</label>
             <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-              <input required type="date" className={inputClass} value={formData.due_date} onChange={(e) => setFormData({...formData, due_date: e.target.value})} />
+              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+              <input required type="date" className={inputClass} value={formData.due_date} onChange={(e) => setFormData({ ...formData, due_date: e.target.value })} />
             </div>
           </div>
 
-          <div className="pt-3 flex gap-3">
-            <button type="button" onClick={onClose} className="flex-1 py-2.5 bg-gray-100 text-gray-600 font-semibold rounded-xl hover:bg-gray-200 transition-colors text-sm">Annuler</button>
-            <button type="submit" disabled={loading} className="flex-[2] py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 disabled:opacity-50 transition-all shadow-sm text-sm">
-              {loading ? 'Création...' : 'Émettre la Facture'}
+          <div className="rounded-2xl border border-cyan-500/10 bg-cyan-500/5 p-4 text-sm text-slate-300">
+            <div className="flex items-center gap-2 text-cyan-300">
+              <Sparkles size={16} /> Suivi clair
+            </div>
+            <p className="mt-2 leading-relaxed">Une facture bien liée au projet permet de garder la visibilité financière sans confusion.</p>
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <button type="button" onClick={onClose} className="flex-1 rounded-2xl border border-white/10 bg-white/5 py-3 text-sm font-semibold text-slate-300 transition hover:bg-white/10">
+              Annuler
+            </button>
+            <button type="submit" disabled={loading} className="flex-[2] rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-600 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:opacity-95 disabled:opacity-50">
+              {loading ? 'Création...' : 'Émettre la facture'}
             </button>
           </div>
         </form>
