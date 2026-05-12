@@ -41,19 +41,19 @@ interface NavItemProps {
 const NavItem = ({ href, label, sublabel, icon, active, badge }: NavItemProps) => (
   <Link 
     href={href}
-    className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all ${
+    className={`group flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all ${
       active 
-        ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' 
-        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+        ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-400/30' 
+        : 'text-slate-400 hover:text-white hover:bg-white/5'
     }`}
   >
-    <div className={active ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'}>
+    <div className={active ? 'text-white' : 'text-slate-500 group-hover:text-slate-200'}>
       {icon}
     </div>
     <div className="flex flex-col flex-1">
       <span className="text-sm font-semibold leading-none">{label}</span>
       {sublabel && (
-        <span className={`text-[9px] mt-1 font-bold uppercase tracking-wider ${active ? 'text-blue-100/70' : 'text-gray-400'}`}>
+        <span className={`text-[9px] mt-1 font-bold uppercase tracking-wider ${active ? 'text-blue-100/70' : 'text-slate-500'}`}>
           {sublabel}
         </span>
       )}
@@ -74,8 +74,8 @@ export default function Sidebar() {
 
   if (!profile) {
     return (
-      <aside className="w-64 bg-white border-r border-gray-200 h-screen flex items-center justify-center sticky top-0">
-        <Loader2 className="w-6 h-6 text-blue-600 animate-spin" />
+      <aside className="w-72 bg-slate-950/80 border-r border-white/10 h-screen flex items-center justify-center sticky top-0">
+        <Loader2 className="w-6 h-6 text-cyan-300 animate-spin" />
       </aside>
     );
   }
@@ -107,17 +107,20 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 h-screen flex flex-col p-5 sticky top-0">
-      <div className="mb-8 px-3 flex items-center gap-3">
-        <img src="/icon-logo.png" alt="Opays Logo" className="w-9 h-9 rounded-xl shadow-sm" />
+    <aside className="w-72 bg-slate-950/80 backdrop-blur-2xl border-r border-white/10 h-screen flex flex-col p-5 sticky top-0 text-slate-200 shadow-2xl shadow-black/30">
+      <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-cyan-400/20 to-transparent pointer-events-none" />
+      <div className="mb-8 px-3 flex items-center gap-3 relative">
+        <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600 shadow-lg shadow-cyan-500/20 flex items-center justify-center text-sm font-black text-white">
+          O
+        </div>
         <div>
-          <h2 className="text-lg font-bold tracking-tight text-gray-900">OPAYS <span className="text-gray-400">HQ</span></h2>
-          <p className="text-[9px] text-gray-400 uppercase tracking-widest font-semibold">Espace de travail</p>
+          <h2 className="text-lg font-bold tracking-tight text-white">OPAYS <span className="text-slate-400">HQ</span></h2>
+          <p className="text-[9px] text-slate-500 uppercase tracking-[0.32em] font-semibold">Enterprise OS</p>
         </div>
       </div>
 
-      <nav className="flex-1 space-y-1 overflow-y-auto custom-scrollbar">
-        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest px-4 mb-2">Général</p>
+      <nav className="flex-1 space-y-1 overflow-y-auto custom-scrollbar pr-1">
+        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.32em] px-4 mb-2">Général</p>
         {commonLinks.filter(l => l.show).map((link) => (
           <NavItem 
             key={link.href} 
@@ -127,7 +130,7 @@ export default function Sidebar() {
         ))}
 
         <div className="pt-5">
-          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest px-4 mb-2">
+          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.32em] px-4 mb-2">
             {isAssociate ? 'Gestion Associé' : 'Espace Employé'}
           </p>
           {(isAssociate ? associateLinks : employeeLinks).filter(l => l.show).map((link) => (
@@ -142,7 +145,7 @@ export default function Sidebar() {
         {/* Pilotage section (visible for managers/CEO) */}
         {isManager && (
           <div className="pt-5">
-            <p className="text-[10px] text-blue-500 font-bold uppercase tracking-widest px-4 mb-2">Pilotage</p>
+            <p className="text-[10px] text-cyan-400 font-bold uppercase tracking-[0.32em] px-4 mb-2">Pilotage</p>
             <NavItem 
               href="/dashboard/settings" 
               label="Paramètres" 
@@ -154,14 +157,14 @@ export default function Sidebar() {
       </nav>
 
       {/* User card + notifications + logout */}
-      <div className="pt-4 border-t border-gray-100 space-y-2">
+      <div className="pt-4 border-t border-white/10 space-y-2">
         {/* Notification bar */}
         <Link 
           href="/dashboard/tasks"
           className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-all ${
             unreadCount > 0 
-              ? 'bg-red-50 text-red-600 hover:bg-red-100' 
-              : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'
+              ? 'bg-red-500/10 text-red-300 hover:bg-red-500/15' 
+              : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
           }`}
         >
           <Bell size={16} />
@@ -178,26 +181,26 @@ export default function Sidebar() {
           href="/dashboard/profile"
           className={`block p-3 rounded-xl border transition-all ${
             pathname === '/dashboard/profile'
-              ? 'bg-blue-50 border-blue-200'
-              : 'bg-gray-50 border-gray-100 hover:bg-gray-100 hover:border-gray-200'
+              ? 'bg-white/10 border-cyan-400/30'
+              : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20'
           }`}
         >
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-sm">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-sm">
               {profile.full_name?.charAt(0) || 'U'}
             </div>
             <div className="flex-1 overflow-hidden">
-              <p className="text-xs font-semibold text-gray-900 truncate">{profile.full_name || 'Utilisateur'}</p>
-              <p className="text-[10px] text-gray-400 truncate">{profile.role || 'Rôle'}</p>
+              <p className="text-xs font-semibold text-white truncate">{profile.full_name || 'Utilisateur'}</p>
+              <p className="text-[10px] text-slate-400 truncate">{profile.role || 'Rôle'}</p>
             </div>
-            <ChevronRight size={14} className="text-gray-300" />
+            <ChevronRight size={14} className="text-slate-500" />
           </div>
         </Link>
 
         {/* Logout button */}
         <button
           onClick={logout}
-          className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all group"
+          className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-slate-400 hover:text-red-300 hover:bg-red-500/10 transition-all group"
         >
           <LogOut size={16} />
           <span className="text-xs font-semibold">Déconnexion</span>

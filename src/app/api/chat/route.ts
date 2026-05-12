@@ -3,108 +3,265 @@ import { streamText, tool } from 'ai';
 import { z } from 'zod';
 import { createServerSupabaseClient } from '@/lib/supabase-server';
 
-// Config OpenRouter
 const openrouter = createOpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
   apiKey: process.env.OPENROUTER_API_KEY,
 });
 
+const requestSchema = z.object({
+  messages: z.array(z.any()).default([]),
+  userProfile: z
+    .object({
+      id: z.string().optional(),
+      full_name: z.string().optional(),
+      role: z.string().optional(),
+      type: z.string().optional(),
+    })
+    .passthrough()
+    .optional(),
+  modelId: z.string().optional(),
+});
+
+function buildSystemPrompt(userProfile?: { full_name?: string; role?: string; type?: string }) {
+  return `Tu es Antigravity OS, le système nerveux de OPAYS HQ.
+
+Règles de comportement:
+- Réponds comme un directeur d'exploitation et un copilote stratégique.
+- Priorise la clarté opérationnelle, les chiffres, les décisions et les actions suivantes.
+- Quand tu utilises un outil, explique brièvement pourquoi et ce que le résultat change.
+- Si les données sont insuffisantes, dis-le explicitement et propose la prochaine vérification.
+- Ne fabrique jamais de chiffres.
+
+Contexte utilisateur:
+- Nom: ${userProfile?.full_name || 'Inconnu'}
+- Rôle: ${userProfile?.role || 'Inconnu'}
+- Type: ${userProfile?.type || 'Inconnu'}
+
+Objectif:
+- Servir de Command Center pour une équipe de 5 personnes.
+- Relier les décisions aux tables tasks, activity_log et treasury_logs.
+- Générer des actions traçables plutôt que des réponses vagues.`;
+}
+
 export async function POST(req: Request) {
-  const { messages, userProfile, modelId } = await req.json();
+  if (!process.env.OPENROUTER_API_KEY) {
+    return Response.json({ error: 'OPENROUTER_API_KEY is missing' }, { status: 500 });
+  }
+
+  const body = requestSchema.safeParse(await req.json());
+  if (!body.success) {
+    return Response.json({ error: 'Invalid chat payload' }, { status: 400 });
+  }
+
+  const { messages, userProfile, modelId } = body.data;
   const supabase = await createServerSupabaseClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  }
 
   const selectedModel = modelId || 'deepseek/deepseek-chat';
 
   const result = await streamText({
     model: openrouter(selectedModel),
-    system: `Tu es Antigravity OS, l'IA de pilotage de OPAYS HQ.
-    Utilisateur actuel: ${userProfile?.full_name} (${userProfile?.role}).
-    
-    Tu es un expert en gestion d'entreprise. Tu as accès à la base de données réelle.
-    Lorsque tu analyses des données (activité, finances, connaissance), sois précis et donne des chiffres si possible.`,
+    system: buildSystemPrompt(userProfile),
     messages,
+    temperature: 0.2,
     tools: {
-      // SKILL 1: Gestion des Tâches (existant)
       create_task: tool({
-        description: 'Crée une nouvelle tâche',
+        description: "Crée une nouvelle tâche et consigne l'action dans activity_log.",
         parameters: z.object({
-          title: z.string(),
+          title: z.string().min(3),
           description: z.string().optional(),
           priority: z.enum(['LOW', 'MEDIUM', 'HIGH', 'URGENT']).default('MEDIUM'),
           assigned_to_name: z.string().optional(),
+          project_id: z.string().uuid().optional(),
         }),
-        execute: async (params: any) => {
-          let assigned_to_id = null;
+        execute: async (params) => {
+          let assigned_to_id: string | null = null;
+
           if (params.assigned_to_name) {
-            const { data } = await supabase.from('profiles').select('id').ilike('full_name', `%${params.assigned_to_name}%`).single();
-            assigned_to_id = data?.id;
+            const { data: assignee } = await supabase
+              .from('profiles')
+              .select('id, full_name')
+              .ilike('full_name', `%${params.assigned_to_name}%`)
+              .limit(1)
+              .maybeSingle();
+
+            assigned_to_id = assignee?.id ?? null;
           }
-          const { data, error } = await supabase.from('tasks').insert({
-            title: params.title,
-            description: params.description,
-            priority: params.priority,
-            assigned_to: assigned_to_id,
-            status: 'TODO'
-          }).select().single();
-          return error ? { error: error.message } : { success: true, task: data };
+
+          const { data: task, error: taskError } = await supabase
+            .from('tasks')
+            .insert({
+              title: params.title,
+              description: params.description,
+              priority: params.priority,
+              assigned_to: assigned_to_id,
+              project_id: params.project_id ?? null,
+              status: 'TODO',
+              created_by: user.id,
+            })
+            .select('*')
+            .single();
+
+          if (taskError || !task) {
+            return { error: taskError?.message || 'Task creation failed' };
+          }
+
+          await supabase.from('activity_log').insert({
+            actor_id: user.id,
+            action: 'CREATED',
+            entity_type: 'TASK',
+            entity_id: task.id,
+            entity_title: task.title,
+            details: {
+              source: 'ai',
+              priority: task.priority,
+              assigned_to: assigned_to_id,
+            },
+          });
+
+          return { success: true, task };
         },
       }),
 
-      // SKILL 2: Analyse de l'Activité
-      get_activity_report: tool({
-        description: 'Récupère les dernières activités de l\'entreprise',
+      update_task_status: tool({
+        description: 'Met à jour le statut d une tâche et écrit un événement dans activity_log.',
         parameters: z.object({
-          limit: z.number().default(10),
+          task_id: z.string().uuid(),
+          status: z.enum(['TODO', 'DOING', 'DONE']),
+        }),
+        execute: async ({ task_id, status }) => {
+          const { data: task, error } = await supabase
+            .from('tasks')
+            .update({ status })
+            .eq('id', task_id)
+            .select('id, title, status')
+            .single();
+
+          if (error || !task) {
+            return { error: error?.message || 'Task update failed' };
+          }
+
+          await supabase.from('activity_log').insert({
+            actor_id: user.id,
+            action: 'STATUS_CHANGED',
+            entity_type: 'TASK',
+            entity_id: task.id,
+            entity_title: task.title,
+            details: {
+              source: 'ai',
+              status,
+            },
+          });
+
+          return { success: true, task };
+        },
+      }),
+
+      get_activity_report: tool({
+        description: 'Récupère les dernières activités de l entreprise avec le nom de l auteur quand possible.',
+        parameters: z.object({
+          limit: z.number().int().min(1).max(25).default(10),
         }),
         execute: async ({ limit }) => {
           const { data, error } = await supabase
             .from('activity_log')
-            .select('created_at, action, entity_type, entity_title, actor_id')
+            .select('created_at, action, entity_type, entity_title, actor_id, details')
             .order('created_at', { ascending: false })
             .limit(limit);
-          
+
           if (error) return { error: error.message };
-          return { activities: data };
+
+          const actorIds = [...new Set((data || []).map((entry) => entry.actor_id).filter(Boolean))];
+          const { data: actors } = actorIds.length
+            ? await supabase.from('profiles').select('id, full_name, role').in('id', actorIds)
+            : { data: [] };
+
+          const actorMap = new Map((actors || []).map((actor) => [actor.id, actor]));
+
+          return {
+            activities: (data || []).map((entry) => ({
+              ...entry,
+              actor: actorMap.get(entry.actor_id) || null,
+            })),
+          };
         },
       }),
 
-      // SKILL 3: Recherche dans la base de connaissance
       search_knowledge: tool({
-        description: 'Cherche des informations dans les articles de méthode et guides',
+        description: 'Cherche des informations dans les articles de méthode et guides.',
         parameters: z.object({
-          query: z.string(),
+          query: z.string().min(2),
         }),
         execute: async ({ query }) => {
           const { data, error } = await supabase
             .from('knowledge_articles')
-            .select('title, content, category')
+            .select('title, content, category, target_role')
             .or(`title.ilike.%${query}%,content.ilike.%${query}%`)
             .limit(3);
-          
+
           if (error) return { error: error.message };
           return { articles: data };
         },
       }),
 
-      // SKILL 4: Rapport Financier
       get_financial_snapshot: tool({
-        description: 'Récupère un résumé de la trésorerie et des factures en attente',
+        description: 'Récupère un résumé de la trésorerie, des factures et du solde net.',
         parameters: z.object({}),
         execute: async () => {
-          // 1. Récupérer les 30 derniers jours de treasury_logs
-          const { data: logs } = await supabase.from('treasury_logs').select('type, amount');
-          // 2. Récupérer les factures PENDING
-          const { data: billing } = await supabase.from('project_billing').select('amount_total, amount_paid').eq('status', 'PENDING');
-          
-          const income = logs?.filter(l => l.type === 'INCOME').reduce((acc, curr) => acc + curr.amount, 0) || 0;
-          const expenses = logs?.filter(l => l.type === 'EXPENSE').reduce((acc, curr) => acc + curr.amount, 0) || 0;
-          const pending = billing?.reduce((acc, curr) => acc + (curr.amount_total - curr.amount_paid), 0) || 0;
+          const { data: logs, error: logsError } = await supabase
+            .from('treasury_logs')
+            .select('type, amount, category, description, date')
+            .order('date', { ascending: false })
+            .limit(100);
 
-          return { 
+          if (logsError) return { error: logsError.message };
+
+          const { data: billing, error: billingError } = await supabase
+            .from('project_billing')
+            .select('amount_total, amount_paid, status')
+            .eq('status', 'PENDING');
+
+          if (billingError) return { error: billingError.message };
+
+          const income = logs?.filter((log) => log.type === 'INCOME').reduce((acc, curr) => acc + Number(curr.amount || 0), 0) || 0;
+          const expenses = logs?.filter((log) => log.type === 'EXPENSE').reduce((acc, curr) => acc + Number(curr.amount || 0), 0) || 0;
+          const pendingInvoices = billing?.reduce((acc, curr) => acc + Number(curr.amount_total || 0) - Number(curr.amount_paid || 0), 0) || 0;
+
+          return {
             balance: income - expenses,
             total_income: income,
             total_expenses: expenses,
-            pending_invoices_amount: pending
+            pending_invoices_amount: pendingInvoices,
+            recent_entries: logs?.slice(0, 5) || [],
+          };
+        },
+      }),
+
+      get_command_center_snapshot: tool({
+        description: 'Retourne un état consolidé des tâches, activités et trésorerie pour le Command Center.',
+        parameters: z.object({}),
+        execute: async () => {
+          const [
+            { data: tasks },
+            { data: activities },
+            { data: logs },
+          ] = await Promise.all([
+            supabase.from('tasks').select('id, title, status, priority, due_date').order('created_at', { ascending: false }).limit(5),
+            supabase.from('activity_log').select('created_at, action, entity_type, entity_title').order('created_at', { ascending: false }).limit(5),
+            supabase.from('treasury_logs').select('type, amount, category, description').order('date', { ascending: false }).limit(5),
+          ]);
+
+          return {
+            tasks,
+            activities,
+            treasury: logs,
           };
         },
       }),

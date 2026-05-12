@@ -1,16 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@/lib/supabase';
-import { 
-  CheckCircle2, 
-  PlusCircle, 
-  DollarSign, 
-  UserPlus, 
-  MessageSquare,
-  Clock
-} from 'lucide-react';
 import Link from 'next/link';
+import { createClient } from '@/lib/supabase';
+import { CheckCircle2, Clock, DollarSign, MessageSquare, PlusCircle, UserPlus } from 'lucide-react';
 
 export default function ActivityFeed() {
   const [activities, setActivities] = useState<any[]>([]);
@@ -19,50 +12,51 @@ export default function ActivityFeed() {
 
   const fetchActivities = async () => {
     setLoading(true);
-    
-    // Aggregating recent events from different tables with real IDs
+
     const { data: leads } = await supabase.from('leads').select('id, company_name, created_at, status').order('created_at', { ascending: false }).limit(3);
     const { data: tasks } = await supabase.from('tasks').select('id, project_id, title, status, updated_at').order('updated_at', { ascending: false }).limit(3);
     const { data: projects } = await supabase.from('projects').select('id, title, created_at').order('created_at', { ascending: false }).limit(2);
     const { data: billing } = await supabase.from('project_billing').select('id, project_id, amount_paid, projects(id, title), updated_at').order('updated_at', { ascending: false }).limit(2);
 
     const combined = [
-      ...(leads || []).map(l => ({ 
-        id: l.id,
-        type: 'LEAD', 
+      ...(leads || []).map((lead) => ({
+        id: lead.id,
+        type: 'LEAD',
         href: '/dashboard/leads',
-        title: `Nouveau lead : ${l.company_name}`, 
-        time: l.created_at,
-        icon: <UserPlus size={14} className="text-blue-500" />
+        title: `Nouveau lead : ${lead.company_name}`,
+        time: lead.created_at,
+        icon: <UserPlus size={14} className="text-cyan-300" />,
       })),
-      ...(tasks || []).map(t => ({ 
-        id: t.id,
-        type: 'TASK', 
-        href: t.project_id ? `/dashboard/projects/${t.project_id}` : '/dashboard/tasks',
-        title: t.status === 'DONE' ? `Tâche terminée : ${t.title}` : `Tâche modifiée : ${t.title}`, 
-        time: t.updated_at,
-        icon: t.status === 'DONE' ? <CheckCircle2 size={14} className="text-green-500" /> : <Clock size={14} className="text-gray-400" />
+      ...(tasks || []).map((task) => ({
+        id: task.id,
+        type: 'TASK',
+        href: task.project_id ? `/dashboard/projects/${task.project_id}` : '/dashboard/tasks',
+        title: task.status === 'DONE' ? `Tâche terminée : ${task.title}` : `Tâche modifiée : ${task.title}`,
+        time: task.updated_at,
+        icon: task.status === 'DONE' ? <CheckCircle2 size={14} className="text-emerald-300" /> : <Clock size={14} className="text-slate-400" />,
       })),
-      ...(projects || []).map(p => ({ 
-        id: p.id,
-        type: 'PROJECT', 
-        href: `/dashboard/projects/${p.id}`,
-        title: `Nouveau projet lancé : ${p.title}`, 
-        time: p.created_at,
-        icon: <PlusCircle size={14} className="text-purple-500" />
+      ...(projects || []).map((project) => ({
+        id: project.id,
+        type: 'PROJECT',
+        href: `/dashboard/projects/${project.id}`,
+        title: `Nouveau projet lancé : ${project.title}`,
+        time: project.created_at,
+        icon: <PlusCircle size={14} className="text-fuchsia-300" />,
       })),
-      ...(billing || []).map(b => {
-        const p = Array.isArray(b.projects) ? b.projects[0] : b.projects;
-        return { 
-          id: b.id,
-          type: 'BILLING', 
+      ...(billing || []).map((entry) => {
+        const p = Array.isArray(entry.projects) ? entry.projects[0] : entry.projects;
+        return {
+          id: entry.id,
+          type: 'BILLING',
           href: p?.id ? `/dashboard/projects/${p.id}` : '/dashboard/contracts',
-          title: `Paiement reçu : ${b.amount_paid}$ (${p?.title || 'Projet'})`, 
-          time: b.updated_at,
-          icon: <DollarSign size={14} className="text-green-600" />
+          title: `Paiement reçu : ${entry.amount_paid}$ (${p?.title || 'Projet'})`,
+          time: entry.updated_at,
+          icon: <DollarSign size={14} className="text-emerald-300" />,
         };
-      })
-    ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 8);
+      }),
+    ]
+      .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
+      .slice(0, 8);
 
     setActivities(combined);
     setLoading(false);
@@ -73,28 +67,22 @@ export default function ActivityFeed() {
   }, []);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-      <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
-        <MessageSquare size={14} /> Flux d'Activité Global
+    <div className="rounded-3xl border border-white/10 bg-slate-950/55 p-6 text-slate-100 shadow-2xl shadow-black/20 backdrop-blur-xl">
+      <h3 className="mb-6 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-slate-500">
+        <MessageSquare size={14} /> Flux d'activité global
       </h3>
-      
+
       <div className="space-y-6">
-        {activities.map((act, i) => (
-          <Link 
-            key={i} 
-            href={act.href}
-            className="flex gap-4 relative group"
-          >
-            {i !== activities.length - 1 && (
-              <div className="absolute left-[7px] top-[24px] bottom-[-24px] w-[1px] bg-gray-100" />
-            )}
-            <div className="w-4 h-4 rounded-full bg-gray-50 flex items-center justify-center mt-1 z-10 group-hover:bg-blue-50 transition-colors">
-              {act.icon}
+        {activities.map((activity, index) => (
+          <Link key={activity.id} href={activity.href} className="group relative flex gap-4">
+            {index !== activities.length - 1 && <div className="absolute left-[7px] top-[24px] bottom-[-24px] w-px bg-white/10" />}
+            <div className="z-10 mt-1 flex h-4 w-4 items-center justify-center rounded-full border border-white/10 bg-white/5 transition group-hover:bg-cyan-400/15">
+              {activity.icon}
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">{act.title}</p>
-              <p className="text-[10px] text-gray-400 mt-1 uppercase tracking-wide">
-                {new Date(act.time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} • {new Date(act.time).toLocaleDateString('fr-FR')}
+              <p className="text-sm font-semibold leading-tight text-white transition group-hover:text-cyan-200">{activity.title}</p>
+              <p className="mt-1 text-[10px] uppercase tracking-[0.25em] text-slate-500">
+                {new Date(activity.time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} • {new Date(activity.time).toLocaleDateString('fr-FR')}
               </p>
             </div>
           </Link>
@@ -102,21 +90,19 @@ export default function ActivityFeed() {
 
         {loading && (
           <div className="space-y-4">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="flex gap-4 animate-pulse">
-                <div className="w-4 h-4 bg-gray-100 rounded-full" />
+            {[1, 2, 3].map((item) => (
+              <div key={item} className="flex gap-4 animate-pulse">
+                <div className="h-4 w-4 rounded-full bg-white/10" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-3 bg-gray-50 rounded w-3/4" />
-                  <div className="h-2 bg-gray-50 rounded w-1/2" />
+                  <div className="h-3 w-3/4 rounded bg-white/10" />
+                  <div className="h-2 w-1/2 rounded bg-white/10" />
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        {!loading && !activities.length && (
-          <p className="text-xs text-gray-400 italic text-center py-4">Aucune activité récente.</p>
-        )}
+        {!loading && !activities.length && <p className="py-4 text-center text-xs italic text-slate-500">Aucune activité récente.</p>}
       </div>
     </div>
   );

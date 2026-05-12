@@ -41,143 +41,155 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="p-8 space-y-8">
-      <header>
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Mon Compte</h1>
-        <p className="text-gray-500 mt-1 text-sm">Gérez votre profil, vos notifications et votre sécurité.</p>
-      </header>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Profil */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-5">
-            <div className="flex items-center gap-3">
-              <User className="text-blue-600" size={20} />
-              <h2 className="text-lg font-bold text-gray-900">Mon Profil</h2>
-            </div>
-
-            {/* Avatar + infos */}
-            <div className="flex items-center gap-5 p-4 bg-gray-50 rounded-xl">
-              <div className="w-16 h-16 rounded-full bg-blue-600 text-white flex items-center justify-center text-2xl font-bold shadow-lg">
-                {fullName?.charAt(0) || '?'}
-              </div>
-              <div>
-                <p className="text-lg font-bold text-gray-900">{fullName || 'Utilisateur'}</p>
-                <div className="flex items-center gap-3 mt-1">
-                  <span className="px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-bold rounded-md uppercase tracking-widest">
-                    {profile?.role || 'N/A'}
-                  </span>
-                  <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] font-bold rounded-md uppercase tracking-widest">
-                    {profile?.type || 'N/A'}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Nom complet</label>
-                <input 
-                  type="text" 
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 transition-all" 
-                  placeholder="Votre nom" 
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</label>
-                <div className="flex items-center gap-2">
-                  <Mail size={14} className="text-gray-400" />
-                  <input 
-                    type="email" 
-                    disabled 
-                    value={profile?.email || ''}
-                    className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-400 cursor-not-allowed" 
-                  />
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Téléphone</label>
-                <div className="flex items-center gap-2">
-                  <Phone size={14} className="text-gray-400" />
-                  <input 
-                    type="tel" 
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 transition-all" 
-                    placeholder="+243..." 
-                  />
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Rôle</label>
-                <div className="flex items-center gap-2">
-                  <Award size={14} className="text-gray-400" />
-                  <input type="text" disabled value={profile?.role || ''} className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-400 cursor-not-allowed" />
-                </div>
-              </div>
-            </div>
-            <button 
-              className="px-6 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition-all shadow-sm"
-              onClick={handleSave}
-            >
-              {saving ? 'Sauvegardé ✓' : 'Sauvegarder'}
-            </button>
+    <div className="relative min-h-full overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(34,211,238,0.12),_transparent_22%),radial-gradient(circle_at_top_right,_rgba(99,102,241,0.10),_transparent_18%),linear-gradient(180deg,_#050816_0%,_#090d19_100%)] px-6 py-8 text-slate-100 lg:px-8">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:56px_56px] opacity-15" />
+      <div className="relative mx-auto max-w-7xl space-y-8">
+        <header>
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-200">
+            <User size={12} /> Mon compte
           </div>
+          <h1 className="text-4xl font-semibold tracking-tight text-white lg:text-5xl">Profil & sécurité</h1>
+          <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-400">
+            Gérez votre identité, vos notifications et votre accès de façon simple et cohérente avec le reste du HQ.
+          </p>
+        </header>
 
-          {/* Notifications */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-5">
-            <div className="flex items-center gap-3">
-              <Bell className="text-orange-500" size={20} />
-              <h2 className="text-lg font-bold text-gray-900">Notifications</h2>
-            </div>
-            <div className="space-y-3">
-              {[
-                { label: 'Nouveau prospect assigné', desc: 'Recevoir un email quand un prospect vous est attribué' },
-                { label: 'Tâche assignée', desc: 'Être notifié des nouvelles tâches' },
-                { label: 'Mise à jour projet', desc: 'Changements de statut sur vos projets' },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">{item.label}</p>
-                    <p className="text-xs text-gray-400">{item.desc}</p>
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <div className="space-y-6 lg:col-span-2">
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl shadow-2xl shadow-black/20">
+              <div className="flex items-center gap-3">
+                <User className="text-cyan-300" size={20} />
+                <h2 className="text-lg font-semibold text-white">Mon profil</h2>
+              </div>
+
+              <div className="mt-5 flex items-center gap-5 rounded-3xl border border-white/10 bg-slate-950/55 p-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-cyan-400 to-blue-600 text-2xl font-bold text-white">
+                  {fullName?.charAt(0) || '?'}
+                </div>
+                <div>
+                  <p className="text-lg font-semibold text-white">{fullName || 'Utilisateur'}</p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-cyan-200">
+                      {profile?.role || 'N/A'}
+                    </span>
+                    <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-slate-400">
+                      {profile?.type || 'N/A'}
+                    </span>
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" defaultChecked className="sr-only peer" />
-                    <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
-                  </label>
                 </div>
-              ))}
+              </div>
+
+              <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Nom complet</label>
+                  <input
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-cyan-400/30"
+                    placeholder="Votre nom"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Email</label>
+                  <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3">
+                    <Mail size={14} className="text-slate-500" />
+                    <input
+                      type="email"
+                      disabled
+                      value={profile?.email || ''}
+                      className="w-full bg-transparent text-sm text-slate-400 outline-none cursor-not-allowed"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Téléphone</label>
+                  <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3">
+                    <Phone size={14} className="text-slate-500" />
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="w-full bg-transparent text-sm text-slate-100 outline-none placeholder:text-slate-500"
+                      placeholder="+243..."
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Rôle</label>
+                  <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3">
+                    <Award size={14} className="text-slate-500" />
+                    <input
+                      type="text"
+                      disabled
+                      value={profile?.role || ''}
+                      className="w-full bg-transparent text-sm text-slate-400 outline-none cursor-not-allowed"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <button
+                className="mt-6 rounded-2xl bg-cyan-500 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-400"
+                onClick={handleSave}
+              >
+                {saving ? 'Sauvegardé ✓' : 'Sauvegarder'}
+              </button>
+            </div>
+
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl shadow-2xl shadow-black/20">
+              <div className="flex items-center gap-3">
+                <Bell className="text-amber-300" size={20} />
+                <h2 className="text-lg font-semibold text-white">Notifications</h2>
+              </div>
+              <div className="mt-5 space-y-3">
+                {[
+                  { label: 'Nouveau prospect assigné', desc: 'Recevoir un email quand un prospect vous est attribué' },
+                  { label: 'Tâche assignée', desc: 'Être notifié des nouvelles tâches' },
+                  { label: 'Mise à jour projet', desc: 'Changements de statut sur vos projets' },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-950/55 p-4">
+                    <div>
+                      <p className="text-sm font-semibold text-white">{item.label}</p>
+                      <p className="mt-1 text-xs text-slate-400">{item.desc}</p>
+                    </div>
+                    <label className="relative inline-flex cursor-pointer items-center">
+                      <input type="checkbox" defaultChecked className="sr-only peer" />
+                      <div className="peer h-5 w-9 rounded-full bg-white/10 after:absolute after:left-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:bg-white after:transition-all peer-checked:bg-cyan-500 peer-checked:after:translate-x-full"></div>
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Colonne droite : Sécurité + Déconnexion */}
-        <div className="space-y-6">
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <Shield className="text-green-600" size={20} />
-              <h2 className="text-lg font-bold text-gray-900">Sécurité</h2>
+          <div className="space-y-6">
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl shadow-2xl shadow-black/20">
+              <div className="flex items-center gap-3">
+                <Shield className="text-emerald-300" size={20} />
+                <h2 className="text-lg font-semibold text-white">Sécurité</h2>
+              </div>
+              <div className="mt-4 space-y-3">
+                <button className="w-full rounded-2xl border border-white/10 bg-slate-950/55 p-4 text-left transition hover:bg-white/10">
+                  <p className="text-sm font-semibold text-white">Changer le mot de passe</p>
+                  <p className="mt-1 text-xs text-slate-400">Modifier votre mot de passe actuel</p>
+                </button>
+                <button className="w-full rounded-2xl border border-white/10 bg-slate-950/55 p-4 text-left transition hover:bg-white/10">
+                  <p className="text-sm font-semibold text-white">Vérification en 2 étapes</p>
+                  <p className="mt-1 text-xs text-slate-400">Non activée</p>
+                </button>
+              </div>
             </div>
-            <button className="w-full text-left p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all">
-              <p className="text-sm font-medium text-gray-900">Changer le mot de passe</p>
-              <p className="text-xs text-gray-400">Modifier votre mot de passe actuel</p>
-            </button>
-            <button className="w-full text-left p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all">
-              <p className="text-sm font-medium text-gray-900">Vérification en 2 étapes</p>
-              <p className="text-xs text-gray-400">Non activée</p>
-            </button>
-          </div>
 
-          <div className="bg-white border border-red-100 rounded-2xl p-6 space-y-4">
-            <h2 className="text-lg font-bold text-gray-900">Déconnexion</h2>
-            <button 
-              onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 py-3 bg-red-50 text-red-600 font-semibold text-sm rounded-xl hover:bg-red-100 transition-all"
-            >
-              <LogOut size={16} /> Se déconnecter
-            </button>
+            <div className="rounded-3xl border border-red-400/20 bg-red-400/10 p-6 backdrop-blur-xl shadow-2xl shadow-black/20">
+              <h2 className="text-lg font-semibold text-white">Déconnexion</h2>
+              <button
+                onClick={handleLogout}
+                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-red-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-red-400"
+              >
+                <LogOut size={16} /> Se déconnecter
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -1,184 +1,256 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { 
-  Terminal, 
-  Cpu, 
-  Activity, 
-  Box, 
-  Play, 
-  RefreshCcw, 
-  ShieldCheck, 
-  Clock, 
-  Layout, 
-  ChevronRight,
-  Database,
-  Globe,
-  Lock,
-  Zap,
-  Info
-} from 'lucide-react';
-import { createClient } from '@/lib/supabase';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { createClient } from '@/lib/supabase';
+import { Activity, ArrowRight, Box, Database, Globe, Layers3, Lock, Monitor, ShieldCheck, Terminal, Zap } from 'lucide-react';
+
+type ProjectRow = {
+  id: string;
+  title: string;
+  status: string;
+  tech_stack: string[] | null;
+};
+
+type TaskRow = {
+  title: string;
+  status: string;
+  updated_at: string;
+  projects?: { title: string } | { title: string }[] | null;
+};
 
 export default function WorkspacePage() {
-  const [logs, setLogs] = useState<string[]>([]);
-  const [isBuilding, setIsBuilding] = useState(false);
-  const [projects, setProjects] = useState<any[]>([]);
-  const supabase = createClient();
+  const [projects, setProjects] = useState<ProjectRow[]>([]);
+  const [tasks, setTasks] = useState<TaskRow[]>([]);
+  const [lastSync, setLastSync] = useState<string>('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     const fetchWorkspaceData = async () => {
-      const { data: proj } = await supabase.from('projects').select('id, title, status, tech_stack').limit(3);
-      if (proj) setProjects(proj);
+      setIsRefreshing(true);
 
-      const { data: taskLogs } = await supabase.from('tasks').select('title, status, updated_at, projects(title)').order('updated_at', { ascending: false }).limit(5);
-      
-      const realLogs = [
-        "[SYSTEM] Initialisation de l'environnement Studio...",
-        "[AUTH] Connexion Supabase établie.",
-        ...(taskLogs || []).map(t => {
-          const proj = Array.isArray(t.projects) ? t.projects[0] : t.projects;
-          return `[TASK] ${proj?.title || 'System'} : ${t.title} (${t.status})`;
-        }),
-        "[WORKSPACE] Prêt pour la livraison."
-      ];
-      setLogs(realLogs);
+      const [{ data: projectData }, { data: taskData }] = await Promise.all([
+        supabase.from('projects').select('id, title, status, tech_stack').order('created_at', { ascending: false }).limit(4),
+        supabase.from('tasks').select('title, status, updated_at, projects(title)').order('updated_at', { ascending: false }).limit(6),
+      ]);
+
+      setProjects((projectData || []) as ProjectRow[]);
+      setTasks((taskData || []) as TaskRow[]);
+      setLastSync(new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
+      setIsRefreshing(false);
     };
+
     fetchWorkspaceData();
-  }, []);
+  }, [supabase]);
 
-  const runBuild = () => {
-    setIsBuilding(true);
-    const newLog = `[BUILD] Lancement de la compilation v2.4.1 à ${new Date().toLocaleTimeString()}...`;
-    setLogs(prev => [...prev, newLog]);
-    
-    setTimeout(() => {
-      setLogs(prev => [...prev, "[BUILD] Optimisation des assets terminée.", "[BUILD] Déploiement vers Vercel Edge..."]);
-    }, 2000);
+  const activeTasks = tasks.filter((task) => task.status !== 'DONE').length;
 
-    setTimeout(() => {
-      setIsBuilding(false);
-      setLogs(prev => [...prev, "[SUCCESS] Build déployé avec succès sur production."]);
-    }, 5000);
+  const statusPill = (label: string, tone: 'emerald' | 'cyan' | 'slate') => {
+    const styles = {
+      emerald: 'border-emerald-400/20 bg-emerald-400/10 text-emerald-200',
+      cyan: 'border-cyan-400/20 bg-cyan-400/10 text-cyan-200',
+      slate: 'border-white/10 bg-white/5 text-slate-300',
+    } as const;
+
+    return (
+      <span className={`rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.28em] ${styles[tone]}`}>
+        {label}
+      </span>
+    );
   };
 
   return (
-    <div className="p-8 space-y-10 min-h-screen bg-gray-50/50">
-      {/* 🧭 Purpose Banner */}
-      <div className="bg-gradient-to-r from-gray-900 to-blue-900 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-12 opacity-10">
-          <Terminal size={120} />
-        </div>
-        <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/20 border border-blue-400/30 rounded-full text-blue-300 text-[10px] font-bold uppercase tracking-widest mb-4">
-            <Info size={12} /> Centre d'Exécution Technique
-          </div>
-          <h1 className="text-4xl font-bold mb-4 tracking-tight">Espace de Travail Ingénierie</h1>
-          <p className="text-blue-100/80 leading-relaxed">
-            Bienvenue dans la <strong>salle de contrôle technique</strong> d'OPAYS. C'est ici que vous pilotez le déploiement des solutions, surveillez la santé des serveurs et gérez la pile technologique de chaque projet client.
-          </p>
-        </div>
-      </div>
+    <div className="relative min-h-full overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(34,211,238,0.12),_transparent_24%),radial-gradient(circle_at_top_right,_rgba(99,102,241,0.10),_transparent_20%),linear-gradient(180deg,_#050816_0%,_#090d19_100%)] px-6 py-8 text-slate-100 lg:px-8">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:56px_56px] opacity-15" />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* 📟 Live Console */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-black rounded-2xl border border-zinc-800 shadow-2xl overflow-hidden flex flex-col h-[500px]">
-            <div className="p-4 bg-zinc-900 border-b border-zinc-800 flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <div className="flex gap-1.5 mr-2">
-                  <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/40" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/40" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/40" />
-                </div>
-                <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2">
-                  <Terminal size={12} /> Console de Production
-                </span>
-              </div>
-              <button 
-                onClick={runBuild}
-                disabled={isBuilding}
-                className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-2 disabled:opacity-50"
-              >
-                {isBuilding ? <RefreshCcw size={12} className="animate-spin" /> : <Play size={12} />}
-                {isBuilding ? 'Build en cours...' : 'Lancer un Build'}
-              </button>
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="relative space-y-8">
+        <header className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
+          <div className="max-w-3xl space-y-4">
+            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-200">
+              <Monitor size={12} /> Workspace
             </div>
-            <div className="flex-1 p-6 font-mono text-[11px] leading-relaxed overflow-y-auto space-y-1.5 scrollbar-thin scrollbar-thumb-zinc-800">
-              {logs.map((log, i) => (
-                <div key={i} className={`flex gap-3 ${log.includes('[SUCCESS]') ? 'text-green-400' : log.includes('[BUILD]') ? 'text-blue-400' : 'text-zinc-400'}`}>
-                  <span className="text-zinc-600">[{new Date().toLocaleTimeString()}]</span>
-                  <span>{log}</span>
-                </div>
-              ))}
-              {isBuilding && <div className="w-2 h-4 bg-blue-500 animate-pulse inline-block align-middle ml-2" />}
-            </div>
-          </div>
-        </div>
-
-        {/* 🛠️ Infrastructure Overview */}
-        <div className="space-y-6">
-          <div className="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm">
-            <h3 className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-6 flex items-center gap-2">
-              <Cpu size={14} /> État de l'Infrastructure
-            </h3>
-            <div className="space-y-4">
-              <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Globe size={18} className="text-blue-500" />
-                  <div>
-                    <p className="text-xs font-bold text-gray-900">Endpoints API</p>
-                    <p className="text-[10px] text-gray-500">Global Region</p>
-                  </div>
-                </div>
-                <span className="text-[10px] font-bold text-green-600 bg-green-100 px-2 py-0.5 rounded-full uppercase">Live</span>
-              </div>
-              <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Database size={18} className="text-purple-500" />
-                  <div>
-                    <p className="text-xs font-bold text-gray-900">Database Engine</p>
-                    <p className="text-[10px] text-gray-500">Supabase Cloud</p>
-                  </div>
-                </div>
-                <span className="text-[10px] font-bold text-green-600 bg-green-100 px-2 py-0.5 rounded-full uppercase">Optimal</span>
-              </div>
-              <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Lock size={18} className="text-orange-500" />
-                  <div>
-                    <p className="text-xs font-bold text-gray-900">Securité RLS</p>
-                    <p className="text-[10px] text-gray-500">Vérification auto</p>
-                  </div>
-                </div>
-                <ShieldCheck size={16} className="text-blue-500" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm">
-            <h3 className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-6 flex items-center gap-2">
-              <Box size={14} /> Monitoring Projets
-            </h3>
             <div className="space-y-3">
-              {projects.map(p => (
-                <Link key={p.id} href={`/dashboard/projects/${p.id}`} className="block p-4 bg-gray-50 hover:bg-blue-50 rounded-2xl border border-gray-100 hover:border-blue-100 transition-all group">
-                  <div className="flex justify-between items-center mb-2">
-                    <p className="text-xs font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{p.title}</p>
-                    <ChevronRight size={14} className="text-gray-300 group-hover:text-blue-500 transition-all" />
+              <h1 className="text-4xl font-semibold tracking-tight text-white lg:text-5xl">
+                Espace d'exécution technique
+              </h1>
+              <p className="max-w-2xl text-sm leading-7 text-slate-400">
+                Ce workspace remplace l'ancien faux terminal par un vrai tableau de bord d'ingénierie: projets actifs, tâches ouvertes, stack technique et état d'infrastructure.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 rounded-3xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-xl">
+            <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3 text-cyan-200">
+              <Terminal size={18} />
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.28em] text-slate-500">Console remplacée par</p>
+              <p className="text-sm font-semibold text-white">Flux de diagnostic et supervision</p>
+            </div>
+          </div>
+        </header>
+
+        <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {[
+            { label: 'Projets actifs', value: projects.length, icon: <Layers3 size={18} />, tone: 'cyan' as const },
+            { label: 'Tâches ouvertes', value: activeTasks, icon: <Activity size={18} />, tone: 'emerald' as const },
+            { label: 'Dernière sync', value: lastSync || 'En cours', icon: <Zap size={18} />, tone: 'slate' as const },
+            { label: 'RBAC / RLS', value: 'Actif', icon: <ShieldCheck size={18} />, tone: 'cyan' as const },
+          ].map((stat) => (
+            <div key={stat.label} className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl shadow-2xl shadow-black/20">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-slate-500">{stat.label}</p>
+                  <p className="mt-3 text-2xl font-semibold text-white">{stat.value}</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-3 text-slate-200">
+                  {stat.icon}
+                </div>
+              </div>
+            </div>
+          ))}
+        </section>
+
+        <section className="grid grid-cols-1 gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl shadow-2xl shadow-black/20">
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-white">Projets en cours</h2>
+                <p className="mt-1 text-xs uppercase tracking-[0.25em] text-slate-500">Surface de livraison</p>
+              </div>
+              <Link href="/dashboard/projects" className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:bg-white/10">
+                Voir tout <ArrowRight size={14} />
+              </Link>
+            </div>
+
+            <div className="space-y-3">
+              {projects.map((project) => (
+                <Link
+                  key={project.id}
+                  href={`/dashboard/projects/${project.id}`}
+                  className="group flex items-center justify-between rounded-2xl border border-white/10 bg-slate-950/55 px-4 py-4 transition hover:border-cyan-400/20 hover:bg-slate-950/85"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold text-white group-hover:text-cyan-200">{project.title}</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {project.tech_stack?.slice(0, 3).map((tech) => (
+                        <span key={tech} className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-slate-400">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-1">
-                    {p.tech_stack?.slice(0, 3).map((t: string) => (
-                      <span key={t} className="text-[8px] font-bold px-1.5 py-0.5 bg-white border border-gray-200 rounded-md text-gray-400 uppercase tracking-tighter">{t}</span>
-                    ))}
+                  <div className="ml-4 flex items-center gap-3">
+                    {statusPill(project.status, project.status === 'COMPLETED' ? 'emerald' : 'cyan')}
+                    <ArrowRight size={16} className="text-slate-500 transition group-hover:text-cyan-300" />
                   </div>
                 </Link>
               ))}
+
+              {projects.length === 0 && (
+                <div className="rounded-2xl border border-dashed border-white/10 px-6 py-12 text-center text-sm text-slate-500">
+                  Aucun projet détecté.
+                </div>
+              )}
             </div>
           </div>
-        </div>
-      </div>
+
+          <div className="space-y-6">
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl shadow-2xl shadow-black/20">
+              <div className="mb-5 flex items-center gap-3">
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-3 text-cyan-200">
+                  <Globe size={18} />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-white">Infrastructure</h3>
+                  <p className="text-xs uppercase tracking-[0.25em] text-slate-500">Santé du système</p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-950/55 px-4 py-4">
+                  <div className="flex items-center gap-3">
+                    <Globe size={18} className="text-cyan-300" />
+                    <div>
+                      <p className="text-sm font-semibold text-white">API / Edge</p>
+                      <p className="text-[10px] uppercase tracking-[0.24em] text-slate-500">Vercel / Next.js</p>
+                    </div>
+                  </div>
+                  {statusPill('Live', 'emerald')}
+                </div>
+                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-950/55 px-4 py-4">
+                  <div className="flex items-center gap-3">
+                    <Database size={18} className="text-violet-300" />
+                    <div>
+                      <p className="text-sm font-semibold text-white">Base de données</p>
+                      <p className="text-[10px] uppercase tracking-[0.24em] text-slate-500">Supabase + RLS</p>
+                    </div>
+                  </div>
+                  {statusPill('Secured', 'cyan')}
+                </div>
+                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-950/55 px-4 py-4">
+                  <div className="flex items-center gap-3">
+                    <Lock size={18} className="text-amber-300" />
+                    <div>
+                      <p className="text-sm font-semibold text-white">Permissions</p>
+                      <p className="text-[10px] uppercase tracking-[0.24em] text-slate-500">JSONB + RBAC</p>
+                    </div>
+                  </div>
+                  {statusPill('Active', 'slate')}
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-cyan-400/20 bg-cyan-400/10 p-6 backdrop-blur-xl shadow-2xl shadow-black/20">
+              <div className="flex items-start gap-3">
+                <div className="rounded-2xl border border-white/10 bg-white/10 p-3 text-white">
+                  <Box size={18} />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-base font-semibold text-white">À quoi servait le terminal ?</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-200/90">
+                    Il simulait des logs techniques, mais sans vrai signal d'exploitation. Je l'ai remplacé par une vue utile: projets, sync, infra et diagnostics réels.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl shadow-2xl shadow-black/20">
+          <div className="mb-5 flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Activité récente</h2>
+              <p className="mt-1 text-xs uppercase tracking-[0.25em] text-slate-500">Derniers changements sur les tâches</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3">
+            {tasks.map((task) => {
+              const project = Array.isArray(task.projects) ? task.projects[0] : task.projects;
+
+              return (
+                <div key={`${task.title}-${task.updated_at}`} className="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-950/55 px-4 py-4">
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold text-white">{task.title}</p>
+                    <p className="mt-1 text-sm text-slate-400">
+                      {project?.title || 'Sans projet'} • {new Date(task.updated_at).toLocaleDateString('fr-FR')}
+                    </p>
+                  </div>
+                  {statusPill(task.status, task.status === 'DONE' ? 'emerald' : 'slate')}
+                </div>
+              );
+            })}
+            {tasks.length === 0 && (
+              <div className="rounded-2xl border border-dashed border-white/10 px-6 py-12 text-center text-sm text-slate-500">
+                Aucune tâche récente.
+              </div>
+            )}
+          </div>
+        </section>
+      </motion.div>
     </div>
   );
 }

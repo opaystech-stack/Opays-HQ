@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { createClient } from '@/lib/supabase';
+import { canAccessModule } from '@/lib/rbac';
 
 export interface Profile {
   id: string;
@@ -59,43 +60,8 @@ export function ProfileProvider({
   const isSalesLead = profile?.role === 'SALES' || profile?.role === 'CEO';
 
   const checkAccess = useCallback((moduleId: string): boolean => {
-    if (!profile) return false;
-    const perms = profile.permissions || {};
-
-    // Explicit permission override from admin
-    if (perms[moduleId] !== undefined) return perms[moduleId];
-
-    // Default role-based access
-    switch (moduleId) {
-      case 'treasury':
-        return ['CEO', 'COO', 'ADMIN'].includes(profile.role) || !!perms.accounting;
-      case 'leads':
-        return isAssociate && ['CEO', 'SALES'].includes(profile.role);
-      case 'equity':
-        return isAssociate;
-      case 'hr':
-        return profile.type === 'EMPLOYEE' || ['CEO', 'COO', 'ADMIN'].includes(profile.role);
-      case 'workspace':
-        return ['CEO', 'CTO', 'ADMIN'].includes(profile.role);
-      case 'contracts':
-      case 'billing':
-        return ['CEO', 'COO', 'ADMIN'].includes(profile.role);
-      case 'labs':
-        return ['CEO', 'CTO'].includes(profile.role);
-      case 'coordination':
-        return ['CEO', 'SALES'].includes(profile.role);
-      case 'brand':
-        return isAssociate || isSalesLead;
-      case 'studio':
-        return ['CEO', 'SALES'].includes(profile.role);
-      case 'settings':
-        return isManager;
-      case 'admin':
-        return isCEO;
-      default:
-        return true;
-    }
-  }, [profile, isAssociate, isManager, isCEO, isSalesLead]);
+    return canAccessModule(profile, moduleId);
+  }, [profile]);
 
   const refreshProfile = useCallback(async () => {
     setLoading(true);

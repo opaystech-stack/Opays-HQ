@@ -1,16 +1,14 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server';
 import { redirect } from 'next/navigation';
-import { ShieldAlert, UserPlus, FileUp, Users, Lock } from 'lucide-react';
+import { FileUp, Lock, Shield, UserPlus, Users } from 'lucide-react';
 
 export default async function AdminPage() {
   const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user?.id)
-    .single();
+  const { data: profile } = await supabase.from('profiles').select('*').eq('id', user?.id).single();
 
   if (profile?.role !== 'CEO' && !profile?.is_admin) {
     redirect('/dashboard');
@@ -20,105 +18,88 @@ export default async function AdminPage() {
   const { data: docs } = await supabase.from('global_documents').select('*');
 
   return (
-    <div className="p-8 space-y-10">
-      <header>
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-50 border border-red-200 rounded-full text-red-600 text-[10px] font-bold uppercase tracking-widest mb-3">
-          <Lock size={12} /> Espace Direction
-        </div>
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Gestion de l'équipe</h1>
-        <p className="text-gray-500 mt-1 text-sm">Gérez les accès, les membres et les documents importants.</p>
-      </header>
+    <div className="relative min-h-full overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(34,211,238,0.12),_transparent_22%),radial-gradient(circle_at_top_right,_rgba(99,102,241,0.10),_transparent_18%),linear-gradient(180deg,_#050816_0%,_#090d19_100%)] px-6 py-8 text-slate-100 lg:px-8">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:56px_56px] opacity-15" />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Invitations */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-8 space-y-6">
-          <div className="flex items-center gap-3">
-            <UserPlus className="text-blue-600" size={22} />
-            <h2 className="text-lg font-bold text-gray-900">Inviter un Membre</h2>
+      <div className="relative space-y-8">
+        <header>
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-red-400/20 bg-red-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.3em] text-red-200">
+            <Lock size={12} /> Direction
           </div>
-          <form className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</label>
-                <input type="email" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10" placeholder="email@opays.tech" />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Rôle</label>
-                <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500">
+          <h1 className="text-4xl font-semibold tracking-tight text-white lg:text-5xl">Gestion de l'équipe</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
+            Espace réservé au CEO et aux administrateurs pour gérer les accès, les membres et les documents confidentiels.
+          </p>
+        </header>
+
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl shadow-2xl shadow-black/20">
+            <div className="flex items-center gap-3">
+              <UserPlus className="text-cyan-300" size={22} />
+              <h2 className="text-lg font-semibold text-white">Inviter un membre</h2>
+            </div>
+            <form className="mt-6 space-y-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <input className="rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-cyan-400/30" type="email" placeholder="email@opays.tech" />
+                <select className="rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 outline-none focus:border-cyan-400/30">
                   <option value="ENGINEER">Ingénieur (Labs)</option>
                   <option value="SALES">Sales (Studio)</option>
                   <option value="CTO">CTO</option>
                   <option value="COO">COO</option>
                   <option value="INVESTOR">Investisseur</option>
                 </select>
+                <input className="rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-cyan-400/30" type="number" placeholder="Equity (%)" />
+                <input className="rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-cyan-400/30" type="number" placeholder="Salaire ($)" />
               </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Equity (%)</label>
-                <input type="number" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10" placeholder="0" />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Salaire ($)</label>
-                <input type="number" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10" placeholder="0" />
-              </div>
-            </div>
-            <button className="w-full py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all shadow-sm">
-              Générer le lien d'invitation
-            </button>
-          </form>
-        </div>
-
-        {/* Documents */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-8 space-y-6">
-          <div className="flex items-center gap-3">
-            <FileUp className="text-purple-600" size={22} />
-            <h2 className="text-lg font-bold text-gray-900">Document Confidentiel</h2>
+              <button className="w-full rounded-2xl bg-cyan-500 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-400">
+                Générer le lien d'invitation
+              </button>
+            </form>
           </div>
-          <form className="space-y-4">
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Titre du document</label>
-              <input type="text" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500" placeholder="ex: Stratégie 2026" />
+
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl shadow-2xl shadow-black/20">
+            <div className="flex items-center gap-3">
+              <FileUp className="text-violet-300" size={22} />
+              <h2 className="text-lg font-semibold text-white">Document confidentiel</h2>
             </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Visibilité</label>
+            <form className="mt-6 space-y-4">
+              <input className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-violet-400/30" type="text" placeholder="ex: Stratégie 2026" />
               <div className="grid grid-cols-2 gap-2">
-                {['ASSOCIATE', 'EMPLOYEE', 'CEO', 'CTO', 'SALES'].map(role => (
-                  <label key={role} className="flex items-center gap-2 bg-gray-50 p-2.5 rounded-xl border border-gray-200 text-xs font-medium cursor-pointer hover:bg-blue-50 hover:border-blue-200 transition-all">
-                    <input type="checkbox" className="accent-blue-600 rounded" /> {role}
+                {['ASSOCIATE', 'EMPLOYEE', 'CEO', 'CTO', 'SALES'].map((role) => (
+                  <label key={role} className="flex items-center gap-2 rounded-2xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs font-medium text-slate-300">
+                    <input type="checkbox" className="accent-cyan-400" /> {role}
                   </label>
                 ))}
               </div>
-            </div>
-            <button className="w-full py-3 bg-gray-900 text-white font-semibold rounded-xl hover:bg-gray-800 transition-all">
-              Uploader & Diffuser
-            </button>
-          </form>
-        </div>
-      </div>
-
-      {/* Membres */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-8">
-        <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-          <Users size={20} /> Membres de l'organisation ({members?.length || 0})
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {members?.map(m => (
-            <div key={m.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-all group">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold">
-                  {m.full_name?.charAt(0)}
-                </div>
-                <div>
-                  <p className="font-semibold text-sm text-gray-900">{m.full_name}</p>
-                  <p className="text-[10px] text-gray-400 uppercase tracking-widest">{m.role} • {m.type}</p>
-                </div>
-              </div>
-              <button className="p-2 text-gray-300 hover:text-gray-600 transition-colors">
-                <Lock size={14} />
+              <button className="w-full rounded-2xl bg-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/15">
+                Uploader & diffuser
               </button>
-            </div>
-          ))}
+            </form>
+          </div>
+        </div>
+
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl shadow-2xl shadow-black/20">
+          <h2 className="mb-6 flex items-center gap-2 text-lg font-semibold text-white">
+            <Users size={20} /> Membres de l'organisation ({members?.length || 0})
+          </h2>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {members?.map((member) => (
+              <div key={member.id} className="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-950/55 px-4 py-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-cyan-400/15 text-xs font-bold text-cyan-200">
+                    {member.full_name?.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-white">{member.full_name}</p>
+                    <p className="text-[10px] uppercase tracking-[0.26em] text-slate-500">{member.role} • {member.type}</p>
+                  </div>
+                </div>
+                <button className="rounded-xl border border-white/10 bg-white/5 p-2 text-slate-400 transition hover:text-cyan-200">
+                  <Shield size={14} />
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

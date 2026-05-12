@@ -1,34 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-
-// Route access map: defines which roles can access each dashboard section
-const ROUTE_ACCESS: Record<string, string[]> = {
-  '/dashboard/treasury':     ['CEO', 'COO', 'ADMIN'],
-  '/dashboard/equity':       ['CEO', 'COO', 'CTO', 'SALES', 'ADMIN'], // All associates can view
-  '/dashboard/leads':        ['CEO', 'COO', 'SALES', 'ADMIN'],
-  '/dashboard/studio':       ['CEO', 'SALES', 'ADMIN'],
-  '/dashboard/coordination': ['CEO', 'SALES'],
-  '/dashboard/contracts':    ['CEO', 'COO', 'ADMIN'],
-  '/dashboard/hr':           ['CEO', 'COO', 'ADMIN', 'ENGINEER'], // Employees see their own
-  '/dashboard/labs':         ['CEO', 'CTO'],
-  '/dashboard/workspace':    ['CEO', 'CTO', 'ADMIN'],
-  '/dashboard/settings':     ['CEO', 'COO', 'CTO', 'ADMIN'],
-  '/dashboard/admin':        ['CEO', 'ADMIN'],
-};
-
-// Routes that are open to all authenticated users
-const OPEN_ROUTES = [
-  '/dashboard',
-  '/dashboard/projects',
-  '/dashboard/tasks',
-  '/dashboard/knowledge',
-  '/dashboard/ideas',
-  '/dashboard/calendar',
-  '/dashboard/brand',
-  '/dashboard/profile',
-  '/dashboard/preview',
-  '/dashboard/audit',
-];
+import { canAccessPath } from './rbac';
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -74,45 +46,17 @@ export async function updateSession(request: NextRequest) {
 
   // If user is authenticated and accessing a protected dashboard route
   if (user && pathname.startsWith('/dashboard')) {
-    // Check if this is a restricted route
-    const matchedRoute = Object.keys(ROUTE_ACCESS).find(route => 
-      pathname === route || pathname.startsWith(route + '/')
-    );
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role, type, is_admin, permissions')
+      .eq('id', user.id)
+      .single();
 
-    if (matchedRoute) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role, is_admin, permissions')
-        .eq('id', user.id)
-        .single();
-
-      const role = profile?.role || 'ENGINEER';
-      const isAdmin = profile?.is_admin === true;
-      const permissions = profile?.permissions || {};
-
-      // Admin override — admins can access everything
-      if (isAdmin) {
-        return supabaseResponse;
-      }
-
-      // Check explicit permission overrides from AccessControlModal
-      const moduleId = matchedRoute.replace('/dashboard/', '');
-      if (permissions[moduleId] === true) {
-        return supabaseResponse;
-      }
-      if (permissions[moduleId] === false) {
-        const url = request.nextUrl.clone();
-        url.pathname = '/dashboard';
-        return NextResponse.redirect(url);
-      }
-
-      // Check role-based access
-      const allowedRoles = ROUTE_ACCESS[matchedRoute];
-      if (!allowedRoles.includes(role)) {
-        const url = request.nextUrl.clone();
-        url.pathname = '/dashboard';
-        return NextResponse.redirect(url);
-      }
+    if (!canAccessPath(profile, pathname)) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/dashboard';
+      url.searchParams.set('from', pathname);
+      return NextResponse.redirect(url);
     }
   }
 
