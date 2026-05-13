@@ -62,18 +62,43 @@ export default function CoordinationPage() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75"></span>
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-600"></span>
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-[0.3em]">Opérations en Direct</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.3em]">Command Center v2.0</span>
             </div>
-            <h1 className="text-4xl font-bold tracking-tight text-slate-900 lg:text-5xl uppercase">Command Center</h1>
-            <p className="max-w-2xl text-sm leading-7 text-slate-500 font-medium">Coordination stratégique des descentes terrain et du pipeline commercial.</p>
+            <h1 className="text-4xl font-bold tracking-tight text-slate-900 lg:text-5xl uppercase">Pilotage <span className="text-cyan-600">Opérationnel</span></h1>
+            <p className="max-w-2xl text-sm leading-7 text-slate-500 font-medium">Synchronisation stratégique des descentes terrain et du pipeline commercial pour l'exécution tactique.</p>
           </div>
-          <Link 
-            href="/dashboard/calendar" 
-            className="inline-flex items-center gap-2 rounded-2xl bg-white border border-slate-200 px-6 py-3.5 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-slate-50 hover:border-slate-300"
-          >
-            <Calendar size={18} /> Planifier une descente
-          </Link>
+          <div className="flex gap-4">
+            <button 
+              className="inline-flex items-center gap-2 rounded-2xl bg-white border border-slate-200 px-6 py-3.5 text-xs font-black uppercase tracking-widest text-slate-900 shadow-sm transition hover:bg-slate-50 hover:border-slate-300"
+            >
+              <FileText size={18} /> Guide Opérationnel
+            </button>
+            <Link 
+              href="/dashboard/calendar" 
+              className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-8 py-3.5 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-slate-900/10 transition hover:bg-black"
+            >
+              <Calendar size={18} /> Planifier
+            </Link>
+          </div>
         </header>
+
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-8 bg-white border border-slate-200 rounded-[2.5rem] shadow-sm relative overflow-hidden group hover:border-cyan-500/30 transition-all">
+            <div className="text-2xl font-black text-cyan-600/10 mb-4">PHASE 01</div>
+            <h4 className="text-sm font-black uppercase tracking-widest text-slate-900 mb-3">Immersion Terrain</h4>
+            <p className="text-xs text-slate-500 font-medium leading-relaxed">Identification des frictions réelles chez le prospect. L'objectif est de collecter le "bruit" opérationnel sans filtre technique.</p>
+          </div>
+          <div className="p-8 bg-white border border-slate-200 rounded-[2.5rem] shadow-sm relative overflow-hidden group hover:border-cyan-500/30 transition-all">
+            <div className="text-2xl font-black text-cyan-600/10 mb-4">PHASE 02</div>
+            <h4 className="text-sm font-black uppercase tracking-widest text-slate-900 mb-3">Diagnostic IA</h4>
+            <p className="text-xs text-slate-500 font-medium leading-relaxed">Analyse des données collectées via le moteur d'audit pour quantifier le ROI potentiel et les goulots d'étranglement.</p>
+          </div>
+          <div className="p-8 bg-white border border-slate-200 rounded-[2.5rem] shadow-sm relative overflow-hidden group hover:border-cyan-500/30 transition-all">
+            <div className="text-2xl font-black text-cyan-600/10 mb-4">PHASE 03</div>
+            <h4 className="text-sm font-black uppercase tracking-widest text-slate-900 mb-3">Exécution Tactique</h4>
+            <p className="text-xs text-slate-500 font-medium leading-relaxed">Déploiement des solutions automatisées et suivi de la performance en temps réel pour valider les gains projetés.</p>
+          </div>
+        </section>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
           {[
@@ -82,7 +107,7 @@ export default function CoordinationPage() {
             { label: 'Audits en cours', value: stats.actions, icon: <Target size={20} />, color: 'text-cyan-600', bg: 'bg-cyan-50', border: 'border-cyan-100' },
             { label: 'Conversion (WON)', value: stats.won, icon: <TrendingUp size={20} />, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
           ].map((stat) => (
-            <div key={stat.label} className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm group">
+            <div key={stat.label} className="rounded-[2.5rem] border border-slate-200 bg-white p-8 shadow-sm group hover:shadow-xl hover:shadow-slate-900/5 transition-all">
               <div className={`mb-6 w-fit rounded-2xl border ${stat.border} ${stat.bg} p-4 ${stat.color} group-hover:scale-110 transition-transform`}>
                 {stat.icon}
               </div>

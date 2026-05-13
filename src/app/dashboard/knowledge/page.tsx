@@ -499,61 +499,61 @@ export default function KnowledgePage() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 gap-6">
-          <div className="rounded-[2.5rem] border border-slate-200 bg-white p-8 shadow-sm">
-            <div className="mb-8 border-b border-slate-50 pb-6">
-              <p className="text-[10px] font-black uppercase tracking-[0.28em] text-slate-400">Repères d'équipe</p>
-              <h2 className="mt-1 text-lg font-bold text-slate-900 uppercase tracking-tight">{filteredArticles.length} articles disponibles</h2>
-            </div>
-
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {filteredArticles.map((article) => {
-                const active = article.id === activeArticle?.id;
-                return (
-                  <button
-                    key={article.id}
-                    onClick={() => openReader(article)}
-                    className={`group relative flex flex-col rounded-[2rem] border p-6 text-left transition-all ${
-                      active
-                        ? 'border-cyan-600 bg-white shadow-xl shadow-cyan-600/5 ring-1 ring-cyan-600/10'
-                        : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-start gap-4">
-                        <div className={`rounded-2xl p-3 border transition-all ${active ? 'bg-cyan-600 text-white border-cyan-600 shadow-lg shadow-cyan-600/20' : 'bg-slate-50 text-slate-400 border-slate-100'}`}>
-                          {IconMap[article.category] || <Book size={22} />}
-                        </div>
-                        <div>
-                          <h3 className={`text-base font-bold uppercase tracking-tight ${active ? 'text-slate-900' : 'text-slate-600'}`}>{article.title}</h3>
-                          <p className="mt-1 text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">
-                            {CategoryLabel[article.category] || article.category} • {article.target_role || 'ALL'}
-                          </p>
-                        </div>
-                      </div>
-                      <ArrowRight size={18} className={`mt-1 transition-all ${active ? 'text-cyan-600 translate-x-1' : 'text-slate-300 group-hover:text-cyan-600 group-hover:translate-x-1'}`} />
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
+          {filteredArticles.map((article) => {
+            const active = article.id === activeArticle?.id;
+            return (
+              <button
+                key={article.id}
+                onClick={() => openReader(article)}
+                className={`group relative flex flex-col h-[340px] rounded-[2.5rem] border p-8 text-left transition-all ${
+                  active
+                    ? 'border-indigo-600 bg-white shadow-2xl shadow-indigo-600/10 ring-1 ring-indigo-600/10'
+                    : 'border-slate-200 bg-white hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-600/5'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-4">
+                    <div className={`rounded-2xl p-4 border transition-all ${active ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-600/20' : 'bg-slate-50 text-slate-400 border-slate-100'}`}>
+                      {IconMap[article.category] || <Book size={24} />}
                     </div>
-
-                    <p className={`mt-6 line-clamp-3 text-sm font-medium leading-relaxed ${active ? 'text-slate-600' : 'text-slate-400'}`}>
-                      {article.content}
-                    </p>
-
-                    <div className="mt-6 flex items-center justify-between border-t border-slate-50 pt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-[9px] font-black uppercase tracking-widest text-cyan-600">Consulter le guide</span>
-                      <Zap size={14} className="text-cyan-600" />
+                    <div className="min-w-0">
+                      <h3 className={`text-lg font-bold uppercase tracking-tight leading-tight line-clamp-1 ${active ? 'text-slate-900' : 'text-slate-700'}`}>{article.title}</h3>
+                      <p className="mt-1 text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">
+                        {CategoryLabel[article.category] || article.category} • {article.target_role || 'ALL'}
+                      </p>
                     </div>
-                  </button>
-                );
-              })}
-
-              {!loading && !filteredArticles.length && (
-                <div className="col-span-full rounded-[2rem] border border-dashed border-slate-200 py-24 text-center">
-                  <Info size={48} className="mx-auto text-slate-100 mb-4" />
-                  <p className="text-sm font-medium italic text-slate-400">Aucun guide ne correspond à votre recherche.</p>
+                  </div>
                 </div>
-              )}
+
+                <div className={`mt-8 flex-1 overflow-hidden text-sm font-medium leading-relaxed ${active ? 'text-slate-600' : 'text-slate-500'}`}>
+                  <p className="line-clamp-4">
+                    {article.content.replace(/[#*`]/g, '').trim()}
+                  </p>
+                </div>
+
+                <div className="mt-8 flex items-center justify-between border-t border-slate-50 pt-6">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[10px] font-black uppercase tracking-widest ${active ? 'text-indigo-600' : 'text-slate-400'}`}>Consulter le guide</span>
+                    <ArrowRight size={14} className={`transition-all ${active ? 'text-indigo-600 translate-x-1' : 'text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-1'}`} />
+                  </div>
+                  <div className={`rounded-lg px-2 py-1 text-[8px] font-black uppercase tracking-tighter ${active ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-50 text-slate-400'}`}>
+                    RAG Ready
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+
+          {!loading && !filteredArticles.length && (
+            <div className="col-span-full rounded-[3rem] border border-dashed border-slate-200 py-32 text-center bg-white/50">
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 text-slate-300 mb-6">
+                <Info size={32} />
+              </div>
+              <p className="text-base font-bold text-slate-400 uppercase tracking-widest">Aucun guide ne correspond</p>
+              <p className="mt-2 text-sm text-slate-400 font-medium">Affinez votre recherche ou créez un nouveau guide.</p>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

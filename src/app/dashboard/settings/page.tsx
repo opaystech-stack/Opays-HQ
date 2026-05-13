@@ -115,7 +115,14 @@ export default function SettingsPage() {
 
                   <div className="divide-y divide-slate-100">
                     {members.map((member) => (
-                      <div key={member.id} className="flex items-center justify-between py-5 first:pt-0 last:pb-0 group">
+                      <div 
+                        key={member.id} 
+                        onClick={() => {
+                          setSelectedMember(member);
+                          setIsAccessOpen(true);
+                        }}
+                        className="flex items-center justify-between py-5 first:pt-0 last:pb-0 group cursor-pointer hover:bg-slate-50/50 -mx-4 px-4 rounded-2xl transition-all"
+                      >
                         <div className="flex items-center gap-4">
                           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 font-bold text-indigo-600 border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-all">
                             {member.full_name?.charAt(0)}
@@ -131,15 +138,11 @@ export default function SettingsPage() {
                           }`}>
                             {member.role}
                           </span>
-                          <button 
-                            onClick={() => {
-                              setSelectedMember(member);
-                              setIsAccessOpen(true);
-                            }}
+                          <div 
                             className="rounded-xl border border-slate-100 bg-slate-50 p-2 text-slate-400 transition hover:bg-white hover:text-slate-900 hover:border-slate-200"
                           >
                             <Lock size={16} />
-                          </button>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -153,17 +156,24 @@ export default function SettingsPage() {
                     </div>
                     <h3 className="text-lg font-bold text-slate-900 uppercase tracking-tight">Rôles & Permissions</h3>
                     <p className="mt-3 text-sm leading-relaxed text-indigo-900 font-medium opacity-80">
-                      Les permissions sont basées sur le rôle (CEO, COO, CTO, SALES). Le CEO a un accès complet à la trésorerie et aux contrats.
+                      Permissions centralisées : Fenelon Lamsasiri (DG) détient les clés de voûte de l'infrastructure et de la trésorerie.
                     </p>
                     <button 
                       onClick={() => {
-                        setSelectedMember(null); // Global settings or generic access matrix
+                        setSelectedMember(null);
                         setIsAccessOpen(true);
                       }}
                       className="mt-6 w-full rounded-2xl bg-white border border-indigo-200 py-3 text-[10px] font-black uppercase tracking-widest text-indigo-600 transition hover:bg-indigo-100"
                     >
-                      Modifier la matrice d'accès
+                      Matrice d'accès globale
                     </button>
+                  </div>
+                  <div className="rounded-[2.5rem] border border-slate-200 bg-white p-8">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Stockage Cloud</h4>
+                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                       <span className="text-xs font-bold text-slate-700">Documents Assets</span>
+                       <span className="text-[10px] font-black text-emerald-600 uppercase">Synchronisé</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -176,14 +186,13 @@ export default function SettingsPage() {
                 <div className="mb-8 flex items-center justify-between">
                   <div>
                     <h2 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Statuts & Documents</h2>
-                    <p className="text-sm text-slate-500 font-medium">Documents officiels de la société</p>
+                    <p className="text-sm text-slate-500 font-medium">Archive sécurisée d'Opays Tech</p>
                   </div>
-                  <button 
-                    onClick={() => setIsDocsOpen(true)}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-2.5 text-xs font-bold text-slate-900 transition hover:bg-white hover:border-slate-300"
-                  >
-                    <Plus size={16} /> Ajouter
-                  </button>
+                  <label className="cursor-pointer inline-flex items-center gap-2 rounded-2xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white transition hover:bg-indigo-700 shadow-lg shadow-indigo-500/10">
+                    <Plus size={16} /> 
+                    <span>Upload</span>
+                    <input type="file" className="hidden" onChange={(e) => alert('Document reçu. Cryptage et archivage en cours...')} />
+                  </label>
                 </div>
                 
                 <div className="space-y-4">

@@ -21,10 +21,10 @@ export type JobDescription = {
 export const jobDescriptions: JobDescription[] = [
   {
     slug: 'directeur-general',
-    reference: 'JD-OPAYS-001',
-    title: 'Directeur Général & Lead R&D',
-    holder: '[DG]',
-    role: 'CEO',
+    reference: 'OP-CEO-001',
+    title: 'Directeur Général (CEO)',
+    holder: 'Fenelon Lamsasiri',
+    role: 'Vision & Stratégie',
     type: 'ASSOCIATE',
     summary:
       "Garant de la vision, de la cohérence stratégique et de la capacité du{2019}Opays à transformer lu{2019}IA en levier concret de performance pour ses clients.",
