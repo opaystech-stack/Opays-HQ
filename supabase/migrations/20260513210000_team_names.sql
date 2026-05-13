@@ -1,39 +1,36 @@
--- Mise à jour des membres de l'équipe avec les noms réels
--- On part du principe que les IDs seront liés via l'auth, mais on pré-remplit les profils si possible
--- Ou on met à jour les profils existants.
-
+-- Mise à jour des membres de l'équipe avec les noms réels et emails
 -- Fenelon Lamsasiri (CEO)
-UPDATE profiles SET full_name = 'Fenelon Lamsasiri', role = 'CEO', type = 'ASSOCIATE' WHERE role = 'CEO' OR full_name LIKE '%Fenelon%';
+UPDATE profiles SET full_name = 'Fenelon Lamsasiri', role = 'CEO', type = 'ASSOCIATE', email = 'lamsasfenelon@gmail.com' WHERE full_name LIKE '%Fenelon%';
 
 -- Evans (CTO)
-UPDATE profiles SET full_name = 'Evans', role = 'CTO', type = 'ASSOCIATE' WHERE role = 'CTO' OR full_name LIKE '%Evans%';
+UPDATE profiles SET full_name = 'Evans Selemani', role = 'CTO', type = 'ASSOCIATE', email = 'evansselemani@gmail.com' WHERE full_name LIKE '%Evans%';
 
--- Prince (COO/Coordination)
-UPDATE profiles SET full_name = 'Prince', role = 'COO', type = 'ASSOCIATE' WHERE role = 'COO' OR full_name LIKE '%Prince%';
+-- Prince (COO)
+UPDATE profiles SET full_name = 'Prince Bagheni', role = 'COO', type = 'ASSOCIATE', email = 'princebagheni@gmail.com' WHERE full_name LIKE '%Prince%';
 
 -- Patricia (Sales)
-UPDATE profiles SET full_name = 'Patricia', role = 'SALES', type = 'ASSOCIATE' WHERE full_name LIKE '%Patricia%';
+UPDATE profiles SET full_name = 'Patricia Zamwana', role = 'SALES', type = 'ASSOCIATE', email = 'zamwanapatricia@gmail.com' WHERE full_name LIKE '%Patricia%';
 
 -- Zaina (Sales)
-UPDATE profiles SET full_name = 'Zaina', role = 'SALES', type = 'ASSOCIATE' WHERE full_name LIKE '%Zaina%';
+UPDATE profiles SET full_name = 'Zaina Godlive', role = 'SALES', type = 'ASSOCIATE', email = 'zainagodlive28@gmail.com' WHERE full_name LIKE '%Zaina%';
 
--- Insertion si absents (pour démo/structure)
-INSERT INTO profiles (id, full_name, role, type, is_admin)
-SELECT uuid_generate_v4(), 'Fenelon Lamsasiri', 'CEO', 'ASSOCIATE', true
-WHERE NOT EXISTS (SELECT 1 FROM profiles WHERE full_name = 'Fenelon Lamsasiri');
+-- Insertion si absents
+INSERT INTO profiles (id, email, full_name, role, type, is_admin)
+SELECT uuid_generate_v4(), 'lamsasfenelon@gmail.com', 'Fenelon Lamsasiri', 'CEO', 'ASSOCIATE', true
+WHERE NOT EXISTS (SELECT 1 FROM profiles WHERE email = 'lamsasfenelon@gmail.com');
 
-INSERT INTO profiles (id, full_name, role, type, is_admin)
-SELECT uuid_generate_v4(), 'Evans', 'CTO', 'ASSOCIATE', true
-WHERE NOT EXISTS (SELECT 1 FROM profiles WHERE full_name = 'Evans');
+INSERT INTO profiles (id, email, full_name, role, type, is_admin)
+SELECT uuid_generate_v4(), 'evansselemani@gmail.com', 'Evans Selemani', 'CTO', 'ASSOCIATE', true
+WHERE NOT EXISTS (SELECT 1 FROM profiles WHERE email = 'evansselemani@gmail.com');
 
-INSERT INTO profiles (id, full_name, role, type, is_admin)
-SELECT uuid_generate_v4(), 'Prince', 'COO', 'ASSOCIATE', true
-WHERE NOT EXISTS (SELECT 1 FROM profiles WHERE full_name = 'Prince');
+INSERT INTO profiles (id, email, full_name, role, type, is_admin)
+SELECT uuid_generate_v4(), 'princebagheni@gmail.com', 'Prince Bagheni', 'COO', 'ASSOCIATE', true
+WHERE NOT EXISTS (SELECT 1 FROM profiles WHERE email = 'princebagheni@gmail.com');
 
-INSERT INTO profiles (id, full_name, role, type)
-SELECT uuid_generate_v4(), 'Patricia', 'SALES', 'ASSOCIATE'
-WHERE NOT EXISTS (SELECT 1 FROM profiles WHERE full_name = 'Patricia');
+INSERT INTO profiles (id, email, full_name, role, type)
+SELECT uuid_generate_v4(), 'zamwanapatricia@gmail.com', 'Patricia Zamwana', 'SALES', 'ASSOCIATE'
+WHERE NOT EXISTS (SELECT 1 FROM profiles WHERE email = 'zamwanapatricia@gmail.com');
 
-INSERT INTO profiles (id, full_name, role, type)
-SELECT uuid_generate_v4(), 'Zaina', 'SALES', 'ASSOCIATE'
-WHERE NOT EXISTS (SELECT 1 FROM profiles WHERE full_name = 'Zaina');
+INSERT INTO profiles (id, email, full_name, role, type)
+SELECT uuid_generate_v4(), 'zainagodlive28@gmail.com', 'Zaina Godlive', 'SALES', 'ASSOCIATE'
+WHERE NOT EXISTS (SELECT 1 FROM profiles WHERE email = 'zainagodlive28@gmail.com');
