@@ -1,20 +1,21 @@
--- Mise à jour des membres de l'équipe avec les noms réels et emails
--- Fenelon Lamsasiri (CEO)
-UPDATE profiles SET full_name = 'Fenelon Lamsasiri', role = 'CEO', type = 'ASSOCIATE', email = 'lamsasfenelon@gmail.com' WHERE full_name LIKE '%Fenelon%';
+-- 1. Nettoyage radical : supprimer tous les profils qui ne sont pas dans la liste officielle
+DELETE FROM profiles 
+WHERE email NOT IN (
+  'lamsasfenelon@gmail.com',
+  'evansselemani@gmail.com',
+  'zamwanapatricia@gmail.com',
+  'zainagodlive28@gmail.com',
+  'princebagheni@gmail.com'
+) OR email IS NULL;
 
--- Evans (CTO)
-UPDATE profiles SET full_name = 'Evans Selemani', role = 'CTO', type = 'ASSOCIATE', email = 'evansselemani@gmail.com' WHERE full_name LIKE '%Evans%';
+-- 2. Mise à jour des membres réels pour garantir l'exactitude
+UPDATE profiles SET full_name = 'Fenelon Lamsasiri', role = 'CEO', type = 'ASSOCIATE', is_admin = true WHERE email = 'lamsasfenelon@gmail.com';
+UPDATE profiles SET full_name = 'Evans Selemani', role = 'CTO', type = 'ASSOCIATE', is_admin = true WHERE email = 'evansselemani@gmail.com';
+UPDATE profiles SET full_name = 'Prince Bagheni', role = 'COO', type = 'ASSOCIATE', is_admin = true WHERE email = 'princebagheni@gmail.com';
+UPDATE profiles SET full_name = 'Patricia Zamwana', role = 'SALES', type = 'ASSOCIATE' WHERE email = 'zamwanapatricia@gmail.com';
+UPDATE profiles SET full_name = 'Zaina Godlive', role = 'SALES', type = 'ASSOCIATE' WHERE email = 'zainagodlive28@gmail.com';
 
--- Prince (COO)
-UPDATE profiles SET full_name = 'Prince Bagheni', role = 'COO', type = 'ASSOCIATE', email = 'princebagheni@gmail.com' WHERE full_name LIKE '%Prince%';
-
--- Patricia (Sales)
-UPDATE profiles SET full_name = 'Patricia Zamwana', role = 'SALES', type = 'ASSOCIATE', email = 'zamwanapatricia@gmail.com' WHERE full_name LIKE '%Patricia%';
-
--- Zaina (Sales)
-UPDATE profiles SET full_name = 'Zaina Godlive', role = 'SALES', type = 'ASSOCIATE', email = 'zainagodlive28@gmail.com' WHERE full_name LIKE '%Zaina%';
-
--- Insertion si absents
+-- 3. Insertion de sécurité si un membre a été supprimé par erreur ou n'existait pas encore
 INSERT INTO profiles (id, email, full_name, role, type, is_admin)
 SELECT uuid_generate_v4(), 'lamsasfenelon@gmail.com', 'Fenelon Lamsasiri', 'CEO', 'ASSOCIATE', true
 WHERE NOT EXISTS (SELECT 1 FROM profiles WHERE email = 'lamsasfenelon@gmail.com');
