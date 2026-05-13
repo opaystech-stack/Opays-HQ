@@ -83,8 +83,10 @@ export default function LoginForm() {
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.01)_1px,transparent_1px)] bg-[size:56px_56px] opacity-20" />
       
       <div className="w-full max-w-md space-y-8 text-center mb-8 relative">
-        <div className="inline-flex items-center justify-center w-20 h-20 rounded-[2rem] bg-white shadow-2xl shadow-cyan-500/10 border border-slate-100 mb-4 animate-in zoom-in-95 duration-500">
-          <ShieldCheck className="w-10 h-10 text-cyan-600" />
+        <div className="inline-flex items-center justify-center w-24 h-24 rounded-[2.5rem] bg-white shadow-2xl shadow-cyan-500/10 border border-slate-100 mb-4 animate-in zoom-in-95 duration-500">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600 shadow-lg shadow-cyan-500/20 flex items-center justify-center text-2xl font-black text-white">
+            O
+          </div>
         </div>
         <div className="space-y-3">
           <div className="inline-flex items-center gap-2 rounded-full border border-cyan-100 bg-cyan-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-600">

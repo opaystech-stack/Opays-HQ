@@ -53,8 +53,13 @@ export default function SearchModal({ isOpen, onClose }: { isOpen: boolean, onCl
       <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" onClick={onClose} />
       
       <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden relative border border-gray-100">
-        <div className="p-4 border-b border-gray-100 flex items-center gap-3">
-          <Search className="text-gray-400" size={20} />
+        <div className="p-4 border-b border-gray-100 flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-white text-[10px] font-black shadow-sm">
+              O
+            </div>
+            <Search className="text-gray-400" size={18} />
+          </div>
           <input 
             autoFocus
             type="text"

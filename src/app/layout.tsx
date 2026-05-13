@@ -4,6 +4,10 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "OPAYS HQ",
   description: "Système de gestion interne OPAYS TECH",
+  icons: {
+    icon: "/icon-logo.png",
+    apple: "/icon-logo.png",
+  },
 };
 
 export default function RootLayout({
