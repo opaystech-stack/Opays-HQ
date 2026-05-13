@@ -161,7 +161,7 @@ export default function Sidebar() {
       <div className="pt-4 border-t border-slate-100 space-y-2">
         {/* Notification bar */}
         <Link 
-          href="/dashboard/tasks"
+          href="/dashboard/profile"
           className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-all ${
             unreadCount > 0 
               ? 'bg-red-50 text-red-600 hover:bg-red-100' 

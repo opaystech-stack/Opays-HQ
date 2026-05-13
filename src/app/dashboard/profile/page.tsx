@@ -30,9 +30,37 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     if (!profile) return;
+
+    // Validation basique
+    const trimmedName = fullName.trim();
+    const trimmedPhone = phone.trim();
+
+    if (trimmedName.length < 2 || trimmedName.length > 100) {
+      alert('Le nom doit contenir entre 2 et 100 caractères.');
+      return;
+    }
+
+    if (trimmedPhone && !/^\+?[\d\s\-()]{6,20}$/.test(trimmedPhone)) {
+      alert('Format de téléphone invalide.');
+      return;
+    }
+
     setSaving(true);
-    await supabase.from('profiles').update({ full_name: fullName, phone }).eq('id', profile.id);
-    setTimeout(() => setSaving(false), 1000);
+    // Restriction explicite : seuls full_name et phone sont modifiables par l'utilisateur
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        full_name: trimmedName,
+        phone: trimmedPhone || null,
+      })
+      .eq('id', profile.id);
+
+    if (error) {
+      alert(`Erreur: ${error.message}`);
+      setSaving(false);
+    } else {
+      setTimeout(() => setSaving(false), 1000);
+    }
   };
 
   const handleLogout = async () => {

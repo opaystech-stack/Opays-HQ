@@ -48,9 +48,8 @@ export default function SettingsPage() {
     ]);
     
     if (profiles) {
-      // On filtre les membres réels (associés ou ayant un email officiel connu)
-      // Cela évite d'afficher les comptes de test ou les résidus fictifs.
-      const filtered = profiles.filter(p => p.email && (p.type === 'ASSOCIATE' || p.is_admin));
+      // Afficher tous les membres avec un email valide (associés ET employés)
+      const filtered = profiles.filter(p => p.email && p.full_name);
       setMembers(filtered);
     }
     if (equityData) setEquity(equityData);
