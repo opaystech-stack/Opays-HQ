@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
-import { ShieldCheck, Mail, Lock, ArrowRight, Loader2 } from 'lucide-react';
+import { ShieldCheck, Mail, Lock, ArrowRight, Loader2, Sparkles } from 'lucide-react';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -67,35 +67,45 @@ export default function LoginForm() {
 
   if (checkingSession) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+      <div className="min-h-screen bg-[#f8f9fb] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-8 h-8 text-cyan-600 animate-spin" />
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Initialisation du HQ...</p>
+        </div>
       </div>
     );
   }
 
+  const inputClass = "w-full rounded-2xl border border-slate-200 bg-slate-50 py-3.5 pl-12 pr-4 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-cyan-400/50 focus:bg-white focus:ring-4 focus:ring-cyan-50/50 font-medium text-sm";
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
-      <div className="w-full max-w-md space-y-8 text-center mb-8">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white shadow-xl border border-gray-100 mb-4">
-          <ShieldCheck className="w-8 h-8 text-blue-600" />
+    <div className="min-h-screen bg-[#f8f9fb] flex flex-col items-center justify-center p-6 relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.01)_1px,transparent_1px)] bg-[size:56px_56px] opacity-20" />
+      
+      <div className="w-full max-w-md space-y-8 text-center mb-8 relative">
+        <div className="inline-flex items-center justify-center w-20 h-20 rounded-[2rem] bg-white shadow-2xl shadow-cyan-500/10 border border-slate-100 mb-4 animate-in zoom-in-95 duration-500">
+          <ShieldCheck className="w-10 h-10 text-cyan-600" />
         </div>
-        <div className="space-y-2">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Espace OPAYS HQ</h1>
-          <p className="text-gray-500">Connectez-vous pour accéder à votre tableau de bord.</p>
+        <div className="space-y-3">
+          <div className="inline-flex items-center gap-2 rounded-full border border-cyan-100 bg-cyan-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-600">
+            <Sparkles size={12} /> Enterprise OS
+          </div>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tight uppercase">OPAYS <span className="text-slate-400">HQ</span></h1>
+          <p className="text-slate-500 font-medium text-sm">Connectez-vous pour piloter l'organisation.</p>
         </div>
       </div>
 
-      <div className="w-full max-w-md bg-white border border-gray-200 p-8 rounded-3xl shadow-xl shadow-gray-200/50">
+      <div className="w-full max-w-md bg-white border border-slate-200 p-8 rounded-[2.5rem] shadow-2xl shadow-slate-200/50 relative animate-in fade-in slide-in-from-bottom-4 duration-700">
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-2 text-left">
-            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Email Professionnel</label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Email Professionnel</label>
+            <div className="relative group">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-cyan-600 transition-colors" size={18} />
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-4 text-gray-900 focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
+                className={inputClass}
                 placeholder="votre@email.com"
                 required
               />
@@ -104,14 +114,14 @@ export default function LoginForm() {
 
           {showPassword && (
             <div className="space-y-2 text-left animate-in slide-in-from-top-2 duration-300">
-              <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Mot de passe</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">Mot de passe</label>
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-cyan-600 transition-colors" size={18} />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-4 text-gray-900 focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
+                  className={inputClass}
                   placeholder="••••••••"
                   required={showPassword}
                 />
@@ -122,32 +132,35 @@ export default function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 group disabled:opacity-50"
+            className="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-black transition-all shadow-xl shadow-slate-900/10 flex items-center justify-center gap-2 group disabled:opacity-50"
           >
             {loading ? 'Connexion...' : showPassword ? 'Se connecter' : 'Recevoir mon accès'}
             {!loading && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
           </button>
         </form>
 
-        <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+        <div className="mt-8 pt-6 border-t border-slate-50 text-center">
           <button 
             onClick={() => setShowPassword(!showPassword)}
-            className="text-xs font-bold text-gray-400 hover:text-blue-600 uppercase tracking-widest transition-colors"
+            className="text-[10px] font-black text-slate-400 hover:text-cyan-600 uppercase tracking-[0.2em] transition-colors"
           >
             {showPassword ? "Utiliser le lien magique" : "Utiliser un mot de passe"}
           </button>
         </div>
 
         {message && (
-          <div className={`mt-6 p-4 rounded-xl text-xs font-semibold text-center border animate-in zoom-in-95 duration-200 ${message.includes('Erreur') ? 'bg-red-50 border-red-100 text-red-600' : 'bg-green-50 border-green-100 text-green-600'}`}>
+          <div className={`mt-6 p-4 rounded-2xl text-xs font-bold text-center border animate-in zoom-in-95 duration-200 ${message.includes('Erreur') ? 'bg-red-50 border-red-100 text-red-600' : 'bg-cyan-50 border-cyan-100 text-cyan-600'}`}>
             {message}
           </div>
         )}
       </div>
 
-      <p className="mt-8 text-xs text-gray-400 font-medium">
-        OPAYS TECH • Gouvernance Digitale 2026
-      </p>
+      <div className="mt-12 flex flex-col items-center gap-2">
+        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.35em]">
+          Gouvernance Digitale 2026
+        </p>
+        <div className="h-px w-8 bg-slate-200" />
+      </div>
     </div>
   );
 }
