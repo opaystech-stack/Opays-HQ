@@ -32,8 +32,8 @@ export default function AIPage() {
       <div className="relative z-10 mx-auto max-w-[1600px] space-y-12">
         <header className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
           <div className="space-y-1">
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 lg:text-4xl uppercase">AI Command Center</h1>
-            <p className="text-sm font-medium text-slate-500 max-w-2xl">Pilotage centralisé des agents autonomes et de l'identité de marque.</p>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 lg:text-4xl uppercase">Espace IA</h1>
+            <p className="text-sm font-medium text-slate-500 max-w-2xl">Outils de génération et support à la création.</p>
           </div>
         </header>
 

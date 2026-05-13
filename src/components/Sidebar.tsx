@@ -82,7 +82,7 @@ export default function Sidebar() {
 
   const commonLinks = [
     { href: '/dashboard', label: 'Accueil', icon: <LayoutDashboard size={18} />, show: true },
-    { href: '/dashboard/ai', label: 'IA', sublabel: 'Command Center', icon: <Sparkles size={18} />, show: true },
+    { href: '/dashboard/ai', label: 'IA', sublabel: 'Studio Créatif', icon: <Sparkles size={18} />, show: true },
     { href: '/dashboard/projects', label: 'Nos Projets', sublabel: 'Livraison Client', icon: <Briefcase size={18} />, show: true },
     { href: '/dashboard/workspace', label: 'Workspace', sublabel: 'Ingénierie & Prod', icon: <Monitor size={18} />, show: checkAccess('workspace') },
     { href: '/dashboard/calendar', label: 'Calendrier', icon: <Calendar size={18} />, show: true },
@@ -98,7 +98,7 @@ export default function Sidebar() {
   const associateLinks = [
     { href: '/dashboard/studio', label: 'Outils de Vente', sublabel: 'Stratégie & ROI', icon: <Target size={18} />, show: checkAccess('studio') },
     { href: '/dashboard/leads', label: 'Mes Prospects', icon: <Users size={18} />, show: checkAccess('leads') },
-    { href: '/dashboard/coordination', label: 'Command Center', sublabel: 'Coordination Comm', icon: <Radio size={18} />, show: checkAccess('coordination') },
+    { href: '/dashboard/coordination', label: 'Coordination', sublabel: 'Communication', icon: <Radio size={18} />, show: checkAccess('coordination') },
     { href: '/dashboard/brand', label: 'Brand Assets', sublabel: 'Communication', icon: <Palette size={18} />, show: checkAccess('brand') },
     { href: '/dashboard/equity', label: 'Mes Actions', icon: <TrendingUp size={18} />, show: checkAccess('equity') },
     { href: '/dashboard/treasury', label: 'Trésorerie', icon: <Wallet size={18} />, show: checkAccess('treasury') },
@@ -116,7 +116,7 @@ export default function Sidebar() {
         </div>
         <div>
           <h2 className="text-lg font-bold tracking-tight text-slate-900">OPAYS <span className="text-slate-400">HQ</span></h2>
-          <p className="text-[9px] text-slate-400 uppercase tracking-[0.32em] font-semibold">Enterprise OS</p>
+          <p className="text-[9px] text-slate-400 uppercase tracking-[0.32em] font-semibold">Operations</p>
         </div>
       </div>
 
