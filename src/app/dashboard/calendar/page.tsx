@@ -77,28 +77,28 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="relative min-h-full overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(34,211,238,0.12),_transparent_24%),radial-gradient(circle_at_top_right,_rgba(168,85,247,0.10),_transparent_20%),linear-gradient(180deg,_#050816_0%,_#090d19_100%)] px-6 py-8 text-slate-100 lg:px-8">
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:56px_56px] opacity-15" />
+    <div className="relative min-h-full px-6 py-8 text-slate-900 lg:px-8 bg-[#f8f9fb]">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.01)_1px,transparent_1px)] bg-[size:56px_56px] opacity-20" />
 
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="relative space-y-6">
         {/* Header */}
         <header className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div className="space-y-3">
-            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-200">
+            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-100 bg-cyan-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-600">
               <CalendarIcon size={12} /> Calendrier
             </div>
-            <h1 className="text-3xl font-semibold tracking-tight text-white">Calendrier d'équipe</h1>
-            <p className="max-w-xl text-sm text-slate-400">Visualisez les échéances des tâches et projets de l'équipe.</p>
+            <h1 className="text-4xl font-bold tracking-tight text-slate-900">Calendrier d'équipe</h1>
+            <p className="max-w-xl text-sm text-slate-500 font-medium">Visualisez les échéances des tâches et projets de l'équipe.</p>
           </div>
 
           <div className="flex items-center gap-3">
-            <button onClick={prevMonth} className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-slate-300 transition hover:bg-white/10">
+            <button onClick={prevMonth} className="rounded-xl border border-slate-200 bg-white p-2.5 text-slate-400 transition hover:bg-slate-50 hover:text-slate-900">
               <ChevronLeft size={18} />
             </button>
-            <span className="min-w-[180px] text-center text-lg font-semibold text-white">
+            <span className="min-w-[180px] text-center text-lg font-bold text-slate-900">
               {MONTHS[currentMonth]} {currentYear}
             </span>
-            <button onClick={nextMonth} className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-slate-300 transition hover:bg-white/10">
+            <button onClick={nextMonth} className="rounded-xl border border-slate-200 bg-white p-2.5 text-slate-400 transition hover:bg-slate-50 hover:text-slate-900">
               <ChevronRight size={18} />
             </button>
           </div>
@@ -106,10 +106,10 @@ export default function CalendarPage() {
 
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_320px]">
           {/* Calendar grid */}
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl shadow-black/20 backdrop-blur-xl">
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="mb-3 grid grid-cols-7 gap-1">
               {DAYS.map((d) => (
-                <div key={d} className="py-2 text-center text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500">{d}</div>
+                <div key={d} className="py-2 text-center text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">{d}</div>
               ))}
             </div>
             <div className="grid grid-cols-7 gap-1">
@@ -126,19 +126,19 @@ export default function CalendarPage() {
                   <button
                     key={day}
                     onClick={() => setSelectedDay(day)}
-                    className={`group relative flex aspect-square flex-col items-center justify-center rounded-2xl border text-sm font-semibold transition ${
+                    className={`group relative flex aspect-square flex-col items-center justify-center rounded-2xl border text-sm font-bold transition-all ${
                       isSelected
-                        ? 'border-cyan-400/30 bg-cyan-500/15 text-cyan-200 ring-2 ring-cyan-400/20'
+                        ? 'border-cyan-600 bg-cyan-600 text-white shadow-lg shadow-cyan-500/20'
                         : isToday
-                          ? 'border-cyan-400/20 bg-cyan-400/10 text-white'
-                          : 'border-transparent text-slate-300 hover:border-white/10 hover:bg-white/5'
+                          ? 'border-cyan-100 bg-cyan-50 text-cyan-600'
+                          : 'border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50'
                     }`}
                   >
                     {day}
                     {dayEvents.length > 0 && (
-                      <div className="mt-0.5 flex gap-0.5">
+                      <div className="mt-1 flex gap-0.5">
                         {dayEvents.slice(0, 3).map((e, idx) => (
-                          <div key={idx} className={`h-1.5 w-1.5 rounded-full ${e.type === 'task' ? 'bg-emerald-400' : 'bg-violet-400'}`} />
+                          <div key={idx} className={`h-1.5 w-1.5 rounded-full ${e.type === 'task' ? (isSelected ? 'bg-white' : 'bg-emerald-500') : (isSelected ? 'bg-white' : 'bg-violet-500')}`} />
                         ))}
                       </div>
                     )}
@@ -147,54 +147,54 @@ export default function CalendarPage() {
               })}
             </div>
 
-            <div className="mt-4 flex items-center gap-4 border-t border-white/10 pt-3">
-              <div className="flex items-center gap-2 text-[11px] text-slate-400">
-                <div className="h-2 w-2 rounded-full bg-emerald-400" /> Tâches
+            <div className="mt-4 flex items-center gap-4 border-t border-slate-100 pt-3">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                <div className="h-2 w-2 rounded-full bg-emerald-500" /> Tâches
               </div>
-              <div className="flex items-center gap-2 text-[11px] text-slate-400">
-                <div className="h-2 w-2 rounded-full bg-violet-400" /> Projets
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                <div className="h-2 w-2 rounded-full bg-violet-500" /> Projets
               </div>
             </div>
           </div>
 
           {/* Day detail */}
           <div className="space-y-4">
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/20 backdrop-blur-xl">
-              <h3 className="text-sm font-bold text-white">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <h3 className="text-base font-bold text-slate-900 uppercase tracking-tight">
                 {selectedDay
                   ? `${selectedDay} ${MONTHS[currentMonth]}`
                   : 'Sélectionnez un jour'}
               </h3>
-              <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.28em] text-slate-500">
+              <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.28em] text-slate-400">
                 {selectedDayEvents.length} échéance{selectedDayEvents.length !== 1 ? 's' : ''}
               </p>
 
               <div className="mt-4 space-y-3">
                 {selectedDayEvents.length === 0 && (
-                  <p className="py-8 text-center text-sm italic text-slate-500">Aucune échéance ce jour.</p>
+                  <p className="py-8 text-center text-sm italic text-slate-400 font-medium">Aucune échéance ce jour.</p>
                 )}
                 {selectedDayEvents.map((event) => (
-                  <div key={event.id} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-950/55 px-4 py-3">
+                  <div key={event.id} className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 hover:bg-white hover:border-slate-200 transition-all">
                     <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${
-                      event.type === 'task' ? 'bg-emerald-500/15 text-emerald-300' : 'bg-violet-500/15 text-violet-300'
+                      event.type === 'task' ? 'bg-emerald-100 text-emerald-700' : 'bg-violet-100 text-violet-700'
                     }`}>
                       {event.type === 'task' ? <CheckCircle2 size={16} /> : <Briefcase size={16} />}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-white">{event.title}</p>
-                      <p className="text-[10px] uppercase tracking-[0.24em] text-slate-500">{event.status}</p>
+                      <p className="truncate text-sm font-bold text-slate-900">{event.title}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-slate-400">{event.status}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="rounded-3xl border border-cyan-400/20 bg-cyan-400/10 p-5 backdrop-blur-xl">
+            <div className="rounded-3xl border border-cyan-100 bg-cyan-50 p-5">
               <div className="flex items-center gap-2">
-                <Sparkles size={16} className="text-cyan-200" />
-                <p className="text-xs font-bold text-cyan-100">Astuce</p>
+                <Sparkles size={16} className="text-cyan-600" />
+                <p className="text-[10px] font-black uppercase tracking-wider text-cyan-700">Astuce</p>
               </div>
-              <p className="mt-2 text-sm leading-relaxed text-slate-200/80">
+              <p className="mt-2 text-sm leading-relaxed text-cyan-800 font-medium">
                 Ajoutez une date d'échéance à vos tâches et projets pour les voir apparaître ici automatiquement.
               </p>
             </div>
