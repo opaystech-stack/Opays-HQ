@@ -93,7 +93,6 @@ export default function TreasuryPage() {
           <div 
             onClick={() => {
               if (canEdit) {
-                setSelectedLog(null); // New or open list
                 setIsTxOpen(true);
               }
             }}
@@ -120,7 +119,7 @@ export default function TreasuryPage() {
               <div>
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Alliances actives ({partnerships.length})</h3>
-                  {canEdit && <button onClick={() => { setSelectedPartner(null); setIsPartnerOpen(true); }} className="text-cyan-600 hover:text-cyan-700"><Plus size={16} /></button>}
+                  {canEdit && <button onClick={() => { setIsPartnerOpen(true); }} className="text-cyan-600 hover:text-cyan-700"><Plus size={16} /></button>}
                 </div>
                 <div className="space-y-3">
                   {partnerships.map((partner) => (
@@ -128,7 +127,6 @@ export default function TreasuryPage() {
                       key={partner.id} 
                       onClick={() => {
                         if (canEdit) {
-                          setSelectedPartner(partner);
                           setIsPartnerOpen(true);
                         }
                       }}
@@ -152,7 +150,6 @@ export default function TreasuryPage() {
                       key={log.id} 
                       onClick={() => {
                         if (canEdit) {
-                          setSelectedLog(log);
                           setIsTxOpen(true);
                         }
                       }}
