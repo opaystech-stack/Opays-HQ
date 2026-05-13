@@ -35,6 +35,7 @@ export default function SettingsPage() {
   const [isDocsOpen, setIsDocsOpen] = useState(false);
   const [isEquityOpen, setIsEquityOpen] = useState(false);
   const [isAccessOpen, setIsAccessOpen] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<any>(null);
 
   const supabase = createClient();
 
@@ -131,7 +132,10 @@ export default function SettingsPage() {
                             {member.role}
                           </span>
                           <button 
-                            onClick={() => setIsAccessOpen(true)}
+                            onClick={() => {
+                              setSelectedMember(member);
+                              setIsAccessOpen(true);
+                            }}
                             className="rounded-xl border border-slate-100 bg-slate-50 p-2 text-slate-400 transition hover:bg-white hover:text-slate-900 hover:border-slate-200"
                           >
                             <Lock size={16} />
@@ -152,7 +156,10 @@ export default function SettingsPage() {
                       Les permissions sont basées sur le rôle (CEO, COO, CTO, SALES). Le CEO a un accès complet à la trésorerie et aux contrats.
                     </p>
                     <button 
-                      onClick={() => setIsAccessOpen(true)}
+                      onClick={() => {
+                        setSelectedMember(null); // Global settings or generic access matrix
+                        setIsAccessOpen(true);
+                      }}
                       className="mt-6 w-full rounded-2xl bg-white border border-indigo-200 py-3 text-[10px] font-black uppercase tracking-widest text-indigo-600 transition hover:bg-indigo-100"
                     >
                       Modifier la matrice d'accès
@@ -347,9 +354,9 @@ export default function SettingsPage() {
       </div>
 
       <InviteMemberModal isOpen={isInviteOpen} onClose={() => setIsInviteOpen(false)} onSuccess={fetchData} />
-      <AssociateDocumentsModal isOpen={isDocsOpen} onClose={() => setIsDocsOpen(false)} />
+      <AssociateDocumentsModal isOpen={isDocsOpen} onClose={() => setIsDocsOpen(false)} member={selectedMember} />
       <AssignEquityModal isOpen={isEquityOpen} onClose={() => setIsEquityOpen(false)} onSuccess={fetchData} />
-      <AccessControlModal isOpen={isAccessOpen} onClose={() => setIsAccessOpen(false)} />
+      <AccessControlModal isOpen={isAccessOpen} onClose={() => setIsAccessOpen(false)} member={selectedMember} />
     </div>
   );
 }

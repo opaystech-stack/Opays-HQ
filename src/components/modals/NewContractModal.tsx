@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { X, FileText, Link as LinkIcon, Calendar, Sparkles } from 'lucide-react';
+import { X, FileText, Link as LinkIcon, Calendar, Sparkles, Loader2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase';
 
 export default function NewContractModal({ isOpen, onClose, onSuccess }: { isOpen: boolean, onClose: () => void, onSuccess: () => void }) {
@@ -41,26 +41,26 @@ export default function NewContractModal({ isOpen, onClose, onSuccess }: { isOpe
     }
   };
 
-  const inputClass = "w-full rounded-2xl border border-white/10 bg-white/5 py-3 pl-10 pr-4 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-500/40";
+  const inputClass = "w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-10 pr-4 text-sm text-slate-900 outline-none transition focus:border-cyan-400/50 focus:bg-white focus:ring-4 focus:ring-cyan-50/50 font-medium";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-xl">
-      <div className="w-full max-w-md overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b1020]/95 shadow-2xl shadow-black/50">
-        <div className="flex items-center justify-between border-b border-white/10 p-5">
-          <h2 className="flex items-center gap-2 text-lg font-semibold text-white">
-            <FileText size={18} className="text-cyan-300" /> Nouveau contrat
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-md">
+      <div className="w-full max-w-md overflow-hidden rounded-[2.5rem] border border-slate-200 bg-white shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+        <div className="flex items-center justify-between border-b border-slate-100 p-6">
+          <h2 className="flex items-center gap-3 text-lg font-bold text-slate-900 uppercase tracking-tight">
+            <FileText size={20} className="text-cyan-600" /> Nouveau contrat
           </h2>
-          <button onClick={onClose} className="rounded-full p-2 text-slate-400 transition hover:bg-white/5 hover:text-white">
-            <X size={18} />
+          <button onClick={onClose} className="rounded-full p-2 text-slate-400 transition hover:bg-slate-50 hover:text-slate-900">
+            <X size={20} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 p-5">
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">Projet</label>
+        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+          <div className="space-y-2">
+            <label className="text-[10px] font-black uppercase tracking-[0.28em] text-slate-400 px-1">Projet associé</label>
             <select
               required
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-500/40"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-cyan-400/50 focus:bg-white font-medium appearance-none"
               value={formData.project_id}
               onChange={(e) => setFormData({ ...formData, project_id: e.target.value })}
             >
@@ -70,40 +70,41 @@ export default function NewContractModal({ isOpen, onClose, onSuccess }: { isOpe
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">Version</label>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-[0.28em] text-slate-400 px-1">Version</label>
               <input type="text" className={inputClass} value={formData.version} onChange={(e) => setFormData({ ...formData, version: e.target.value })} />
             </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">Date</label>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-[0.28em] text-slate-400 px-1">Date de signature</label>
               <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                 <input type="date" className={inputClass} value={formData.signed_at} onChange={(e) => setFormData({ ...formData, signed_at: e.target.value })} />
               </div>
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">Lien du document</label>
+          <div className="space-y-2">
+            <label className="text-[10px] font-black uppercase tracking-[0.28em] text-slate-400 px-1">Lien du document (Drive/Cloud)</label>
             <div className="relative">
-              <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+              <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
               <input required type="url" className={inputClass} placeholder="https://..." value={formData.url} onChange={(e) => setFormData({ ...formData, url: e.target.value })} />
             </div>
           </div>
 
-          <div className="rounded-2xl border border-cyan-500/10 bg-cyan-500/5 p-4 text-sm text-slate-300">
-            <div className="flex items-center gap-2 text-cyan-300">
-              <Sparkles size={16} /> Bon réflexe
+          <div className="rounded-2xl border border-cyan-100 bg-cyan-50/50 p-5 text-sm text-cyan-900/70">
+            <div className="flex items-center gap-2 text-cyan-600 font-bold uppercase tracking-widest text-[10px]">
+              <Sparkles size={14} /> Intelligence Documentaire
             </div>
-            <p className="mt-2 leading-relaxed">Le contrat doit toujours être relié au bon projet pour garder un suivi simple et clair.</p>
+            <p className="mt-2 leading-relaxed font-medium italic">Assurez-vous que le contrat est accessible par les parties prenantes autorisées.</p>
           </div>
 
-          <div className="flex gap-3 pt-2">
-            <button type="button" onClick={onClose} className="flex-1 rounded-2xl border border-white/10 bg-white/5 py-3 text-sm font-semibold text-slate-300 transition hover:bg-white/10">
+          <div className="flex gap-4 pt-4">
+            <button type="button" onClick={onClose} className="flex-1 rounded-2xl border border-slate-200 bg-white py-3.5 text-xs font-bold text-slate-500 transition hover:bg-slate-50">
               Annuler
             </button>
-            <button type="submit" disabled={loading} className="flex-[2] rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 transition hover:opacity-95 disabled:opacity-50">
-              {loading ? 'Ajout...' : 'Ajouter le contrat'}
+            <button type="submit" disabled={loading} className="flex-[2] rounded-2xl bg-cyan-600 py-3.5 text-xs font-bold text-white shadow-lg shadow-cyan-600/20 transition hover:bg-cyan-700 disabled:opacity-50 flex items-center justify-center gap-2">
+              {loading ? <Loader2 size={16} className="animate-spin" /> : <FileText size={16} />}
+              {loading ? 'Enregistrement...' : 'Ajouter le contrat'}
             </button>
           </div>
         </form>

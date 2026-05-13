@@ -14,7 +14,7 @@ const MODULES = [
   { id: 'audit', label: 'Audit IA', description: 'Lancer et consulter les audits IA' },
 ];
 
-export default function AccessControlModal({ isOpen, onClose, member }: { isOpen: boolean, onClose: () => void, member: any }) {
+export default function AccessControlModal({ isOpen, onClose, member }: { isOpen: boolean, onClose: () => void, member?: any | null }) {
   const [loading, setLoading] = useState(false);
   const [permissions, setPermissions] = useState<Record<string, boolean>>({});
   const supabase = createClient();
