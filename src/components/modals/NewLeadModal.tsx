@@ -61,68 +61,67 @@ export default function NewLeadModal({ isOpen, onClose, onSuccess, lead }: { isO
     else { alert(`Erreur lors de la ${lead ? 'modification' : 'création'} du lead`); }
   };
 
-  const inputClass = "w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 pl-10 pr-4 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-all text-sm";
-  const darkInputClass = "w-full rounded-2xl border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-slate-100 outline-none transition focus:border-cyan-500/40 focus:ring-2 focus:ring-cyan-500/10";
+  const inputClass = "w-full rounded-2xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-slate-900 outline-none transition focus:border-cyan-400/50 focus:bg-white focus:ring-4 focus:ring-cyan-50/50 text-sm font-medium";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xl">
-      <div className="w-full max-w-lg overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b1020]/95 shadow-2xl shadow-black/50">
-        <div className="flex items-center justify-between border-b border-white/10 p-5">
-          <h2 className="flex items-center gap-2 text-lg font-semibold text-white">
-            <Building2 size={18} className="text-cyan-300" /> {lead ? 'Modifier le Prospect' : 'Nouveau Prospect'}
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-md">
+      <div className="w-full max-w-lg overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+        <div className="flex items-center justify-between border-b border-slate-100 p-5">
+          <h2 className="flex items-center gap-2 text-lg font-bold text-slate-900">
+            <Building2 size={18} className="text-cyan-600" /> {lead ? 'Modifier le Prospect' : 'Nouveau Prospect'}
           </h2>
-          <button onClick={onClose} className="rounded-full p-2 text-slate-400 transition hover:bg-white/5 hover:text-white">
+          <button onClick={onClose} className="rounded-full p-2 text-slate-400 transition hover:bg-slate-50 hover:text-slate-900">
             <X size={18} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 p-5">
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wide text-slate-400">Entreprise *</label>
+            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 px-1">Entreprise *</label>
             <div className="relative">
-              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
-              <input required type="text" className={darkInputClass} placeholder="Nom de la société" value={formData.company_name} onChange={(e) => setFormData({...formData, company_name: e.target.value})} />
+              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+              <input required type="text" className={inputClass} placeholder="Nom de la société" value={formData.company_name} onChange={(e) => setFormData({...formData, company_name: e.target.value})} />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wide text-slate-400">Contact</label>
+              <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 px-1">Contact</label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
-                <input type="text" className={darkInputClass} placeholder="Nom du contact" value={formData.contact_name} onChange={(e) => setFormData({...formData, contact_name: e.target.value})} />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                <input type="text" className={inputClass} placeholder="Nom du contact" value={formData.contact_name} onChange={(e) => setFormData({...formData, contact_name: e.target.value})} />
               </div>
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wide text-slate-400">Valeur Est. ($)</label>
+              <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 px-1">Valeur Est. ($)</label>
               <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
-                <input type="number" className={darkInputClass} placeholder="0" value={formData.potential_value} onChange={(e) => setFormData({...formData, potential_value: Number(e.target.value)})} />
+                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                <input type="number" className={inputClass} placeholder="0" value={formData.potential_value} onChange={(e) => setFormData({...formData, potential_value: Number(e.target.value)})} />
               </div>
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wide text-slate-400">Email</label>
+            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 px-1">Email</label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
-              <input type="email" className={darkInputClass} placeholder="email@exemple.com" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+              <input type="email" className={inputClass} placeholder="email@exemple.com" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wide text-slate-400">Téléphone</label>
+            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 px-1">Téléphone</label>
             <div className="relative">
-              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
-              <input type="tel" className={darkInputClass} placeholder="+243 ..." value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} />
+              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+              <input type="tel" className={inputClass} placeholder="+243 ..." value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} />
             </div>
           </div>
 
           <div className="flex gap-3 pt-3">
-            <button type="button" onClick={onClose} className="flex-1 rounded-2xl border border-white/10 bg-white/5 py-2.5 text-sm font-semibold text-slate-300 transition hover:bg-white/10">
+            <button type="button" onClick={onClose} className="flex-1 rounded-2xl border border-slate-200 bg-white py-2.5 text-sm font-bold text-slate-500 transition hover:bg-slate-50">
               Annuler
             </button>
-            <button type="submit" disabled={loading} className="flex-[2] rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 py-2.5 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 transition hover:opacity-95 disabled:opacity-50">
+            <button type="submit" disabled={loading} className="flex-[2] rounded-2xl bg-cyan-600 py-2.5 text-sm font-bold text-white shadow-lg shadow-cyan-500/20 transition hover:bg-cyan-700 disabled:opacity-50">
               {loading ? (lead ? 'Modification...' : 'Création...') : (lead ? 'Enregistrer' : 'Créer le Lead')}
             </button>
           </div>
