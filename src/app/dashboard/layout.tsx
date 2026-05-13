@@ -3,7 +3,7 @@ import { createServerSupabaseClient } from '@/lib/supabase-server';
 import Sidebar from '@/components/Sidebar';
 import ClientSearchWrapper from '@/components/ClientSearchWrapper';
 import { ProfileProvider } from '@/lib/ProfileProvider';
-import AIChatbot from '@/components/AIChatbot';
+import AIChatbotIsland from '@/components/AIChatbotIsland';
 
 export default async function DashboardLayout({
   children,
@@ -32,7 +32,7 @@ export default async function DashboardLayout({
         <main className="relative z-10 flex-1 min-w-0 overflow-x-hidden overflow-y-auto">
           {children}
         </main>
-        <AIChatbot />
+        <AIChatbotIsland />
       </div>
     </ProfileProvider>
   );

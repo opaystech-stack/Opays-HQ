@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { createClient } from '@/lib/supabase';
 import { ArrowRight, BarChart3, Briefcase, CheckSquare, Compass, Sparkles, TrendingUp, Users, Zap } from 'lucide-react';
 import ActivityFeed from '@/components/ActivityFeed';
 import { useProfile } from '@/lib/ProfileProvider';
@@ -15,6 +14,26 @@ type StatCardProps = {
   href: string;
   accent: string;
   description: string;
+};
+
+export type DashboardStats = {
+  pipeline: number;
+  leads: number;
+  audits: number;
+  vesting: number;
+  projects: number;
+  tasks: number;
+  studioShare: number;
+  labsShare: number;
+};
+
+export type DashboardProject = {
+  id: string;
+  title: string;
+  status: string | null;
+  due_date: string | null;
+  branch: string | null;
+  leads?: { company_name?: string | null } | null;
 };
 
 const CapacityBar = ({ label, current, target, accent }: { label: string; current: number; target: number; accent: string; }) => (
@@ -54,54 +73,16 @@ const StatCard = ({ title, value, icon, href, accent, description }: StatCardPro
   </Link>
 );
 
-export default function DashboardOverview() {
+export default function DashboardOverview({
+  initialStats,
+  initialProjects,
+}: {
+  initialStats: DashboardStats;
+  initialProjects: DashboardProject[];
+}) {
   const { profile } = useProfile();
-  const [stats, setStats] = useState({
-    pipeline: 0,
-    leads: 0,
-    audits: 0,
-    vesting: 0,
-    projects: 0,
-    tasks: 0,
-    studioShare: 0,
-    labsShare: 0,
-  });
-  const [projects, setProjects] = useState<any[]>([]);
-  const supabase = useMemo(() => createClient(), []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data: leads } = await supabase.from('leads').select('potential_value, status');
-      const pipelineValue = leads?.reduce((acc, lead) => acc + (lead.potential_value || 0), 0) || 0;
-      const auditCount = leads?.filter((lead) => lead.status === 'AUDIT_PENDING').length || 0;
-
-      const { data: projectsData } = await supabase.from('projects').select('id, title, status, due_date, branch, leads(company_name)').order('created_at', { ascending: false }).limit(5);
-      const { data: allProjects } = await supabase.from('projects').select('id, branch');
-      const { data: taskData } = await supabase.from('tasks').select('id, status');
-      const { data: logs } = await supabase.from('equity_vesting_logs').select('shares_unlocked');
-
-      const totalVested = logs?.reduce((acc, log) => acc + (log.shares_unlocked || 0), 0) || 0;
-      const studioCount = allProjects?.filter((project) => project.branch === 'STUDIO').length || 0;
-      const labsCount = allProjects?.filter((project) => project.branch === 'LABS').length || 0;
-      const totalCount = Math.max(allProjects?.length || 0, 1);
-
-      setStats({
-        pipeline: pipelineValue,
-        leads: leads?.length || 0,
-        audits: auditCount,
-        vesting: totalVested,
-        projects: allProjects?.length || 0,
-        tasks: taskData?.filter((task) => task.status !== 'DONE').length || 0,
-        studioShare: Math.round((studioCount / totalCount) * 100),
-        labsShare: Math.round((labsCount / totalCount) * 100),
-      });
-
-      if (projectsData) setProjects(projectsData);
-    };
-
-    fetchData();
-  }, [supabase]);
-
+  const stats = initialStats;
+  const projects = initialProjects;
   const roleLabel = profile?.role || 'Équipe';
 
   return (
