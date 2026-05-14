@@ -45,19 +45,8 @@ export default function AccessControlModal({ isOpen, onClose, member }: { isOpen
 
   useEffect(() => {
     if (member) {
-      // Initialiser avec les permissions existantes, ou déduire depuis le rôle
       const existing = member.permissions && typeof member.permissions === 'object' ? member.permissions : {};
-      const defaults: Record<string, boolean> = {};
-
-      MODULES.forEach(mod => {
-        if (existing[mod.id] !== undefined) {
-          defaults[mod.id] = existing[mod.id];
-        } else {
-          defaults[mod.id] = false;
-        }
-      });
-
-      setPermissions(defaults);
+      setPermissions(existing);
     }
   }, [member]);
 
@@ -135,7 +124,7 @@ export default function AccessControlModal({ isOpen, onClose, member }: { isOpen
           <div className="p-3 bg-indigo-50/50 border border-indigo-100/50 rounded-2xl flex gap-3">
             <AlertCircle className="text-indigo-600 shrink-0 mt-0.5" size={16} />
             <p className="text-[10px] text-indigo-900/60 leading-relaxed font-medium">
-              Outrepassez les droits par défaut liés au rôle. Décocher un module le masquera de la navigation du membre.
+              Ajoutez des droits spécifiques au rôle du membre. Une permission refusée explicitement reste prioritaire sur les droits par défaut.
             </p>
           </div>
         </div>
@@ -152,7 +141,7 @@ export default function AccessControlModal({ isOpen, onClose, member }: { isOpen
                 <div className="space-y-2">
                   {categoryModules.map((mod) => {
                     const Icon = mod.icon;
-                    const isEnabled = permissions[mod.id];
+                    const isEnabled = permissions[mod.id] === true;
                     const canGrant = canGrantModulePermission(actorProfile, member, mod.id);
 
                     return (

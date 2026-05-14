@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, BarChart3, Briefcase, CheckSquare, Compass, Sparkles, TrendingUp, Users, Zap } from 'lucide-react';
 import ActivityFeed from '@/components/ActivityFeed';
 import { useProfile } from '@/lib/ProfileProvider';
+import { canAccessModule } from '@/lib/rbac';
 
 type StatCardProps = {
   title: string;
@@ -84,6 +85,7 @@ export default function DashboardOverview({
   const stats = initialStats;
   const projects = initialProjects;
   const roleLabel = profile?.role || 'Équipe';
+  const canSeeProjects = canAccessModule(profile, 'projects');
 
   return (
     <div className="relative min-h-full px-6 py-8 text-slate-900 lg:px-8 bg-[#f8f9fb]">
@@ -120,38 +122,46 @@ export default function DashboardOverview({
         </header>
 
         <section className="grid grid-cols-1 gap-5 lg:grid-cols-2 2xl:grid-cols-4">
-          <StatCard
-            title="Prospects"
-            value={stats.leads}
-            icon={<Users size={20} />}
-            href="/dashboard/leads"
-            accent="from-cyan-500 via-cyan-400 to-transparent"
-            description="Base commerciale active et flux de qualification."
-          />
-          <StatCard
-            title="Projets"
-            value={stats.projects}
-            icon={<Briefcase size={20} />}
-            href="/dashboard/projects"
-            accent="from-indigo-500 via-indigo-400 to-transparent"
-            description="Livraisons clients et initiatives internes."
-          />
-          <StatCard
-            title="Tâches"
-            value={stats.tasks}
-            icon={<CheckSquare size={20} />}
-            href="/dashboard/tasks"
-            accent="from-emerald-500 via-emerald-400 to-transparent"
-            description="Charge active sur l'équipe opérationnelle."
-          />
-          <StatCard
-            title="Audits IA"
-            value={stats.audits}
-            icon={<Zap size={20} />}
-            href="/dashboard/audit"
-            accent="from-fuchsia-500 via-fuchsia-400 to-transparent"
-            description="Analyses en cours et opportunités d'optimisation."
-          />
+          {canAccessModule(profile, 'leads') && (
+            <StatCard
+              title="Prospects"
+              value={stats.leads}
+              icon={<Users size={20} />}
+              href="/dashboard/leads"
+              accent="from-cyan-500 via-cyan-400 to-transparent"
+              description="Base commerciale active et flux de qualification."
+            />
+          )}
+          {canAccessModule(profile, 'projects') && (
+            <StatCard
+              title="Projets"
+              value={stats.projects}
+              icon={<Briefcase size={20} />}
+              href="/dashboard/projects"
+              accent="from-indigo-500 via-indigo-400 to-transparent"
+              description="Livraisons clients et initiatives internes."
+            />
+          )}
+          {canAccessModule(profile, 'tasks') && (
+            <StatCard
+              title="Tâches"
+              value={stats.tasks}
+              icon={<CheckSquare size={20} />}
+              href="/dashboard/tasks"
+              accent="from-emerald-500 via-emerald-400 to-transparent"
+              description="Charge active sur l'équipe opérationnelle."
+            />
+          )}
+          {canAccessModule(profile, 'audit') && (
+            <StatCard
+              title="Audits IA"
+              value={stats.audits}
+              icon={<Zap size={20} />}
+              href="/dashboard/audit"
+              accent="from-fuchsia-500 via-fuchsia-400 to-transparent"
+              description="Analyses en cours et opportunités d'optimisation."
+            />
+          )}
         </section>
 
         <section className="grid grid-cols-1 gap-6 xl:grid-cols-[1.35fr_0.65fr]">
@@ -161,13 +171,15 @@ export default function DashboardOverview({
                 <h2 className="text-lg font-semibold text-slate-900">Projets récents</h2>
                 <p className="mt-1 text-xs uppercase tracking-[0.25em] text-slate-400 font-bold">Flux de livraison</p>
               </div>
-              <Link href="/dashboard/projects" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-100">
-                Tout voir <ArrowRight size={14} />
-              </Link>
+              {canSeeProjects && (
+                <Link href="/dashboard/projects" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-100">
+                  Tout voir <ArrowRight size={14} />
+                </Link>
+              )}
             </div>
 
             <div className="space-y-3">
-              {projects.map((project) => (
+              {canSeeProjects && projects.map((project) => (
                 <Link
                   key={project.id}
                   href={`/dashboard/projects/${project.id}`}
@@ -184,9 +196,14 @@ export default function DashboardOverview({
                   </span>
                 </Link>
               ))}
-              {projects.length === 0 && (
+              {canSeeProjects && projects.length === 0 && (
                 <div className="rounded-2xl border border-dashed border-slate-200 px-6 py-12 text-center text-sm text-slate-400">
                   Aucun projet actif pour le moment.
+                </div>
+              )}
+              {!canSeeProjects && (
+                <div className="rounded-2xl border border-dashed border-slate-200 px-6 py-12 text-center text-sm text-slate-400">
+                  Accès projets non activé.
                 </div>
               )}
             </div>
@@ -233,7 +250,7 @@ export default function DashboardOverview({
                   { href: '/dashboard/tasks', label: 'Kanban', moduleId: 'tasks' },
                   { href: '/dashboard/treasury', label: 'Trésorerie', moduleId: 'treasury' },
                   { href: '/dashboard/settings', label: 'Pilotage', moduleId: 'settings' },
-                ].filter((item) => profile?.is_admin || profile?.permissions?.[item.moduleId]).map((item) => (
+                ].filter((item) => canAccessModule(profile, item.moduleId)).map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
