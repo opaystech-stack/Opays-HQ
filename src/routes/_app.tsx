@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, Link, useLocation, redirect } from '@tanstack/react-router';
 import { useUser } from '@/hooks/useUser';
-import { can } from '@/lib/rbac';
+import { getCurrentUser } from '@/lib/auth';
 import {
   LayoutDashboard,
   ListTodo,
@@ -10,7 +10,14 @@ import {
   BookOpen,
   Bot,
   Settings,
-  Shield,
+  Briefcase,
+  CalendarDays,
+  Lightbulb,
+  Archive,
+  Globe,
+  BarChart3,
+  ClipboardList,
+  UserCircle,
   LogOut,
   ChevronDown,
 } from 'lucide-react';
@@ -18,8 +25,11 @@ import { useState } from 'react';
 
 export const Route = createFileRoute('/_app')({
   component: AppLayout,
-  beforeLoad: async ({ context }) => {
-    if (!context.user) {
+  // Garde d'authentification réelle : on vérifie la session côté serveur
+  // (token + /api/auth/me) avant de rendre la moindre page sous /app/*.
+  beforeLoad: async () => {
+    const user = await getCurrentUser();
+    if (!user) {
       throw redirect({ to: '/login' });
     }
   },
@@ -32,13 +42,17 @@ const NAV_ITEMS = [
       { to: '/app/dashboard', label: 'Tableau de bord', icon: LayoutDashboard, roles: null },
       { to: '/app/tasks', label: 'Tâches', icon: ListTodo, roles: null },
       { to: '/app/projects', label: 'Projets', icon: FolderKanban, roles: null },
+      { to: '/app/calendar', label: 'Calendrier', icon: CalendarDays, roles: null },
+      { to: '/app/ideas', label: 'Boîte à idées', icon: Lightbulb, roles: null },
     ],
   },
   {
     section: 'Gestion',
     items: [
+      { to: '/app/leads', label: 'CRM / Leads', icon: Briefcase, roles: ['admin', 'ceo', 'coo', 'cto', 'sales'] },
       { to: '/app/treasury', label: 'Trésorerie', icon: Landmark, roles: ['admin', 'ceo', 'coo'] },
       { to: '/app/rh', label: 'RH', icon: Users, roles: ['admin', 'ceo', 'coo'] },
+      { to: '/app/vault', label: 'Coffre-fort', icon: Archive, roles: ['admin', 'ceo', 'coo', 'cto', 'sales'] },
       { to: '/app/knowledge', label: 'Knowledge', icon: BookOpen, roles: null },
     ],
   },
@@ -46,13 +60,21 @@ const NAV_ITEMS = [
     section: 'Intelligence',
     items: [
       { to: '/app/agents', label: 'Agents IA', icon: Bot, roles: null },
+      { to: '/app/sovereign', label: 'Souveraineté', icon: Globe, roles: null },
     ],
   },
   {
-    section: 'Administration',
+    section: 'Direction',
     items: [
-      { to: '/app/admin/users', label: 'Utilisateurs', icon: Shield, roles: ['admin', 'ceo', 'coo'] },
-      { to: '/app/admin/agents', label: 'Config Agents', icon: Settings, roles: ['admin', 'ceo', 'coo'] },
+      { to: '/app/business', label: 'Business', icon: BarChart3, roles: ['ceo', 'cto', 'coo'] },
+      { to: '/app/job-descriptions', label: 'Fiches de poste', icon: ClipboardList, roles: ['ceo', 'cto'] },
+      { to: '/app/settings', label: 'Paramètres', icon: Settings, roles: ['ceo', 'cto'] },
+    ],
+  },
+  {
+    section: 'Compte',
+    items: [
+      { to: '/app/profile', label: 'Mon profil', icon: UserCircle, roles: null },
     ],
   },
 ];

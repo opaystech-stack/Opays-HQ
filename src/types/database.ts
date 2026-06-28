@@ -93,3 +93,23 @@ export type Resource =
   | 'agents.use'
   | 'admin.users'
   | 'admin.invitations';
+
+export type LeadStatus = 'new' | 'contacted' | 'audit' | 'proposal' | 'won' | 'lost';
+
+export interface Lead {
+  id: string;
+  company_name: string;
+  contact_name: string | null;
+  email: string | null;
+  phone: string | null;
+  estimated_value: number | null;
+  status: LeadStatus;
+  priority: TaskPriority;
+  assignee_id: string | null;
+  assignee_name: string | null;
+  notes: string | null;
+  converted_project_id: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}

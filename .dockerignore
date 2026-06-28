@@ -1,0 +1,20 @@
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+dist-server
+
+# Local data and SQLite databases
+data
+*.db*
+
+# Version control and tooling metadata
+.git
+.kiro
+
+# Environment files (secrets injected at runtime)
+.env*
+
+# Standalone nginx config — not part of the container runtime
+nginx.conf

@@ -1,0 +1,41 @@
+# Opays HQ — Configuration Dokploy
+# Canonical, version-controlled record of the Dokploy dashboard configuration.
+# Dokploy does not auto-load this file for a Dockerfile Application; the operator
+# transcribes these fields into the dashboard. This file is the source of truth.
+app:
+  name: opays-hq
+  type: dockerfile
+  port: 3001
+  build:
+    dockerfile: Dockerfile
+  healthCheck:
+    path: /api/health
+    interval: 30  # seconds
+    timeout: 10   # seconds
+    retries: 3
+  domains:
+    - host: hq.opays.io
+      https: true            # TLS termination at Traefik (Let's Encrypt / ACME)
+      certificateProvider: letsencrypt
+      redirectHttpToHttps: true  # permanent HTTP -> HTTPS redirect
+  environment:
+    # ─── Runtime ───────────────────────────────────────────
+    - NODE_ENV=production
+    - PORT=3001
+    - DATA_DIR=/app/data
+    # ─── Secrets applicatifs (substitution depuis les secrets Dokploy) ────
+    # Les valeurs ne sont JAMAIS committées : seuls les noms figurent ici.
+    - JWT_SECRET=${JWT_SECRET}
+    - TOKEN_ENCRYPTION_KEY=${TOKEN_ENCRYPTION_KEY}
+    # ─── Google OAuth / Workspace ─────────────────────────
+    - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+    - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+    - GOOGLE_REDIRECT_URI=https://hq.opays.io/api/auth/google/callback
+    - APP_URL=https://hq.opays.io
+    # ─── Agents IA (OpenRouter) ───────────────────────────
+    - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+    - OPENROUTER_MODEL=google/gemini-2.5-flash
+  volumes:
+    # Durable host volume mounted read-write so SQLite data survives redeploys.
+    # La base vit dans DATA_DIR (/app/data) ; le volume garantit sa persistance.
+    - /data/opays-hq:/app/data:rw

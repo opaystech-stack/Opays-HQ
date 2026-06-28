@@ -5,9 +5,9 @@ import { getArticles, createArticle } from '../models';
 const router = Router();
 router.use(authMiddleware);
 
-// GET /api/knowledge
+// GET /api/knowledge — filtré par rôle côté serveur.
 router.get('/', (req: AuthRequest, res) => {
-  const articles = getArticles();
+  const articles = getArticles(req.user!.role_name);
   res.json({ articles });
 });
 

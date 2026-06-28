@@ -1,4 +1,4 @@
-import { apiLogin, apiRegister, apiGetMe } from './api';
+import { apiLogin, apiRegister, apiGetMe, apiLogout } from './api';
 
 export interface AuthUser {
   id: string;
@@ -10,34 +10,30 @@ export interface AuthUser {
   is_active: boolean;
 }
 
-export async function getCurrentUser(): Promise<AuthUser | null> {
-  const token = localStorage.getItem('token');
-  if (!token) return null;
+// L'authentification repose sur un cookie de session HttpOnly posé par le backend.
+// On ne stocke plus aucun jeton dans localStorage (protection contre le vol par XSS).
 
+export async function getCurrentUser(): Promise<AuthUser | null> {
   const { data, error } = await apiGetMe();
   if (error || !data) {
-    localStorage.removeItem('token');
     return null;
   }
   return data.user;
 }
 
-export async function signIn(email: string, password: string): Promise<{ user: AuthUser; token: string } | { error: string }> {
+export async function signIn(email: string, password: string): Promise<{ user: AuthUser } | { error: string }> {
   const { data, error } = await apiLogin(email, password);
   if (error || !data) return { error: error || 'Erreur de connexion' };
-
-  localStorage.setItem('token', data.token);
-  return { user: data.user, token: data.token };
+  // Le cookie de session est posé par le backend ; rien à stocker côté client.
+  return { user: data.user };
 }
 
-export async function signUp(email: string, password: string, fullName?: string, roleName?: string): Promise<{ user: AuthUser; token: string } | { error: string }> {
+export async function signUp(email: string, password: string, fullName?: string, roleName?: string): Promise<{ user: AuthUser } | { error: string }> {
   const { data, error } = await apiRegister(email, password, fullName, roleName);
   if (error || !data) return { error: error || "Erreur d'inscription" };
-
-  localStorage.setItem('token', data.token);
-  return { user: data.user, token: data.token };
+  return { user: data.user };
 }
 
 export async function signOut() {
-  localStorage.removeItem('token');
+  await apiLogout();
 }

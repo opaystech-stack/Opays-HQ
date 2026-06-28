@@ -5,7 +5,7 @@ import { ListTodo, FolderKanban, Landmark, Bot, TrendingUp, Users } from 'lucide
 import { useState, useEffect } from 'react';
 import { apiGetDashboardStats } from '@/lib/api';
 
-export const Route = createFileRoute('/app/dashboard')({
+export const Route = createFileRoute('/_app/app/dashboard')({
   component: DashboardPage,
 });
 

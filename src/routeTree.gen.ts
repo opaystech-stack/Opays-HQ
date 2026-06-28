@@ -11,13 +11,22 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
-import { Route as AppTreasuryRouteImport } from './routes/app.treasury'
-import { Route as AppTasksRouteImport } from './routes/app.tasks'
-import { Route as AppRhRouteImport } from './routes/app.rh'
-import { Route as AppProjectsRouteImport } from './routes/app.projects'
-import { Route as AppKnowledgeRouteImport } from './routes/app.knowledge'
-import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
-import { Route as AppAgentsRouteImport } from './routes/app.agents'
+import { Route as AppAppVaultRouteImport } from './routes/_app.app.vault'
+import { Route as AppAppTreasuryRouteImport } from './routes/_app.app.treasury'
+import { Route as AppAppTasksRouteImport } from './routes/_app.app.tasks'
+import { Route as AppAppSovereignRouteImport } from './routes/_app.app.sovereign'
+import { Route as AppAppSettingsRouteImport } from './routes/_app.app.settings'
+import { Route as AppAppRhRouteImport } from './routes/_app.app.rh'
+import { Route as AppAppProjectsRouteImport } from './routes/_app.app.projects'
+import { Route as AppAppProfileRouteImport } from './routes/_app.app.profile'
+import { Route as AppAppLeadsRouteImport } from './routes/_app.app.leads'
+import { Route as AppAppKnowledgeRouteImport } from './routes/_app.app.knowledge'
+import { Route as AppAppJobDescriptionsRouteImport } from './routes/_app.app.job-descriptions'
+import { Route as AppAppIdeasRouteImport } from './routes/_app.app.ideas'
+import { Route as AppAppDashboardRouteImport } from './routes/_app.app.dashboard'
+import { Route as AppAppCalendarRouteImport } from './routes/_app.app.calendar'
+import { Route as AppAppBusinessRouteImport } from './routes/_app.app.business'
+import { Route as AppAppAgentsRouteImport } from './routes/_app.app.agents'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -28,75 +37,147 @@ const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppTreasuryRoute = AppTreasuryRouteImport.update({
+const AppAppVaultRoute = AppAppVaultRouteImport.update({
+  id: '/app/vault',
+  path: '/app/vault',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppTreasuryRoute = AppAppTreasuryRouteImport.update({
   id: '/app/treasury',
   path: '/app/treasury',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
 } as any)
-const AppTasksRoute = AppTasksRouteImport.update({
+const AppAppTasksRoute = AppAppTasksRouteImport.update({
   id: '/app/tasks',
   path: '/app/tasks',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
 } as any)
-const AppRhRoute = AppRhRouteImport.update({
+const AppAppSovereignRoute = AppAppSovereignRouteImport.update({
+  id: '/app/sovereign',
+  path: '/app/sovereign',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppSettingsRoute = AppAppSettingsRouteImport.update({
+  id: '/app/settings',
+  path: '/app/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppRhRoute = AppAppRhRouteImport.update({
   id: '/app/rh',
   path: '/app/rh',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
 } as any)
-const AppProjectsRoute = AppProjectsRouteImport.update({
+const AppAppProjectsRoute = AppAppProjectsRouteImport.update({
   id: '/app/projects',
   path: '/app/projects',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
 } as any)
-const AppKnowledgeRoute = AppKnowledgeRouteImport.update({
+const AppAppProfileRoute = AppAppProfileRouteImport.update({
+  id: '/app/profile',
+  path: '/app/profile',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppLeadsRoute = AppAppLeadsRouteImport.update({
+  id: '/app/leads',
+  path: '/app/leads',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppKnowledgeRoute = AppAppKnowledgeRouteImport.update({
   id: '/app/knowledge',
   path: '/app/knowledge',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
 } as any)
-const AppDashboardRoute = AppDashboardRouteImport.update({
+const AppAppJobDescriptionsRoute = AppAppJobDescriptionsRouteImport.update({
+  id: '/app/job-descriptions',
+  path: '/app/job-descriptions',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppIdeasRoute = AppAppIdeasRouteImport.update({
+  id: '/app/ideas',
+  path: '/app/ideas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppDashboardRoute = AppAppDashboardRouteImport.update({
   id: '/app/dashboard',
   path: '/app/dashboard',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
 } as any)
-const AppAgentsRoute = AppAgentsRouteImport.update({
+const AppAppCalendarRoute = AppAppCalendarRouteImport.update({
+  id: '/app/calendar',
+  path: '/app/calendar',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppBusinessRoute = AppAppBusinessRouteImport.update({
+  id: '/app/business',
+  path: '/app/business',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppAgentsRoute = AppAppAgentsRouteImport.update({
   id: '/app/agents',
   path: '/app/agents',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AppRoute
+  '/': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
-  '/app/agents': typeof AppAgentsRoute
-  '/app/dashboard': typeof AppDashboardRoute
-  '/app/knowledge': typeof AppKnowledgeRoute
-  '/app/projects': typeof AppProjectsRoute
-  '/app/rh': typeof AppRhRoute
-  '/app/tasks': typeof AppTasksRoute
-  '/app/treasury': typeof AppTreasuryRoute
+  '/app/agents': typeof AppAppAgentsRoute
+  '/app/business': typeof AppAppBusinessRoute
+  '/app/calendar': typeof AppAppCalendarRoute
+  '/app/dashboard': typeof AppAppDashboardRoute
+  '/app/ideas': typeof AppAppIdeasRoute
+  '/app/job-descriptions': typeof AppAppJobDescriptionsRoute
+  '/app/knowledge': typeof AppAppKnowledgeRoute
+  '/app/leads': typeof AppAppLeadsRoute
+  '/app/profile': typeof AppAppProfileRoute
+  '/app/projects': typeof AppAppProjectsRoute
+  '/app/rh': typeof AppAppRhRoute
+  '/app/settings': typeof AppAppSettingsRoute
+  '/app/sovereign': typeof AppAppSovereignRoute
+  '/app/tasks': typeof AppAppTasksRoute
+  '/app/treasury': typeof AppAppTreasuryRoute
+  '/app/vault': typeof AppAppVaultRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof AppRoute
+  '/': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
-  '/app/agents': typeof AppAgentsRoute
-  '/app/dashboard': typeof AppDashboardRoute
-  '/app/knowledge': typeof AppKnowledgeRoute
-  '/app/projects': typeof AppProjectsRoute
-  '/app/rh': typeof AppRhRoute
-  '/app/tasks': typeof AppTasksRoute
-  '/app/treasury': typeof AppTreasuryRoute
+  '/app/agents': typeof AppAppAgentsRoute
+  '/app/business': typeof AppAppBusinessRoute
+  '/app/calendar': typeof AppAppCalendarRoute
+  '/app/dashboard': typeof AppAppDashboardRoute
+  '/app/ideas': typeof AppAppIdeasRoute
+  '/app/job-descriptions': typeof AppAppJobDescriptionsRoute
+  '/app/knowledge': typeof AppAppKnowledgeRoute
+  '/app/leads': typeof AppAppLeadsRoute
+  '/app/profile': typeof AppAppProfileRoute
+  '/app/projects': typeof AppAppProjectsRoute
+  '/app/rh': typeof AppAppRhRoute
+  '/app/settings': typeof AppAppSettingsRoute
+  '/app/sovereign': typeof AppAppSovereignRoute
+  '/app/tasks': typeof AppAppTasksRoute
+  '/app/treasury': typeof AppAppTreasuryRoute
+  '/app/vault': typeof AppAppVaultRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_app': typeof AppRoute
+  '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
-  '/app/agents': typeof AppAgentsRoute
-  '/app/dashboard': typeof AppDashboardRoute
-  '/app/knowledge': typeof AppKnowledgeRoute
-  '/app/projects': typeof AppProjectsRoute
-  '/app/rh': typeof AppRhRoute
-  '/app/tasks': typeof AppTasksRoute
-  '/app/treasury': typeof AppTreasuryRoute
+  '/_app/app/agents': typeof AppAppAgentsRoute
+  '/_app/app/business': typeof AppAppBusinessRoute
+  '/_app/app/calendar': typeof AppAppCalendarRoute
+  '/_app/app/dashboard': typeof AppAppDashboardRoute
+  '/_app/app/ideas': typeof AppAppIdeasRoute
+  '/_app/app/job-descriptions': typeof AppAppJobDescriptionsRoute
+  '/_app/app/knowledge': typeof AppAppKnowledgeRoute
+  '/_app/app/leads': typeof AppAppLeadsRoute
+  '/_app/app/profile': typeof AppAppProfileRoute
+  '/_app/app/projects': typeof AppAppProjectsRoute
+  '/_app/app/rh': typeof AppAppRhRoute
+  '/_app/app/settings': typeof AppAppSettingsRoute
+  '/_app/app/sovereign': typeof AppAppSovereignRoute
+  '/_app/app/tasks': typeof AppAppTasksRoute
+  '/_app/app/treasury': typeof AppAppTreasuryRoute
+  '/_app/app/vault': typeof AppAppVaultRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -104,46 +185,66 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/app/agents'
+    | '/app/business'
+    | '/app/calendar'
     | '/app/dashboard'
+    | '/app/ideas'
+    | '/app/job-descriptions'
     | '/app/knowledge'
+    | '/app/leads'
+    | '/app/profile'
     | '/app/projects'
     | '/app/rh'
+    | '/app/settings'
+    | '/app/sovereign'
     | '/app/tasks'
     | '/app/treasury'
+    | '/app/vault'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/app/agents'
+    | '/app/business'
+    | '/app/calendar'
     | '/app/dashboard'
+    | '/app/ideas'
+    | '/app/job-descriptions'
     | '/app/knowledge'
+    | '/app/leads'
+    | '/app/profile'
     | '/app/projects'
     | '/app/rh'
+    | '/app/settings'
+    | '/app/sovereign'
     | '/app/tasks'
     | '/app/treasury'
+    | '/app/vault'
   id:
     | '__root__'
     | '/_app'
     | '/login'
-    | '/app/agents'
-    | '/app/dashboard'
-    | '/app/knowledge'
-    | '/app/projects'
-    | '/app/rh'
-    | '/app/tasks'
-    | '/app/treasury'
+    | '/_app/app/agents'
+    | '/_app/app/business'
+    | '/_app/app/calendar'
+    | '/_app/app/dashboard'
+    | '/_app/app/ideas'
+    | '/_app/app/job-descriptions'
+    | '/_app/app/knowledge'
+    | '/_app/app/leads'
+    | '/_app/app/profile'
+    | '/_app/app/projects'
+    | '/_app/app/rh'
+    | '/_app/app/settings'
+    | '/_app/app/sovereign'
+    | '/_app/app/tasks'
+    | '/_app/app/treasury'
+    | '/_app/app/vault'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AppRoute: typeof AppRoute
+  AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
-  AppAgentsRoute: typeof AppAgentsRoute
-  AppDashboardRoute: typeof AppDashboardRoute
-  AppKnowledgeRoute: typeof AppKnowledgeRoute
-  AppProjectsRoute: typeof AppProjectsRoute
-  AppRhRoute: typeof AppRhRoute
-  AppTasksRoute: typeof AppTasksRoute
-  AppTreasuryRoute: typeof AppTreasuryRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -162,68 +263,164 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/app/treasury': {
-      id: '/app/treasury'
+    '/_app/app/vault': {
+      id: '/_app/app/vault'
+      path: '/app/vault'
+      fullPath: '/app/vault'
+      preLoaderRoute: typeof AppAppVaultRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/treasury': {
+      id: '/_app/app/treasury'
       path: '/app/treasury'
       fullPath: '/app/treasury'
-      preLoaderRoute: typeof AppTreasuryRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppAppTreasuryRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/app/tasks': {
-      id: '/app/tasks'
+    '/_app/app/tasks': {
+      id: '/_app/app/tasks'
       path: '/app/tasks'
       fullPath: '/app/tasks'
-      preLoaderRoute: typeof AppTasksRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppAppTasksRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/app/rh': {
-      id: '/app/rh'
+    '/_app/app/sovereign': {
+      id: '/_app/app/sovereign'
+      path: '/app/sovereign'
+      fullPath: '/app/sovereign'
+      preLoaderRoute: typeof AppAppSovereignRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/settings': {
+      id: '/_app/app/settings'
+      path: '/app/settings'
+      fullPath: '/app/settings'
+      preLoaderRoute: typeof AppAppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/rh': {
+      id: '/_app/app/rh'
       path: '/app/rh'
       fullPath: '/app/rh'
-      preLoaderRoute: typeof AppRhRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppAppRhRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/app/projects': {
-      id: '/app/projects'
+    '/_app/app/projects': {
+      id: '/_app/app/projects'
       path: '/app/projects'
       fullPath: '/app/projects'
-      preLoaderRoute: typeof AppProjectsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppAppProjectsRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/app/knowledge': {
-      id: '/app/knowledge'
+    '/_app/app/profile': {
+      id: '/_app/app/profile'
+      path: '/app/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AppAppProfileRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/leads': {
+      id: '/_app/app/leads'
+      path: '/app/leads'
+      fullPath: '/app/leads'
+      preLoaderRoute: typeof AppAppLeadsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/knowledge': {
+      id: '/_app/app/knowledge'
       path: '/app/knowledge'
       fullPath: '/app/knowledge'
-      preLoaderRoute: typeof AppKnowledgeRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppAppKnowledgeRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/app/dashboard': {
-      id: '/app/dashboard'
+    '/_app/app/job-descriptions': {
+      id: '/_app/app/job-descriptions'
+      path: '/app/job-descriptions'
+      fullPath: '/app/job-descriptions'
+      preLoaderRoute: typeof AppAppJobDescriptionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/ideas': {
+      id: '/_app/app/ideas'
+      path: '/app/ideas'
+      fullPath: '/app/ideas'
+      preLoaderRoute: typeof AppAppIdeasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/dashboard': {
+      id: '/_app/app/dashboard'
       path: '/app/dashboard'
       fullPath: '/app/dashboard'
-      preLoaderRoute: typeof AppDashboardRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppAppDashboardRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/app/agents': {
-      id: '/app/agents'
+    '/_app/app/calendar': {
+      id: '/_app/app/calendar'
+      path: '/app/calendar'
+      fullPath: '/app/calendar'
+      preLoaderRoute: typeof AppAppCalendarRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/business': {
+      id: '/_app/app/business'
+      path: '/app/business'
+      fullPath: '/app/business'
+      preLoaderRoute: typeof AppAppBusinessRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/agents': {
+      id: '/_app/app/agents'
       path: '/app/agents'
       fullPath: '/app/agents'
-      preLoaderRoute: typeof AppAgentsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppAppAgentsRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
+interface AppRouteChildren {
+  AppAppAgentsRoute: typeof AppAppAgentsRoute
+  AppAppBusinessRoute: typeof AppAppBusinessRoute
+  AppAppCalendarRoute: typeof AppAppCalendarRoute
+  AppAppDashboardRoute: typeof AppAppDashboardRoute
+  AppAppIdeasRoute: typeof AppAppIdeasRoute
+  AppAppJobDescriptionsRoute: typeof AppAppJobDescriptionsRoute
+  AppAppKnowledgeRoute: typeof AppAppKnowledgeRoute
+  AppAppLeadsRoute: typeof AppAppLeadsRoute
+  AppAppProfileRoute: typeof AppAppProfileRoute
+  AppAppProjectsRoute: typeof AppAppProjectsRoute
+  AppAppRhRoute: typeof AppAppRhRoute
+  AppAppSettingsRoute: typeof AppAppSettingsRoute
+  AppAppSovereignRoute: typeof AppAppSovereignRoute
+  AppAppTasksRoute: typeof AppAppTasksRoute
+  AppAppTreasuryRoute: typeof AppAppTreasuryRoute
+  AppAppVaultRoute: typeof AppAppVaultRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAppAgentsRoute: AppAppAgentsRoute,
+  AppAppBusinessRoute: AppAppBusinessRoute,
+  AppAppCalendarRoute: AppAppCalendarRoute,
+  AppAppDashboardRoute: AppAppDashboardRoute,
+  AppAppIdeasRoute: AppAppIdeasRoute,
+  AppAppJobDescriptionsRoute: AppAppJobDescriptionsRoute,
+  AppAppKnowledgeRoute: AppAppKnowledgeRoute,
+  AppAppLeadsRoute: AppAppLeadsRoute,
+  AppAppProfileRoute: AppAppProfileRoute,
+  AppAppProjectsRoute: AppAppProjectsRoute,
+  AppAppRhRoute: AppAppRhRoute,
+  AppAppSettingsRoute: AppAppSettingsRoute,
+  AppAppSovereignRoute: AppAppSovereignRoute,
+  AppAppTasksRoute: AppAppTasksRoute,
+  AppAppTreasuryRoute: AppAppTreasuryRoute,
+  AppAppVaultRoute: AppAppVaultRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  AppRoute: AppRoute,
+  AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
-  AppAgentsRoute: AppAgentsRoute,
-  AppDashboardRoute: AppDashboardRoute,
-  AppKnowledgeRoute: AppKnowledgeRoute,
-  AppProjectsRoute: AppProjectsRoute,
-  AppRhRoute: AppRhRoute,
-  AppTasksRoute: AppTasksRoute,
-  AppTreasuryRoute: AppTreasuryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,32 +1,33 @@
-# React + TypeScript + Vite
+# Opays HQ
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Système d'exploitation interne d'Opays : application full-stack mono-conteneur.
 
-Currently, two official plugins are available:
+- **Frontend** : Vite + React 19 + TanStack Router (SPA).
+- **Backend** : Express 5 (exécuté via `tsx`), un seul process sur le port **3001**, servant l'API et le SPA.
+- **Base de données** : `better-sqlite3`, fichier sous `DATA_DIR` (défaut `/app/data`), persisté sur un volume Docker.
+- **Auth** : Google OAuth SSO + session par cookie HttpOnly/SameSite=Strict (JWT signé).
+- **Modules** : Tableau de bord, Tâches (Kanban dnd-kit), Projets, Trésorerie, RH & Equity, Base de connaissances (filtrée par rôle), Agents IA (OpenRouter), Paramètres d'administration (CEO/CTO).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Développement
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+# Renseigner les secrets de dev dans .env.local (non versionné) — voir DEPLOYMENT.md §2.
+npm run dev:server   # API Express (port 3001)
+npm run dev          # Frontend Vite (proxy /api -> :3001)
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Qualité (Definition of Done)
+
+```bash
+npm run typecheck    # tsc --noEmit
+npm run lint         # oxlint
+npm test             # vitest (unitaires + intégration)
+npm run build        # build de production (Vite)
+```
+
+## Déploiement
+
+La mise en production sur Dokploy (variables d'environnement, volume SQLite, domaine,
+TLS, health check) est décrite en détail dans **[DEPLOYMENT.md](./DEPLOYMENT.md)**.
+La configuration de référence est versionnée dans **`dokploy.yml`**.
