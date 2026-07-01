@@ -11,10 +11,15 @@ import crypto from 'crypto';
  * mot de passe connu pour faciliter les essais et les tests d'intégration.
  */
 function seedPassword(): string {
+  // En production, on utilise SEED_PASSWORD s'il est défini, sinon random.
+  // Le CEO peut définir SEED_PASSWORD dans les secrets Dokploy pour activer
+  // la connexion par mot de passe en attendant la validation Google OAuth.
+  const envPw = process.env.SEED_PASSWORD?.trim();
+  if (envPw) return envPw;
   if (process.env.NODE_ENV === 'production') {
     return crypto.randomBytes(24).toString('hex');
   }
-  return process.env.SEED_PASSWORD?.trim() || 'admin123';
+  return 'admin123';
 }
 
 export function seedDefaultUsers() {

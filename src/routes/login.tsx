@@ -1,5 +1,6 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
-import { getCurrentUser } from '@/lib/auth';
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
+import { getCurrentUser, signIn } from '@/lib/auth';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/login')({
   component: LoginPage,
@@ -20,12 +21,33 @@ const ERROR_MESSAGES: Record<string, string> = {
 };
 
 function LoginPage() {
+  const navigate = useNavigate();
   const errorCode = new URLSearchParams(window.location.search).get('error');
   const errorMessage = errorCode ? ERROR_MESSAGES[errorCode] ?? 'Une erreur est survenue.' : null;
 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [loading, setLoading] = useState(false);
+
   const handleGoogleLogin = () => {
-    // Navigation top-level vers le backend qui démarre le flux OAuth.
     window.location.href = '/api/auth/google';
+  };
+
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError('');
+    setLoading(true);
+
+    const result = await signIn(email, password);
+    setLoading(false);
+
+    if ('error' in result) {
+      setLoginError(result.error);
+      return;
+    }
+
+    navigate({ to: '/app/dashboard' });
   };
 
   return (
@@ -36,7 +58,7 @@ function LoginPage() {
           <p className="auth-subtitle">Connectez-vous à votre espace de travail</p>
         </div>
 
-        {errorMessage && (
+        {(errorMessage || loginError) && (
           <div
             style={{
               background: 'rgba(239, 68, 68, 0.1)',
@@ -48,15 +70,58 @@ function LoginPage() {
               marginBottom: '1rem',
             }}
           >
-            {errorMessage}
+            {loginError || errorMessage}
           </div>
         )}
+
+        {/* Formulaire email / mot de passe */}
+        <form onSubmit={handleEmailLogin} style={{ marginBottom: '1rem' }}>
+          <div style={{ marginBottom: '0.75rem' }}>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="form-input"
+              style={{ width: '100%' }}
+            />
+          </div>
+          <div style={{ marginBottom: '1rem' }}>
+            <input
+              type="password"
+              placeholder="Mot de passe"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="form-input"
+              style={{ width: '100%' }}
+            />
+          </div>
+          <button
+            type="submit"
+            className="btn btn-primary btn-full"
+            disabled={loading}
+          >
+            {loading ? 'Connexion...' : 'Se connecter'}
+          </button>
+        </form>
+
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.75rem',
+          marginBottom: '1rem',
+        }}>
+          <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
+          <span style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>ou</span>
+          <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
+        </div>
 
         <button
           type="button"
           className="btn btn-outline btn-full"
           onClick={handleGoogleLogin}
-          style={{ marginTop: '0.5rem' }}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
