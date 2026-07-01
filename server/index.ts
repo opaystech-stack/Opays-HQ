@@ -21,7 +21,9 @@ import jobDescriptionRoutes from './routes/jobDescriptions';
 import sovereignRoutes from './routes/sovereign';
 import businessRoutes from './routes/business';
 import vaultRoutes from './routes/vault';
-import { seedDefaultUsers } from './seed';
+import invoiceRoutes from './routes/invoices';
+import marketingRoutes from './routes/marketing';
+import { seedDefaultUsers, seedMarketingTemplates } from './seed';
 import { loadConfigOrExit } from './config';
 import { getDb } from './db';
 
@@ -50,6 +52,8 @@ app.use('/api/job-descriptions', jobDescriptionRoutes);
 app.use('/api/sovereign', sovereignRoutes);
 app.use('/api/business', businessRoutes);
 app.use('/api/vault', vaultRoutes);
+app.use('/api/invoices', invoiceRoutes);
+app.use('/api/marketing', marketingRoutes);
 
 // Health check — formalized contract consumed by the platform health check.
 // res.json sets Content-Type: application/json and status 200 by default.
@@ -90,7 +94,10 @@ function start(): void {
   // 3. Seed default users now that storage is ready.
   seedDefaultUsers();
 
-  // 4. Only now is it safe to bind the port and accept traffic.
+  // 4. Seed marketing templates.
+  seedMarketingTemplates();
+
+  // 5. Only now is it safe to bind the port and accept traffic.
   app.listen(config.port, '0.0.0.0', () => {
     console.log(`Opays HQ API running on port ${config.port}`);
   });

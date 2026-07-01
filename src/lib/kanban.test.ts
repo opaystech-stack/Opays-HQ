@@ -32,27 +32,23 @@ function makeTask(overrides: Partial<Task> & { id: string }): Task {
 }
 
 describe('statusToColumn', () => {
-  it('mappe les statuts canoniques', () => {
+  it('mappe chaque statut vers sa colonne dédiée', () => {
     expect(statusToColumn('todo')).toBe('todo');
     expect(statusToColumn('in_progress')).toBe('in_progress');
+    expect(statusToColumn('review')).toBe('review');
     expect(statusToColumn('done')).toBe('done');
-  });
-  it('regroupe review dans la colonne En cours', () => {
-    expect(statusToColumn('review')).toBe('in_progress');
-  });
-  it('masque cancelled (aucune colonne)', () => {
-    expect(statusToColumn('cancelled')).toBeNull();
+    expect(statusToColumn('cancelled')).toBe('cancelled');
   });
 });
 
 describe('columnStatus', () => {
   it('retourne le statut canonique de chaque colonne', () => {
-    expect(COLUMNS.map((c) => columnStatus(c.id))).toEqual(['todo', 'in_progress', 'done']);
+    expect(COLUMNS.map((c) => columnStatus(c.id))).toEqual(['todo', 'in_progress', 'review', 'done', 'cancelled']);
   });
 });
 
 describe('tasksByColumn', () => {
-  it('répartit les tâches et masque cancelled', () => {
+  it('répartit les tâches dans les 5 colonnes', () => {
     const tasks = [
       makeTask({ id: '1', status: 'todo' }),
       makeTask({ id: '2', status: 'in_progress' }),
@@ -62,8 +58,10 @@ describe('tasksByColumn', () => {
     ];
     const cols = tasksByColumn(tasks);
     expect(cols.todo.map((t) => t.id)).toEqual(['1']);
-    expect(cols.in_progress.map((t) => t.id)).toEqual(['2', '3']);
+    expect(cols.in_progress.map((t) => t.id)).toEqual(['2']);
+    expect(cols.review.map((t) => t.id)).toEqual(['3']);
     expect(cols.done.map((t) => t.id)).toEqual(['4']);
+    expect(cols.cancelled.map((t) => t.id)).toEqual(['5']);
   });
 });
 
@@ -74,7 +72,7 @@ describe('applyStatusChange', () => {
     expect(next.find((t) => t.id === '1')!.status).toBe('done');
     expect(next.find((t) => t.id === '2')!.status).toBe('todo');
   });
-  it('est immuable (n\'altère pas la liste ni la tâche d\'origine)', () => {
+  it("est immuable (n'altère pas la liste ni la tâche d'origine)", () => {
     const original = [makeTask({ id: '1', status: 'todo' })];
     const next = applyStatusChange(original, '1', 'in_progress');
     expect(original[0].status).toBe('todo');

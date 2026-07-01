@@ -11,7 +11,18 @@ import {
   type DragEndEvent,
 } from '@dnd-kit/core';
 import { toast } from 'sonner';
-import { Plus } from 'lucide-react';
+import {
+  Plus,
+  ListTodo,
+  PlayCircle,
+  FileSearch,
+  CheckCircle2,
+  XCircle,
+  AlertCircle,
+  Calendar,
+  Users,
+  FolderKanban,
+} from 'lucide-react';
 import { useUser } from '@/hooks/useUser';
 import { can } from '@/lib/rbac';
 import { apiGetTasks, apiCreateTask, apiUpdateTaskStatus, apiGetAssignableUsers } from '@/lib/api';
@@ -24,6 +35,7 @@ import {
   tasksByColumn,
   filterTasks,
   distinctAssignees,
+  distinctProjects,
 } from '@/lib/kanban';
 
 export const Route = createFileRoute('/_app/app/tasks')({
@@ -44,20 +56,63 @@ const PRIORITY_LABEL: Record<TaskPriority, string> = {
   low: 'Basse',
 };
 
+const COLUMN_ICONS: Record<ColumnId, React.ReactNode> = {
+  todo: <ListTodo size={14} />,
+  in_progress: <PlayCircle size={14} />,
+  review: <FileSearch size={14} />,
+  done: <CheckCircle2 size={14} />,
+  cancelled: <XCircle size={14} />,
+};
+
+const COLUMN_COLORS: Record<ColumnId, string> = {
+  todo: '#94a3b8',
+  in_progress: '#3b62d4',
+  review: '#f59e0b',
+  done: '#22c55e',
+  cancelled: '#ef4444',
+};
+
 function TaskCard({ task }: { task: Task }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: task.id });
   const style: React.CSSProperties = {
     transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
     opacity: isDragging ? 0.5 : 1,
     cursor: 'grab',
+    transition: 'box-shadow 0.15s',
+    boxShadow: isDragging ? '0 8px 24px rgba(0,0,0,0.4)' : '0 1px 3px rgba(0,0,0,0.2)',
   };
+
+  const isOverdue =
+    task.due_date && new Date(task.due_date) < new Date() && task.status !== 'done' && task.status !== 'cancelled';
+
   return (
     <div ref={setNodeRef} style={style} className="kanban-card" {...listeners} {...attributes}>
       <div className="kanban-card-title">{task.title}</div>
+
+      {task.project_name && (
+        <div className="kanban-card-project">
+          <FolderKanban size={11} />
+          <span>{task.project_name}</span>
+        </div>
+      )}
+
       <div className="kanban-card-meta">
         <span className={`badge ${PRIORITY_BADGE[task.priority]}`}>{PRIORITY_LABEL[task.priority]}</span>
-        {task.assignee_name && <span className="kanban-card-assignee">{task.assignee_name}</span>}
+        {task.assignee_name && (
+          <span className="kanban-card-assignee">
+            <Users size={11} />
+            {task.assignee_name}
+          </span>
+        )}
       </div>
+
+      {task.due_date && (
+        <div className={`kanban-card-date ${isOverdue ? 'overdue' : ''}`}>
+          <Calendar size={11} />
+          <span>{new Date(task.due_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}</span>
+          {isOverdue && <span className="overdue-badge">En retard</span>}
+        </div>
+      )}
     </div>
   );
 }
@@ -67,7 +122,10 @@ function Column({ id, title, tasks }: { id: ColumnId; title: string; tasks: Task
   return (
     <div ref={setNodeRef} className={`kanban-column ${isOver ? 'kanban-column-over' : ''}`}>
       <div className="kanban-column-header">
-        <span>{title}</span>
+        <div className="kanban-column-header-left">
+          <span style={{ color: COLUMN_COLORS[id] }}>{COLUMN_ICONS[id]}</span>
+          <span>{title}</span>
+        </div>
         <span className="kanban-column-count">{tasks.length}</span>
       </div>
       <div className="kanban-column-body">
@@ -91,6 +149,7 @@ function TasksPage() {
 
   const [priorityFilter, setPriorityFilter] = useState<TaskPriority | 'all'>('all');
   const [assigneeFilter, setAssigneeFilter] = useState<string>('all');
+  const [projectFilter, setProjectFilter] = useState<string>('all');
 
   const [newTitle, setNewTitle] = useState('');
   const [newPriority, setNewPriority] = useState<TaskPriority>('medium');
@@ -99,9 +158,7 @@ function TasksPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const sensors = useSensors(
-    // Petite distance d'activation pour distinguer un clic d'un glissement.
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    // Navigation clavier : ramassage/déplacement/dépose des cartes au clavier.
     useSensor(KeyboardSensor),
   );
 
@@ -122,7 +179,6 @@ function TasksPage() {
     load();
   }, [load]);
 
-  // Charge la liste d'équipe pour l'assignation (si l'utilisateur peut créer).
   useEffect(() => {
     if (!canCreate) return;
     apiGetAssignableUsers().then(({ data }) => {
@@ -131,11 +187,30 @@ function TasksPage() {
   }, [canCreate]);
 
   const assignees = useMemo(() => distinctAssignees(tasks), [tasks]);
+  const projects = useMemo(() => distinctProjects(tasks), [tasks]);
   const visibleTasks = useMemo(
-    () => filterTasks(tasks, { priority: priorityFilter, assigneeId: assigneeFilter }),
-    [tasks, priorityFilter, assigneeFilter],
+    () => filterTasks(tasks, { priority: priorityFilter, assigneeId: assigneeFilter, projectId: projectFilter }),
+    [tasks, priorityFilter, assigneeFilter, projectFilter],
   );
   const columns = useMemo(() => tasksByColumn(visibleTasks), [visibleTasks]);
+
+  // Stats
+  const stats = useMemo(() => {
+    const total = tasks.length;
+    const inProgress = tasks.filter((t) => t.status === 'in_progress').length;
+    const urgent = tasks.filter((t) => t.priority === 'urgent' && t.status !== 'done' && t.status !== 'cancelled').length;
+    const doneToday = tasks.filter((t) => {
+      if (t.status !== 'done' || !t.completed_at) return false;
+      const today = new Date();
+      const completed = new Date(t.completed_at);
+      return (
+        completed.getDate() === today.getDate() &&
+        completed.getMonth() === today.getMonth() &&
+        completed.getFullYear() === today.getFullYear()
+      );
+    }).length;
+    return { total, inProgress, urgent, doneToday };
+  }, [tasks]);
 
   const handleDragEnd = useCallback(
     async (event: DragEndEvent) => {
@@ -147,16 +222,15 @@ function TasksPage() {
       if (!task) return;
 
       const currentColumn = statusToColumn(task.status);
-      if (currentColumn === overId) return; // déposé dans sa propre colonne
+      if (currentColumn === overId) return;
 
       const newStatus = columnStatus(overId);
       const previous = tasks;
-      // Mise à jour optimiste.
       setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, status: newStatus } : t)));
 
       const { error: err } = await apiUpdateTaskStatus(taskId, newStatus);
       if (err) {
-        setTasks(previous); // rollback
+        setTasks(previous);
         toast.error('Impossible de déplacer la tâche', { description: err });
       }
     },
@@ -190,11 +264,48 @@ function TasksPage() {
 
   return (
     <div>
+      {/* Header */}
       <div style={{ marginBottom: '1.5rem' }}>
         <h1 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Tâches</h1>
         <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-          Glissez les cartes pour faire avancer vos tâches
+          Glissez les cartes entre les colonnes pour mettre à jour leur statut
         </p>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-icon">
+            <ListTodo />
+          </div>
+          <div className="stat-label">Total</div>
+          <div className="stat-value blue">{stats.total}</div>
+          <div className="stat-sub">Tâches créées</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon">
+            <PlayCircle />
+          </div>
+          <div className="stat-label">En cours</div>
+          <div className="stat-value orange">{stats.inProgress}</div>
+          <div className="stat-sub">Tâches en cours</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon">
+            <AlertCircle />
+          </div>
+          <div className="stat-label">Urgentes</div>
+          <div className="stat-value red">{stats.urgent}</div>
+          <div className="stat-sub">Non terminées</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon">
+            <CheckCircle2 />
+          </div>
+          <div className="stat-label">Terminées aujourd'hui</div>
+          <div className="stat-value green">{stats.doneToday}</div>
+          <div className="stat-sub">Tâches finalisées</div>
+        </div>
       </div>
 
       {/* Filtres + création */}
@@ -222,6 +333,19 @@ function TasksPage() {
             {assignees.map((a) => (
               <option key={a.id} value={a.id}>
                 {a.name}
+              </option>
+            ))}
+          </select>
+          <select
+            className="form-input kanban-select"
+            value={projectFilter}
+            onChange={(e) => setProjectFilter(e.target.value)}
+            aria-label="Filtrer par projet"
+          >
+            <option value="all">Tous les projets</option>
+            {projects.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
               </option>
             ))}
           </select>

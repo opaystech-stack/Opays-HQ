@@ -66,3 +66,82 @@ export function seedDefaultUsers() {
   console.log(`✅ ${users.length} utilisateurs par défaut créés`);
 }
 
+/** Sème 5 templates marketing de base si la table est vide. */
+export function seedMarketingTemplates() {
+  const db = getDb();
+  const count = db.prepare('SELECT COUNT(*) as c FROM marketing_templates').get() as { c: number };
+  if (count.c > 0) return;
+
+  const insert = db.prepare(`
+    INSERT INTO marketing_templates (id, name, description, category, content, variables, created_by)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `);
+
+  const templates: [string, string, string, string, string, string][] = [
+    [
+      'tmpl_welcome_email',
+      'Email de bienvenue',
+      'Template email de bienvenue pour nouveaux clients',
+      'email',
+      JSON.stringify({
+        subject: 'Bienvenue chez Opays, {{client_name}} !',
+        body: '<h1>Bienvenue !</h1><p>Bonjour {{client_name}},</p><p>Nous sommes ravis de vous compter parmi nos clients. Toute l\'équipe Opays est à votre disposition pour vous accompagner.</p><p>Cordialement,<br>L\'équipe Opays</p>',
+      }),
+      JSON.stringify(['client_name']),
+    ],
+    [
+      'tmpl_followup_email',
+      'Email de relance',
+      'Template email de relance pour prospects non répondus',
+      'email',
+      JSON.stringify({
+        subject: 'Relance Opays — {{client_name}}',
+        body: '<p>Bonjour {{client_name}},</p><p>Suite à notre précédent échange, je souhaitais prendre de vos nouvelles. N\'hésitez pas à nous contacter pour toute question.</p><p>Bien cordialement,<br>{{sender_name}}</p>',
+      }),
+      JSON.stringify(['client_name', 'sender_name']),
+    ],
+    [
+      'tmpl_quote_email',
+      'Email d\'envoi de devis',
+      'Template email pour accompagner l\'envoi d\'un devis',
+      'email',
+      JSON.stringify({
+        subject: 'Votre devis Opays — {{quote_number}}',
+        body: '<p>Bonjour {{client_name}},</p><p>Veuillez trouver ci-joint votre devis n°{{quote_number}} d\'un montant de {{amount}}.</p><p>Ce devis est valable jusqu\'au {{valid_until}}.</p><p>Cordialement,<br>{{sender_name}}</p>',
+      }),
+      JSON.stringify(['client_name', 'quote_number', 'amount', 'valid_until', 'sender_name']),
+    ],
+    [
+      'tmpl_social_launch',
+      'Annonce lancement (LinkedIn)',
+      'Template post LinkedIn pour annonce de lancement de projet',
+      'social',
+      JSON.stringify({
+        text: '🚀 Nous sommes fiers d\'annoncer le lancement de {{project_name}} !\n\nUn grand merci à {{client_name}} pour leur confiance. Ce projet a été réalisé avec passion par l\'équipe Opays.\n\n#Innovation #Opays #{{hashtag}}',
+      }),
+      JSON.stringify(['project_name', 'client_name', 'hashtag']),
+    ],
+    [
+      'tmpl_newsletter_generic',
+      'Newsletter mensuelle',
+      'Template newsletter générique pour communication mensuelle',
+      'email',
+      JSON.stringify({
+        subject: 'Newsletter Opays — {{month}} {{year}}',
+        body: '<h1>Newsletter {{month}} {{year}}</h1><p>Bonjour {{client_name}},</p><p>Découvrez les dernières actualités d\'Opays :</p><ul><li>{{news_item_1}}</li><li>{{news_item_2}}</li><li>{{news_item_3}}</li></ul><p>À très bientôt !<br>L\'équipe Opays</p>',
+      }),
+      JSON.stringify(['month', 'year', 'client_name', 'news_item_1', 'news_item_2', 'news_item_3']),
+    ],
+  ];
+
+  // Use the first admin/ceo user as creator, or null
+  const firstUser = db.prepare("SELECT id FROM users ORDER BY created_at ASC LIMIT 1").get() as { id: string } | undefined;
+  const creatorId = firstUser?.id || null;
+
+  for (const [id, name, desc, cat, content, vars] of templates) {
+    insert.run(id, name, desc, cat, content, vars, creatorId);
+  }
+
+  console.log(`✅ ${templates.length} templates marketing créés`);
+}
+

@@ -20,9 +20,11 @@ import { Route as AppAppSettingsRouteImport } from './routes/_app.app.settings'
 import { Route as AppAppRhRouteImport } from './routes/_app.app.rh'
 import { Route as AppAppProjectsRouteImport } from './routes/_app.app.projects'
 import { Route as AppAppProfileRouteImport } from './routes/_app.app.profile'
+import { Route as AppAppMarketingRouteImport } from './routes/_app.app.marketing'
 import { Route as AppAppLeadsRouteImport } from './routes/_app.app.leads'
 import { Route as AppAppKnowledgeRouteImport } from './routes/_app.app.knowledge'
 import { Route as AppAppJobDescriptionsRouteImport } from './routes/_app.app.job-descriptions'
+import { Route as AppAppInvoicesRouteImport } from './routes/_app.app.invoices'
 import { Route as AppAppIdeasRouteImport } from './routes/_app.app.ideas'
 import { Route as AppAppDashboardRouteImport } from './routes/_app.app.dashboard'
 import { Route as AppAppCalendarRouteImport } from './routes/_app.app.calendar'
@@ -83,6 +85,11 @@ const AppAppProfileRoute = AppAppProfileRouteImport.update({
   path: '/app/profile',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAppMarketingRoute = AppAppMarketingRouteImport.update({
+  id: '/app/marketing',
+  path: '/app/marketing',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAppLeadsRoute = AppAppLeadsRouteImport.update({
   id: '/app/leads',
   path: '/app/leads',
@@ -96,6 +103,11 @@ const AppAppKnowledgeRoute = AppAppKnowledgeRouteImport.update({
 const AppAppJobDescriptionsRoute = AppAppJobDescriptionsRouteImport.update({
   id: '/app/job-descriptions',
   path: '/app/job-descriptions',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAppInvoicesRoute = AppAppInvoicesRouteImport.update({
+  id: '/app/invoices',
+  path: '/app/invoices',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAppIdeasRoute = AppAppIdeasRouteImport.update({
@@ -132,9 +144,11 @@ export interface FileRoutesByFullPath {
   '/app/calendar': typeof AppAppCalendarRoute
   '/app/dashboard': typeof AppAppDashboardRoute
   '/app/ideas': typeof AppAppIdeasRoute
+  '/app/invoices': typeof AppAppInvoicesRoute
   '/app/job-descriptions': typeof AppAppJobDescriptionsRoute
   '/app/knowledge': typeof AppAppKnowledgeRoute
   '/app/leads': typeof AppAppLeadsRoute
+  '/app/marketing': typeof AppAppMarketingRoute
   '/app/profile': typeof AppAppProfileRoute
   '/app/projects': typeof AppAppProjectsRoute
   '/app/rh': typeof AppAppRhRoute
@@ -152,9 +166,11 @@ export interface FileRoutesByTo {
   '/app/calendar': typeof AppAppCalendarRoute
   '/app/dashboard': typeof AppAppDashboardRoute
   '/app/ideas': typeof AppAppIdeasRoute
+  '/app/invoices': typeof AppAppInvoicesRoute
   '/app/job-descriptions': typeof AppAppJobDescriptionsRoute
   '/app/knowledge': typeof AppAppKnowledgeRoute
   '/app/leads': typeof AppAppLeadsRoute
+  '/app/marketing': typeof AppAppMarketingRoute
   '/app/profile': typeof AppAppProfileRoute
   '/app/projects': typeof AppAppProjectsRoute
   '/app/rh': typeof AppAppRhRoute
@@ -174,9 +190,11 @@ export interface FileRoutesById {
   '/_app/app/calendar': typeof AppAppCalendarRoute
   '/_app/app/dashboard': typeof AppAppDashboardRoute
   '/_app/app/ideas': typeof AppAppIdeasRoute
+  '/_app/app/invoices': typeof AppAppInvoicesRoute
   '/_app/app/job-descriptions': typeof AppAppJobDescriptionsRoute
   '/_app/app/knowledge': typeof AppAppKnowledgeRoute
   '/_app/app/leads': typeof AppAppLeadsRoute
+  '/_app/app/marketing': typeof AppAppMarketingRoute
   '/_app/app/profile': typeof AppAppProfileRoute
   '/_app/app/projects': typeof AppAppProjectsRoute
   '/_app/app/rh': typeof AppAppRhRoute
@@ -196,9 +214,11 @@ export interface FileRouteTypes {
     | '/app/calendar'
     | '/app/dashboard'
     | '/app/ideas'
+    | '/app/invoices'
     | '/app/job-descriptions'
     | '/app/knowledge'
     | '/app/leads'
+    | '/app/marketing'
     | '/app/profile'
     | '/app/projects'
     | '/app/rh'
@@ -216,9 +236,11 @@ export interface FileRouteTypes {
     | '/app/calendar'
     | '/app/dashboard'
     | '/app/ideas'
+    | '/app/invoices'
     | '/app/job-descriptions'
     | '/app/knowledge'
     | '/app/leads'
+    | '/app/marketing'
     | '/app/profile'
     | '/app/projects'
     | '/app/rh'
@@ -237,9 +259,11 @@ export interface FileRouteTypes {
     | '/_app/app/calendar'
     | '/_app/app/dashboard'
     | '/_app/app/ideas'
+    | '/_app/app/invoices'
     | '/_app/app/job-descriptions'
     | '/_app/app/knowledge'
     | '/_app/app/leads'
+    | '/_app/app/marketing'
     | '/_app/app/profile'
     | '/_app/app/projects'
     | '/_app/app/rh'
@@ -335,6 +359,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAppProfileRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/app/marketing': {
+      id: '/_app/app/marketing'
+      path: '/app/marketing'
+      fullPath: '/app/marketing'
+      preLoaderRoute: typeof AppAppMarketingRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/app/leads': {
       id: '/_app/app/leads'
       path: '/app/leads'
@@ -354,6 +385,13 @@ declare module '@tanstack/react-router' {
       path: '/app/job-descriptions'
       fullPath: '/app/job-descriptions'
       preLoaderRoute: typeof AppAppJobDescriptionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/app/invoices': {
+      id: '/_app/app/invoices'
+      path: '/app/invoices'
+      fullPath: '/app/invoices'
+      preLoaderRoute: typeof AppAppInvoicesRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/app/ideas': {
@@ -400,9 +438,11 @@ interface AppRouteChildren {
   AppAppCalendarRoute: typeof AppAppCalendarRoute
   AppAppDashboardRoute: typeof AppAppDashboardRoute
   AppAppIdeasRoute: typeof AppAppIdeasRoute
+  AppAppInvoicesRoute: typeof AppAppInvoicesRoute
   AppAppJobDescriptionsRoute: typeof AppAppJobDescriptionsRoute
   AppAppKnowledgeRoute: typeof AppAppKnowledgeRoute
   AppAppLeadsRoute: typeof AppAppLeadsRoute
+  AppAppMarketingRoute: typeof AppAppMarketingRoute
   AppAppProfileRoute: typeof AppAppProfileRoute
   AppAppProjectsRoute: typeof AppAppProjectsRoute
   AppAppRhRoute: typeof AppAppRhRoute
@@ -419,9 +459,11 @@ const AppRouteChildren: AppRouteChildren = {
   AppAppCalendarRoute: AppAppCalendarRoute,
   AppAppDashboardRoute: AppAppDashboardRoute,
   AppAppIdeasRoute: AppAppIdeasRoute,
+  AppAppInvoicesRoute: AppAppInvoicesRoute,
   AppAppJobDescriptionsRoute: AppAppJobDescriptionsRoute,
   AppAppKnowledgeRoute: AppAppKnowledgeRoute,
   AppAppLeadsRoute: AppAppLeadsRoute,
+  AppAppMarketingRoute: AppAppMarketingRoute,
   AppAppProfileRoute: AppAppProfileRoute,
   AppAppProjectsRoute: AppAppProjectsRoute,
   AppAppRhRoute: AppAppRhRoute,

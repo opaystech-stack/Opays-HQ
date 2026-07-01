@@ -1,7 +1,20 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { Bot, Send, Settings2, Plus } from 'lucide-react';
+import {
+  Bot,
+  Send,
+  Settings2,
+  Plus,
+  User,
+  Sparkles,
+  Lightbulb,
+  TrendingUp,
+  MessageSquare,
+  Clock,
+  Trash2,
+  ChevronRight,
+} from 'lucide-react';
 import { useUser } from '@/hooks/useUser';
 import {
   apiGetAgents,
@@ -36,6 +49,28 @@ interface Message {
   content: string;
 }
 
+const QUICK_SUGGESTIONS = [
+  { icon: Sparkles, label: 'Résumé exécutif', prompt: 'Peux-tu me faire un résumé exécutif de la situation actuelle ?' },
+  { icon: Lightbulb, label: 'Idées stratégiques', prompt: 'Quelles sont les meilleures stratégies pour améliorer notre performance ?' },
+  { icon: TrendingUp, label: 'Analyse KPI', prompt: 'Analyse les indicateurs clés de performance et suggère des améliorations.' },
+  { icon: MessageSquare, label: 'Rapport', prompt: 'Génère un rapport complet sur nos activités récentes.' },
+];
+
+function formatRelativeTime(dateStr: string): string {
+  const now = new Date();
+  const date = new Date(dateStr);
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffMins < 1) return 'À l\'instant';
+  if (diffMins < 60) return `Il y a ${diffMins} min`;
+  if (diffHours < 24) return `Il y a ${diffHours}h`;
+  if (diffDays < 7) return `Il y a ${diffDays}j`;
+  return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+}
+
 function AgentsPage() {
   const { user } = useUser();
   const canConfigure = user?.role_name === 'ceo' || user?.role_name === 'cto';
@@ -47,6 +82,7 @@ function AgentsPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const [configOpen, setConfigOpen] = useState(false);
   const [promptDraft, setPromptDraft] = useState('');
@@ -119,6 +155,18 @@ function AgentsPage() {
     [input, selectedAgentId, activeConversationId, sending, loadConversations],
   );
 
+  const handleQuickSuggestion = useCallback(
+    (prompt: string) => {
+      setInput(prompt);
+      // Auto-submit after a brief delay so the user sees the suggestion appear
+      setTimeout(() => {
+        const form = document.querySelector('.agents-input') as HTMLFormElement;
+        if (form) form.requestSubmit();
+      }, 100);
+    },
+    [],
+  );
+
   const openConfig = useCallback(() => {
     if (!selectedAgent) return;
     setPromptDraft(selectedAgent.system_prompt ?? '');
@@ -144,58 +192,99 @@ function AgentsPage() {
   }, [selectedAgent, promptDraft, tempDraft]);
 
   return (
-    <div>
-      <div style={{ marginBottom: '1.5rem' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Agents IA</h1>
-        <p style={{ color: 'var(--muted-foreground)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-          Conversez avec vos agents et ajustez leurs comportements
-        </p>
+    <div className="agents-page">
+      {/* Header */}
+      <div className="agents-page-header">
+        <div>
+          <h1 className="agents-page-title">Agents IA</h1>
+          <p className="agents-page-subtitle">
+            Conversez avec vos agents et ajustez leurs comportements
+          </p>
+        </div>
+        <button
+          className="btn btn-outline btn-sm sidebar-toggle"
+          onClick={() => setSidebarOpen((v) => !v)}
+          title={sidebarOpen ? 'Masquer le panneau' : 'Afficher le panneau'}
+        >
+          <ChevronRight size={16} className={`sidebar-toggle-icon ${sidebarOpen ? 'open' : ''}`} />
+        </button>
       </div>
 
-      <div className="agents-layout">
-        {/* Colonne gauche : agents + conversations */}
+      <div className={`agents-layout ${sidebarOpen ? '' : 'sidebar-collapsed'}`}>
+        {/* Sidebar : agents + conversations */}
         <aside className="agents-sidebar">
-          <div className="agents-section-title">Agents</div>
-          <div className="agents-list">
-            {agents.map((a) => (
-              <button
-                key={a.id}
-                className={`agent-item ${a.id === selectedAgentId ? 'active' : ''}`}
-                onClick={() => setSelectedAgentId(a.id)}
-              >
-                <Bot size={16} />
-                <span>{a.name}</span>
-              </button>
-            ))}
-          </div>
+          <div className="agents-sidebar-inner">
+            <div className="agents-section-title">
+              <Bot size={14} />
+              <span>Agents</span>
+            </div>
+            <div className="agents-list">
+              {agents.map((a) => (
+                <button
+                  key={a.id}
+                  className={`agent-item ${a.id === selectedAgentId ? 'active' : ''}`}
+                  onClick={() => setSelectedAgentId(a.id)}
+                >
+                  <div className="agent-item-avatar">
+                    <Bot size={14} />
+                  </div>
+                  <div className="agent-item-info">
+                    <span className="agent-item-name">{a.name}</span>
+                    {a.description && (
+                      <span className="agent-item-desc">{a.description}</span>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
 
-          <button className="btn btn-primary btn-sm btn-full" style={{ margin: '0.75rem 0' }} onClick={startNewChat}>
-            <Plus size={14} /> Nouvelle conversation
-          </button>
+            <button className="btn btn-primary btn-sm btn-full new-chat-btn" onClick={startNewChat}>
+              <Plus size={14} /> Nouvelle conversation
+            </button>
 
-          <div className="agents-section-title">Conversations</div>
-          <div className="agents-list">
-            {conversations.length === 0 && <div className="kanban-empty">Aucune conversation</div>}
-            {conversations.map((c) => (
-              <button
-                key={c.id}
-                className={`agent-item ${c.id === activeConversationId ? 'active' : ''}`}
-                onClick={() => openConversation(c)}
-              >
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {c.title || 'Sans titre'}
-                </span>
-              </button>
-            ))}
+            <div className="agents-section-title">
+              <Clock size={14} />
+              <span>Conversations</span>
+            </div>
+            <div className="agents-list conversations-list">
+              {conversations.length === 0 && (
+                <div className="kanban-empty">Aucune conversation</div>
+              )}
+              {conversations.map((c) => (
+                <button
+                  key={c.id}
+                  className={`agent-item ${c.id === activeConversationId ? 'active' : ''}`}
+                  onClick={() => openConversation(c)}
+                >
+                  <div className="agent-item-avatar conv-avatar">
+                    <MessageSquare size={14} />
+                  </div>
+                  <div className="agent-item-info">
+                    <span className="agent-item-name">
+                      {c.title || 'Sans titre'}
+                    </span>
+                    {c.agent_name && (
+                      <span className="agent-item-desc">{c.agent_name}</span>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
         </aside>
 
-        {/* Colonne droite : chat */}
+        {/* Zone de chat */}
         <section className="agents-chat card">
+          {/* En-tête du chat */}
           <div className="agents-chat-header">
-            <div>
-              <div className="card-title">{selectedAgent?.name || 'Agent'}</div>
-              <div className="card-description">{selectedAgent?.description}</div>
+            <div className="agents-chat-header-info">
+              <div className="chat-header-avatar">
+                <Bot size={20} />
+              </div>
+              <div>
+                <div className="card-title">{selectedAgent?.name || 'Agent'}</div>
+                <div className="card-description">{selectedAgent?.description || 'Sélectionnez un agent pour commencer'}</div>
+              </div>
             </div>
             {canConfigure && selectedAgent && (
               <button className="btn btn-outline btn-sm" onClick={openConfig}>
@@ -204,6 +293,7 @@ function AgentsPage() {
             )}
           </div>
 
+          {/* Configuration */}
           {configOpen && canConfigure && (
             <div className="agents-config">
               <label className="form-label">Prompt système</label>
@@ -213,10 +303,18 @@ function AgentsPage() {
                 value={promptDraft}
                 onChange={(e) => setPromptDraft(e.target.value)}
               />
-              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-end', marginTop: '0.5rem' }}>
-                <div style={{ flex: 1 }}>
+              <div className="agents-config-actions">
+                <div className="agents-config-field">
                   <label className="form-label">Température (0–2)</label>
-                  <input className="form-input" type="number" min="0" max="2" step="0.1" value={tempDraft} onChange={(e) => setTempDraft(e.target.value)} />
+                  <input
+                    className="form-input"
+                    type="number"
+                    min="0"
+                    max="2"
+                    step="0.1"
+                    value={tempDraft}
+                    onChange={(e) => setTempDraft(e.target.value)}
+                  />
                 </div>
                 <button className="btn btn-primary btn-sm" onClick={saveConfig}>Enregistrer</button>
                 <button className="btn btn-ghost btn-sm" onClick={() => setConfigOpen(false)}>Annuler</button>
@@ -224,19 +322,71 @@ function AgentsPage() {
             </div>
           )}
 
+          {/* Messages */}
           <div className="agents-messages">
             {messages.length === 0 && !sending && (
-              <div className="kanban-empty">Démarrez la conversation avec {selectedAgent?.name || 'votre agent'}.</div>
+              <div className="agents-empty-state">
+                <div className="agents-empty-icon">
+                  <Bot size={48} />
+                </div>
+                <h3>Démarrez une conversation</h3>
+                <p>
+                  Posez une question à <strong>{selectedAgent?.name || 'votre agent'}</strong> ou choisissez une suggestion ci-dessous.
+                </p>
+              </div>
             )}
             {messages.map((m, i) => (
-              <div key={m.id ?? i} className={`chat-bubble chat-${m.role}`}>
-                {m.content}
+              <div key={m.id ?? i} className={`chat-row chat-${m.role}`}>
+                {m.role === 'assistant' && (
+                  <div className="chat-avatar assistant-avatar">
+                    <Bot size={18} />
+                  </div>
+                )}
+                <div className={`chat-bubble chat-${m.role}`}>
+                  <div className="chat-bubble-content">{m.content}</div>
+                </div>
+                {m.role === 'user' && (
+                  <div className="chat-avatar user-avatar">
+                    <User size={18} />
+                  </div>
+                )}
               </div>
             ))}
-            {sending && <div className="chat-bubble chat-assistant chat-typing">…</div>}
+            {sending && (
+              <div className="chat-row chat-assistant">
+                <div className="chat-avatar assistant-avatar">
+                  <Bot size={18} />
+                </div>
+                <div className="chat-bubble chat-assistant chat-typing">
+                  <div className="typing-indicator">
+                    <span className="typing-dot" />
+                    <span className="typing-dot" />
+                    <span className="typing-dot" />
+                  </div>
+                </div>
+              </div>
+            )}
             <div ref={messagesEndRef} />
           </div>
 
+          {/* Suggestions rapides */}
+          {messages.length === 0 && !sending && (
+            <div className="agents-suggestions">
+              {QUICK_SUGGESTIONS.map((s, i) => (
+                <button
+                  key={i}
+                  className="suggestion-btn"
+                  onClick={() => handleQuickSuggestion(s.prompt)}
+                  disabled={!selectedAgentId}
+                >
+                  <s.icon size={14} />
+                  <span>{s.label}</span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Input */}
           <form className="agents-input" onSubmit={handleSend}>
             <input
               className="form-input"
@@ -245,7 +395,11 @@ function AgentsPage() {
               onChange={(e) => setInput(e.target.value)}
               disabled={!selectedAgentId}
             />
-            <button type="submit" className="btn btn-primary" disabled={sending || !input.trim() || !selectedAgentId}>
+            <button
+              type="submit"
+              className="btn btn-primary btn-send"
+              disabled={sending || !input.trim() || !selectedAgentId}
+            >
               <Send size={16} />
             </button>
           </form>

@@ -748,3 +748,202 @@ export function getBusinessStats() {
     realMargin,
   };
 }
+
+// ─── Invoices ────────────────────────────────────────────
+
+const INVOICE_PREFIXES: Record<string, string> = {
+  sale: 'FACT',
+  proforma: 'PRO',
+  credit_note: 'AVOIR',
+  debit_note: 'ND',
+  quote: 'DEV',
+};
+
+function generateInvoiceNumber(type: string): string {
+  const db = getDb();
+  const prefix = INVOICE_PREFIXES[type] || 'FACT';
+  const year = new Date().getFullYear();
+  const last = db.prepare(
+    "SELECT invoice_number FROM invoices WHERE invoice_number LIKE ? ORDER BY invoice_number DESC LIMIT 1"
+  ).get(`${prefix}-${year}-%`) as { invoice_number: string } | undefined;
+
+  let nextNum = 1;
+  if (last) {
+    const parts = last.invoice_number.split('-');
+    nextNum = parseInt(parts[parts.length - 1], 10) + 1;
+  }
+  return `${prefix}-${year}-${String(nextNum).padStart(4, '0')}`;
+}
+
+export function createInvoice(data: {
+  type: string;
+  client_name: string;
+  client_email?: string;
+  client_address?: string;
+  client_tax_id?: string;
+  items: any[];
+  subtotal: number;
+  tax_rate?: number;
+  tax_amount?: number;
+  discount_percent?: number;
+  discount_amount?: number;
+  total: number;
+  currency?: string;
+  notes?: string;
+  terms?: string;
+  due_date?: string;
+  issued_date?: string;
+  created_by: string;
+  project_id?: string;
+}) {
+  const db = getDb();
+  const id = uuid();
+  const invoice_number = generateInvoiceNumber(data.type);
+  db.prepare(`
+    INSERT INTO invoices (id, invoice_number, type, client_name, client_email, client_address, client_tax_id,
+      items, subtotal, tax_rate, tax_amount, discount_percent, discount_amount, total, currency,
+      notes, terms, due_date, issued_date, created_by, project_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    id, invoice_number, data.type, data.client_name, data.client_email || null,
+    data.client_address || null, data.client_tax_id || null,
+    JSON.stringify(data.items), data.subtotal, data.tax_rate ?? 0, data.tax_amount ?? 0,
+    data.discount_percent ?? 0, data.discount_amount ?? 0, data.total,
+    data.currency || 'USD', data.notes || null, data.terms || null,
+    data.due_date || null, data.issued_date || null, data.created_by,
+    data.project_id || null,
+  );
+  return getInvoiceById(id);
+}
+
+export function getInvoices(userId: string, roleName: string) {
+  const db = getDb();
+  if (['admin', 'ceo', 'coo', 'cto', 'sales'].includes(roleName)) {
+    return db.prepare(`
+      SELECT i.*, u.full_name as created_by_name
+      FROM invoices i LEFT JOIN users u ON i.created_by = u.id
+      ORDER BY i.created_at DESC
+    `).all();
+  }
+  return db.prepare(`
+    SELECT i.*, u.full_name as created_by_name
+    FROM invoices i LEFT JOIN users u ON i.created_by = u.id
+    WHERE i.created_by = ?
+    ORDER BY i.created_at DESC
+  `).all(userId);
+}
+
+export function getInvoiceById(id: string) {
+  const db = getDb();
+  const row = db.prepare(`
+    SELECT i.*, u.full_name as created_by_name
+    FROM invoices i LEFT JOIN users u ON i.created_by = u.id
+    WHERE i.id = ?
+  `).get(id) as any;
+  if (row && typeof row.items === 'string') {
+    try { row.items = JSON.parse(row.items); } catch { row.items = []; }
+  }
+  return row || null;
+}
+
+export function updateInvoiceStatus(id: string, status: string) {
+  const db = getDb();
+  const valid = ['draft', 'sent', 'paid', 'overdue', 'cancelled'];
+  if (!valid.includes(status)) return null;
+  const extra: Record<string, string | null> = {};
+  if (status === 'paid') extra.paid_date = new Date().toISOString();
+  if (status === 'sent') extra.issued_date = new Date().toISOString();
+  const sets = ["status = ?", "updated_at = datetime('now')"];
+  const vals: any[] = [status];
+  if (extra.paid_date) { sets.push("paid_date = ?"); vals.push(extra.paid_date); }
+  if (extra.issued_date) { sets.push("issued_date = ?"); vals.push(extra.issued_date); }
+  vals.push(id);
+  db.prepare(`UPDATE invoices SET ${sets.join(', ')} WHERE id = ?`).run(...vals);
+  return getInvoiceById(id);
+}
+
+export function deleteInvoice(id: string): boolean {
+  const db = getDb();
+  return db.prepare('DELETE FROM invoices WHERE id = ?').run(id).changes > 0;
+}
+
+// ─── Marketing Templates ──────────────────────────────────
+
+export function getMarketingTemplates() {
+  const db = getDb();
+  return db.prepare(`
+    SELECT t.*, u.full_name as created_by_name
+    FROM marketing_templates t LEFT JOIN users u ON t.created_by = u.id
+    ORDER BY t.created_at DESC
+  `).all();
+}
+
+export function getMarketingTemplateById(id: string) {
+  const db = getDb();
+  const row = db.prepare(`
+    SELECT t.*, u.full_name as created_by_name
+    FROM marketing_templates t LEFT JOIN users u ON t.created_by = u.id
+    WHERE t.id = ?
+  `).get(id) as any;
+  if (row && typeof row.content === 'string') {
+    try { row.content = JSON.parse(row.content); } catch { row.content = {}; }
+  }
+  if (row && typeof row.variables === 'string') {
+    try { row.variables = JSON.parse(row.variables); } catch { row.variables = []; }
+  }
+  return row || null;
+}
+
+export function createMarketingTemplate(data: {
+  name: string;
+  description?: string;
+  category?: string;
+  content: any;
+  variables?: string[];
+  created_by: string;
+}) {
+  const db = getDb();
+  const id = uuid();
+  db.prepare(`
+    INSERT INTO marketing_templates (id, name, description, category, content, variables, created_by)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    id, data.name, data.description || null, data.category || 'email',
+    typeof data.content === 'string' ? data.content : JSON.stringify(data.content),
+    JSON.stringify(data.variables || []),
+    data.created_by,
+  );
+  return getMarketingTemplateById(id);
+}
+
+export function updateMarketingTemplate(id: string, data: Record<string, unknown>) {
+  const db = getDb();
+  if (!getMarketingTemplateById(id)) return null;
+  const ALLOWED = ['name', 'description', 'category', 'content', 'variables', 'is_active'] as const;
+  const sets: string[] = [];
+  const values: unknown[] = [];
+  for (const field of ALLOWED) {
+    if (field in data && data[field] !== undefined) {
+      if (field === 'content' && typeof data[field] !== 'string') {
+        sets.push('content = ?');
+        values.push(JSON.stringify(data[field]));
+      } else if (field === 'variables' && Array.isArray(data[field])) {
+        sets.push('variables = ?');
+        values.push(JSON.stringify(data[field]));
+      } else {
+        sets.push(`${field} = ?`);
+        values.push(data[field]);
+      }
+    }
+  }
+  if (sets.length > 0) {
+    sets.push("updated_at = datetime('now')");
+    db.prepare(`UPDATE marketing_templates SET ${sets.join(', ')} WHERE id = ?`).run(...values, id);
+  }
+  return getMarketingTemplateById(id);
+}
+
+export function deleteMarketingTemplate(id: string): boolean {
+  const db = getDb();
+  return db.prepare('DELETE FROM marketing_templates WHERE id = ?').run(id).changes > 0;
+}

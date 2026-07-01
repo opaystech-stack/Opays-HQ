@@ -112,4 +112,57 @@ export interface Lead {
   created_by: string | null;
   created_at: string;
   updated_at: string;
+  // Champs prospects enrichis
+  industry: string | null;
+  company_size: string | null;
+  source: string | null;
+  next_action: string | null;
+  next_action_date: string | null;
+  call_notes: string | null;
+}
+
+// ─── Factures ──────────────────────────────────────────────
+export type InvoiceType = 'sale' | 'proforma' | 'credit_note' | 'debit_note' | 'quote';
+export type InvoiceStatus = 'draft' | 'pending' | 'paid' | 'overdue' | 'cancelled';
+
+export interface InvoiceLine {
+  description: string;
+  quantity: number;
+  unit_price: number;
+  total?: number;
+}
+
+export interface Invoice {
+  id: string;
+  number: string;
+  client_name: string;
+  client_email: string | null;
+  type: InvoiceType;
+  status: InvoiceStatus;
+  lines: InvoiceLine[];
+  subtotal: number;
+  tax_rate: number;
+  tax_amount: number;
+  discount: number;
+  total: number;
+  notes: string | null;
+  created_by: string | null;
+  creator_name: string | null;
+  created_at: string;
+  updated_at: string;
+  due_date: string | null;
+  paid_at: string | null;
+}
+
+// ─── Marketing Templates ──────────────────────────────────
+export interface MarketingTemplate {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string;
+  content: string;
+  variables: string[];
+  preview_url: string | null;
+  created_at: string;
+  updated_at: string;
 }

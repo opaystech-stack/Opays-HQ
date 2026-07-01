@@ -78,6 +78,14 @@ function migrateSchema() {
   // Leads : champs additionnels (deadline d'audit, niveau de confiance).
   ensureColumn('leads', 'audit_deadline', 'TEXT');
   ensureColumn('leads', 'confidence_level', 'REAL');
+
+  // Prospects enrichis : champs supplémentaires.
+  ensureColumn('leads', 'industry', 'TEXT');
+  ensureColumn('leads', 'company_size', 'TEXT');
+  ensureColumn('leads', 'source', 'TEXT');
+  ensureColumn('leads', 'next_action', 'TEXT');
+  ensureColumn('leads', 'next_action_date', 'TEXT');
+  ensureColumn('leads', 'call_notes', 'TEXT');
 }
 
 function initSchema() {
@@ -292,6 +300,47 @@ function initSchema() {
       due_date TEXT,
       invoice_url TEXT,
       created_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS invoices (
+      id TEXT PRIMARY KEY,
+      invoice_number TEXT UNIQUE NOT NULL,
+      type TEXT NOT NULL CHECK (type IN ('sale','proforma','credit_note','debit_note','quote')),
+      status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','sent','paid','overdue','cancelled')),
+      client_name TEXT NOT NULL,
+      client_email TEXT,
+      client_address TEXT,
+      client_tax_id TEXT,
+      items TEXT NOT NULL DEFAULT '[]',
+      subtotal REAL NOT NULL,
+      tax_rate REAL DEFAULT 0,
+      tax_amount REAL DEFAULT 0,
+      discount_percent REAL DEFAULT 0,
+      discount_amount REAL DEFAULT 0,
+      total REAL NOT NULL,
+      currency TEXT DEFAULT 'USD',
+      notes TEXT,
+      terms TEXT,
+      due_date TEXT,
+      issued_date TEXT,
+      paid_date TEXT,
+      created_by TEXT REFERENCES users(id),
+      project_id TEXT REFERENCES projects(id),
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS marketing_templates (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      description TEXT,
+      category TEXT DEFAULT 'email' CHECK (category IN ('email','social','landing','print','other')),
+      content TEXT NOT NULL DEFAULT '{}',
+      variables TEXT DEFAULT '[]',
+      is_active INTEGER DEFAULT 1,
+      created_by TEXT REFERENCES users(id),
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
     );
   `);
 }

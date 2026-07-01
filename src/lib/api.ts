@@ -277,6 +277,60 @@ export async function apiGetBusinessStats() {
   return request<{ stats: any }>('/business/stats');
 }
 
+// ─── Invoices ────────────────────────────────────────────
+export async function apiGetInvoices() {
+  return request<{ invoices: any[] }>('/invoices');
+}
+
+export async function apiGetInvoice(id: string) {
+  return request<{ invoice: any }>(`/invoices/${id}`);
+}
+
+export async function apiCreateInvoice(data: Record<string, unknown>) {
+  return request<{ invoice: any }>('/invoices', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function apiUpdateInvoice(id: string, data: Record<string, unknown>) {
+  return request<{ invoice: any }>(`/invoices/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function apiDeleteInvoice(id: string) {
+  return request<{ ok: boolean }>(`/invoices/${id}`, { method: 'DELETE' });
+}
+
+// ─── Marketing Templates ────────────────────────────────
+export async function apiGetMarketingTemplates() {
+  return request<{ templates: any[] }>('/marketing/templates');
+}
+
+export async function apiGetMarketingTemplate(id: string) {
+  return request<{ template: any }>(`/marketing/templates/${id}`);
+}
+
+export async function apiCreateMarketingTemplate(data: Record<string, unknown>) {
+  return request<{ template: any }>('/marketing/templates', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function apiUpdateMarketingTemplate(id: string, data: Record<string, unknown>) {
+  return request<{ template: any }>(`/marketing/templates/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function apiDeleteMarketingTemplate(id: string) {
+  return request<{ ok: boolean }>(`/marketing/templates/${id}`, { method: 'DELETE' });
+}
+
 // ─── Vault ──────────────────────────────────────────────
 export async function apiGetContracts() {
   return request<{ contracts: any[] }>('/vault/contracts');

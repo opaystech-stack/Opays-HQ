@@ -20,6 +20,8 @@ import {
   UserCircle,
   LogOut,
   ChevronDown,
+  FileText,
+  Megaphone,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -49,7 +51,9 @@ const NAV_ITEMS = [
   {
     section: 'Gestion',
     items: [
-      { to: '/app/leads', label: 'CRM / Leads', icon: Briefcase, roles: ['admin', 'ceo', 'coo', 'cto', 'sales'] },
+      { to: '/app/leads', label: 'Prospects', icon: Briefcase, roles: ['admin', 'ceo', 'coo', 'cto', 'sales'] },
+      { to: '/app/invoices', label: 'Factures', icon: FileText, roles: ['admin', 'ceo', 'coo', 'sales'] },
+      { to: '/app/marketing', label: 'Marketing', icon: Megaphone, roles: ['ceo', 'sales'] },
       { to: '/app/treasury', label: 'Trésorerie', icon: Landmark, roles: ['admin', 'ceo', 'coo'] },
       { to: '/app/rh', label: 'RH', icon: Users, roles: ['admin', 'ceo', 'coo'] },
       { to: '/app/vault', label: 'Coffre-fort', icon: Archive, roles: ['admin', 'ceo', 'coo', 'cto', 'sales'] },
