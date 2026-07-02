@@ -23,6 +23,7 @@ import businessRoutes from './routes/business';
 import vaultRoutes from './routes/vault';
 import invoiceRoutes from './routes/invoices';
 import marketingRoutes from './routes/marketing';
+import contactRoutes from './routes/contacts';
 import { seedDefaultUsers, seedMarketingTemplates } from './seed';
 import { loadConfigOrExit } from './config';
 import { getDb } from './db';
@@ -54,6 +55,7 @@ app.use('/api/business', businessRoutes);
 app.use('/api/vault', vaultRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/marketing', marketingRoutes);
+app.use('/api/contacts', contactRoutes);
 
 // Health check — formalized contract consumed by the platform health check.
 // res.json sets Content-Type: application/json and status 200 by default.

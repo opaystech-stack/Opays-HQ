@@ -27,6 +27,7 @@ import { Route as AppAppJobDescriptionsRouteImport } from './routes/_app.app.job
 import { Route as AppAppInvoicesRouteImport } from './routes/_app.app.invoices'
 import { Route as AppAppIdeasRouteImport } from './routes/_app.app.ideas'
 import { Route as AppAppDashboardRouteImport } from './routes/_app.app.dashboard'
+import { Route as AppAppContactsRouteImport } from './routes/_app.app.contacts'
 import { Route as AppAppCalendarRouteImport } from './routes/_app.app.calendar'
 import { Route as AppAppBusinessRouteImport } from './routes/_app.app.business'
 import { Route as AppAppAgentsRouteImport } from './routes/_app.app.agents'
@@ -120,6 +121,11 @@ const AppAppDashboardRoute = AppAppDashboardRouteImport.update({
   path: '/app/dashboard',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAppContactsRoute = AppAppContactsRouteImport.update({
+  id: '/app/contacts',
+  path: '/app/contacts',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAppCalendarRoute = AppAppCalendarRouteImport.update({
   id: '/app/calendar',
   path: '/app/calendar',
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/app/agents': typeof AppAppAgentsRoute
   '/app/business': typeof AppAppBusinessRoute
   '/app/calendar': typeof AppAppCalendarRoute
+  '/app/contacts': typeof AppAppContactsRoute
   '/app/dashboard': typeof AppAppDashboardRoute
   '/app/ideas': typeof AppAppIdeasRoute
   '/app/invoices': typeof AppAppInvoicesRoute
@@ -164,6 +171,7 @@ export interface FileRoutesByTo {
   '/app/agents': typeof AppAppAgentsRoute
   '/app/business': typeof AppAppBusinessRoute
   '/app/calendar': typeof AppAppCalendarRoute
+  '/app/contacts': typeof AppAppContactsRoute
   '/app/dashboard': typeof AppAppDashboardRoute
   '/app/ideas': typeof AppAppIdeasRoute
   '/app/invoices': typeof AppAppInvoicesRoute
@@ -188,6 +196,7 @@ export interface FileRoutesById {
   '/_app/app/agents': typeof AppAppAgentsRoute
   '/_app/app/business': typeof AppAppBusinessRoute
   '/_app/app/calendar': typeof AppAppCalendarRoute
+  '/_app/app/contacts': typeof AppAppContactsRoute
   '/_app/app/dashboard': typeof AppAppDashboardRoute
   '/_app/app/ideas': typeof AppAppIdeasRoute
   '/_app/app/invoices': typeof AppAppInvoicesRoute
@@ -212,6 +221,7 @@ export interface FileRouteTypes {
     | '/app/agents'
     | '/app/business'
     | '/app/calendar'
+    | '/app/contacts'
     | '/app/dashboard'
     | '/app/ideas'
     | '/app/invoices'
@@ -234,6 +244,7 @@ export interface FileRouteTypes {
     | '/app/agents'
     | '/app/business'
     | '/app/calendar'
+    | '/app/contacts'
     | '/app/dashboard'
     | '/app/ideas'
     | '/app/invoices'
@@ -257,6 +268,7 @@ export interface FileRouteTypes {
     | '/_app/app/agents'
     | '/_app/app/business'
     | '/_app/app/calendar'
+    | '/_app/app/contacts'
     | '/_app/app/dashboard'
     | '/_app/app/ideas'
     | '/_app/app/invoices'
@@ -408,6 +420,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAppDashboardRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/app/contacts': {
+      id: '/_app/app/contacts'
+      path: '/app/contacts'
+      fullPath: '/app/contacts'
+      preLoaderRoute: typeof AppAppContactsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/app/calendar': {
       id: '/_app/app/calendar'
       path: '/app/calendar'
@@ -436,6 +455,7 @@ interface AppRouteChildren {
   AppAppAgentsRoute: typeof AppAppAgentsRoute
   AppAppBusinessRoute: typeof AppAppBusinessRoute
   AppAppCalendarRoute: typeof AppAppCalendarRoute
+  AppAppContactsRoute: typeof AppAppContactsRoute
   AppAppDashboardRoute: typeof AppAppDashboardRoute
   AppAppIdeasRoute: typeof AppAppIdeasRoute
   AppAppInvoicesRoute: typeof AppAppInvoicesRoute
@@ -457,6 +477,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAppAgentsRoute: AppAppAgentsRoute,
   AppAppBusinessRoute: AppAppBusinessRoute,
   AppAppCalendarRoute: AppAppCalendarRoute,
+  AppAppContactsRoute: AppAppContactsRoute,
   AppAppDashboardRoute: AppAppDashboardRoute,
   AppAppIdeasRoute: AppAppIdeasRoute,
   AppAppInvoicesRoute: AppAppInvoicesRoute,

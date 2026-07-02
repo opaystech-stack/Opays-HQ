@@ -331,6 +331,26 @@ export async function apiDeleteMarketingTemplate(id: string) {
   return request<{ ok: boolean }>(`/marketing/templates/${id}`, { method: 'DELETE' });
 }
 
+// ─── Contacts site vitrine ─────────────────────────────
+export async function apiGetContacts() {
+  return request<{ contacts: any[] }>('/contacts');
+}
+
+export async function apiGetContact(id: string) {
+  return request<{ contact: any }>(`/contacts/${id}`);
+}
+
+export async function apiUpdateContactStatus(id: string, status: string) {
+  return request<{ contact: any }>(`/contacts/${id}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status }),
+  });
+}
+
+export async function apiDeleteContact(id: string) {
+  return request<{ ok: boolean }>(`/contacts/${id}`, { method: 'DELETE' });
+}
+
 // ─── Vault ──────────────────────────────────────────────
 export async function apiGetContracts() {
   return request<{ contracts: any[] }>('/vault/contracts');

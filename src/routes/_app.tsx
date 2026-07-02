@@ -22,6 +22,7 @@ import {
   ChevronDown,
   FileText,
   Megaphone,
+  MessageSquare,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -52,6 +53,7 @@ const NAV_ITEMS = [
     section: 'Gestion',
     items: [
       { to: '/app/leads', label: 'Prospects', icon: Briefcase, roles: ['admin', 'ceo', 'coo', 'cto', 'sales'] },
+      { to: '/app/contacts', label: 'Contacts', icon: MessageSquare, roles: ['admin', 'ceo', 'coo', 'cto'] },
       { to: '/app/invoices', label: 'Factures', icon: FileText, roles: ['admin', 'ceo', 'coo', 'sales'] },
       { to: '/app/marketing', label: 'Marketing', icon: Megaphone, roles: ['ceo', 'sales'] },
       { to: '/app/treasury', label: 'Trésorerie', icon: Landmark, roles: ['admin', 'ceo', 'coo'] },

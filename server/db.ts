@@ -342,6 +342,22 @@ function initSchema() {
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS site_contacts (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      company TEXT,
+      phone TEXT,
+      service TEXT,
+      message TEXT NOT NULL,
+      consent INTEGER DEFAULT 0,
+      status TEXT DEFAULT 'new' CHECK (status IN ('new','read','replied','archived')),
+      read_at TEXT,
+      replied_at TEXT,
+      notes TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    );
   `);
 }
 

@@ -166,3 +166,22 @@ export interface MarketingTemplate {
   created_at: string;
   updated_at: string;
 }
+
+// ─── Site Contacts ────────────────────────────────────────
+export type SiteContactStatus = 'new' | 'read' | 'replied' | 'archived';
+
+export interface SiteContact {
+  id: string;
+  name: string;
+  email: string;
+  company: string | null;
+  phone: string | null;
+  service: string | null;
+  message: string;
+  consent: number;
+  status: SiteContactStatus;
+  read_at: string | null;
+  replied_at: string | null;
+  notes: string | null;
+  created_at: string;
+}
